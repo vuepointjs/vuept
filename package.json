@@ -1,0 +1,40 @@
+{
+  "name": "vuept",
+  "version": "0.1.0",
+  "description": "VuePoint.js",
+  "author": "Copyright (c) 2018 Steve Lathrop",
+  "license": "MIT",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "bootstrap": "yarn && lerna bootstrap",
+    "start": "npm run bootstrap && npm run watch",
+    "watch": "lerna run watch --parallel",
+    "build": "npm run clean && lerna run build",
+    "clean": "rimraf packages/*/dist",
+    "reset": "npm run clean && lerna clean --yes",
+    "dryrun": "lerna publish --skip-npm --skip-git",
+    "publish": "npm run bootstrap && npm run build && lerna publish",
+    "add:suite": "node ./scripts/add-suite",
+    "add:app": "node ./scripts/add-app",
+    "add:api": "node ./scripts/add-api",
+    "add:pkg": "node ./scripts/add-pkg"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuepointjs/vuept.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/vuepointjs/vuept/issues"
+  },
+  "homepage": "https://github.com/vuepointjs/vuept#readme",
+  "devDependencies": {
+    "lerna": "^2.11.0",
+    "rimraf": "^2.6.2"
+  },
+  "workspaces": [
+    "packages/**",
+    "solution/**"
+  ]
+}

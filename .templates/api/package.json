@@ -1,0 +1,24 @@
+{
+  "name": "vuept-solution-api-{{api-key}}",
+  "version": "0.1.0",
+  "description": "VuePoint.js Solution REST API - {{api-key}}",
+  "author": "Copyright (c) 2018 {{author-name}}",
+  "license": "MIT",
+  "private": true,
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuepointjs/vuept.git"
+  },
+  "dependencies": {
+    "lodash": "^4.17.10",
+    "luxon": "^1.2.1"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "eslint": "^4.19.1",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-vue": "^4.5.0",
+    "prettier": "^1.13.5"
+  }
+}

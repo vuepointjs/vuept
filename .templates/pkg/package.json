@@ -1,0 +1,23 @@
+{
+  "name": "@vuept/{{package-name}}",
+  "version": "0.1.0",
+  "description": "{{package-description}}",
+  "author": "Copyright (c) 2018 {{author-name}}",
+  "license": "MIT",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuepointjs/vuept.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/vuepointjs/vuept/issues"
+  },
+  "homepage": "https://github.com/vuepointjs/vuept#readme",
+  "devDependencies": {}
+}

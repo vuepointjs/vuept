@@ -1,0 +1,43 @@
+backend:
+  name: gitlab
+  # repo: owner-name/repo-name # Path to your GitLab repository
+  # auth_type: implicit # Required for implicit grant
+  # app_id: your-app-id # Application ID from your GitLab settings
+
+# display_url: https://app.tenant.com
+media_folder: "admin/media"
+
+collections:
+  - name: "tenant_suites"
+    label: "Suites"
+    label_singular: "Suite"
+    folder: "data/Tenants"
+    create: true
+    extension: "toml"
+    format: "toml"
+    slug: "{{slug}}"
+    editor:
+      preview: false
+    fields:
+      - {name: "title", label: "Suite Key", widget: "string", pattern:["^[A-Z]{1}([0-9]|[A-Z]){3}$", "1 letter and 3 letters or numbers, all uppercase"]}
+      - {name: "suiteName", label: "Suite Name", widget: "string", pattern:[".{2,30}", "Min 2, Max 30 characters"]}
+      - {name: "suiteShortName", label: "Suite Short Name", widget: "string", pattern:[".{2,12}", "Min 2, Max 12 characters"]}
+      - {name: "tenantKey", label: "Tenant Key", widget: "string", pattern:[".{2,4}", "Min 2, Max 4 characters"]}
+      - {name: "tenantName", label: "Tenant Name", widget: "string", pattern:[".{2,30}", "Min 2, Max 30 characters"]}
+      
+  - name: "tenant_suites"
+    label: "Suites"
+    label_singular: "Suite"
+    folder: "data/Tenants"
+    create: true
+    extension: "toml"
+    format: "toml"
+    slug: "{{slug}}"
+    editor:
+      preview: false
+    fields:
+      - {name: "title", label: "Suite Key", widget: "string", pattern:["^[A-Z]{1}([0-9]|[A-Z]){3}$", "1 letter and 3 letters or numbers, all uppercase"]}
+      - {name: "suiteName", label: "Suite Name", widget: "string", pattern:[".{2,30}", "Min 2, Max 30 characters"]}
+      - {name: "suiteShortName", label: "Suite Short Name", widget: "string", pattern:[".{2,12}", "Min 2, Max 12 characters"]}
+      - {name: "tenantKey", label: "Tenant Key", widget: "string", pattern:[".{2,4}", "Min 2, Max 4 characters"]}
+      - {name: "tenantName", label: "Tenant Name", widget: "string", pattern:[".{2,30}", "Min 2, Max 30 characters"]}

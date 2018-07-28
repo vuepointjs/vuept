@@ -1,0 +1,45 @@
+// VuePt (vp) Stylus CSS - Main
+@require 'variables'
+@require 'selectors'
+@require '~vuetify/src/stylus/settings/_elevations'
+
+// STYLES - Global Vuetify customizations
+html
+  overflow-y: auto !important // Avoid vertical scrollbar when possible
+
+{vp-toolbar-wrapper}
+  elevation(0)
+
+{vp-toolbar}
+  height: $vp-toolbar-height !important
+
+{vp-toolbar-waffle-menu},
+{vp-drawer-waffle-menu}
+  position: absolute
+  top: 0
+  left: 0
+  margin: 0 !important
+  width: $vp-toolbar-height
+  height: $vp-toolbar-height
+  border-radius: 0%
+
+{vp-toolbar-title}
+  margin-left: $vp-toolbar-height !important
+  min-width: 200px // Fix for strange text clipping in IE 11
+
+{vp-drawer-header}
+  height: $vp-toolbar-height !important
+
+{vp-waffle-menu-icon}
+  font-size: 30px
+
+{vp-main-content}
+  padding-top: $vp-toolbar-height !important
+
+{vp-badge}
+  top: -($vp-badge-offset)
+  right: -($vp-badge-offset)
+  width: $vp-badge-size
+  height: $vp-badge-size
+  border-color: $vp-badge-bg !important
+  background-color: $vp-badge-bg !important
