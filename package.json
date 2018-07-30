@@ -30,7 +30,8 @@
   },
   "homepage": "https://github.com/vuepointjs/vuept#readme",
   "devDependencies": {
-    "lerna": "^2.11.0",
+    "cross-env": "^5.1.4",
+    "lerna": "^3.0.0-rc.0",
     "rimraf": "^2.6.2"
   },
   "workspaces": [

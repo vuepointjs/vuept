@@ -2,7 +2,7 @@
   "name": "vuept-solution-api-{{api-key}}",
   "version": "0.1.0",
   "description": "VuePoint.js Solution REST API - {{api-key}}",
-  "author": "Copyright (c) 2018 {{author-name}}",
+  "author": "{{author-name}}",
   "license": "MIT",
   "private": true,
   "scripts": {},

@@ -2,7 +2,7 @@
   "name": "@vuept/{{package-name}}",
   "version": "0.1.0",
   "description": "{{package-description}}",
-  "author": "Copyright (c) 2018 {{author-name}}",
+  "author": "Copyright (c) 2018 Steve Lathrop",
   "license": "MIT",
   "private": false,
   "publishConfig": {

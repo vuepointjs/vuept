@@ -2,7 +2,7 @@
   "name": "vuept-solution-app-{{app-key}}",
   "version": "0.1.0",
   "description": "VuePoint.js Solution App - {{app-key}}",
-  "author": "Copyright (c) 2018, {{author-name}}",
+  "author": "{{author-name}}",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
-    "cross-env": "^5.0.1",
+    "cross-env": "^5.1.4",
     "eslint": "^4.19.1",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-prettier": "^2.6.0",
