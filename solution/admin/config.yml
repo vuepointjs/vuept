@@ -9,7 +9,7 @@ media_folder: "solution/admin/media"
 
 collections:
   - name: "tenant_suites"
-    label: "Suites"
+    label: "Configuration"
     label_singular: "Suite"
     delete: false
     extension: "json"
@@ -18,47 +18,47 @@ collections:
       preview: false
     files:
       - name: "suites"
-        label: "Suites"
+        label: "> Administer Suites, Apps, Applets, and Views"
         file:  "solution/data/tenants/suites.json"
         description: "VuePoint.js Tenant Suites"
         fields:
           - name: "suites"
-            label: "Suites"
-            label_singular: "Suite"
+            label: "Configurations"
+            label_singular: "Configuration"
             widget: "list"
-            fields:
-              - {name: "key", label: "Suite Key", widget: "string", pattern:["^[A-Z]{1}([0-9]|[A-Z]){3}$", "1 letter followed by 3 letters or numbers, all uppercase"]}
-              - {name: "name", label: "Suite Name", widget: "string", pattern:[".{2,30}", "Min 2, Max 30 characters"]}
-              - {name: "shortName", label: "Suite Short Name", widget: "string", pattern:[".{2,12}", "Min 2, Max 12 characters"]}
-              - {name: "tenantKey", label: "Tenant Key", widget: "string", pattern:[".{2,4}", "Min 2, Max 4 characters"]}
-              - {name: "tenantName", label: "Tenant Name", widget: "string", pattern:[".{2,30}", "Min 2, Max 30 characters"]}
+            fields: # NOTE: Known flaw in Netlify CMS prevents validation of nested fields for now... https://github.com/netlify/netlify-cms/issues/467
+              - {name: "name", label: "Suite Short Name", widget: "string", pattern: [".{2,12}", "Min 2, Max 12 characters"]}
+              - {name: "key", label: "Suite Key", widget: "string", pattern: ["^[A-Z]{1}([0-9]|[A-Z]){3}$", "1 letter followed by 3 letters or numbers, all uppercase"]}
+              - {name: "longName", label: "Suite Long Name", widget: "string", pattern: [".{2,30}", "Min 2, Max 30 characters"]}
+              - {name: "tenantKey", label: "Tenant Key", widget: "string", pattern: [".{2,4}", "Min 2, Max 4 characters"]}
+              - {name: "tenantName", label: "Tenant Name", widget: "string", pattern: [".{2,30}", "Min 2, Max 30 characters"]}
               - name: "apps"
                 label: "Apps"
                 label_singular: "App"
                 widget: "list"
                 fields:
-                  - {name: "key", label: "App Key", widget: "string", pattern:["^[A-Z]{1}([0-9]|[A-Z]){1}$", "1 letter followed by 1 letter or number, all uppercase"]}
-                  - {name: "name", label: "App Short Name", widget: "string", pattern:[".{2,16}", "Min 2, Max 16 characters"]}
-                  - {name: "longName", label: "App Name", widget: "string", pattern:[".{2,30}", "Min 2, Max 30 characters"]}
+                  - {name: "name", label: "App Short Name", widget: "string", pattern: [".{2,12}", "Min 2, Max 12 characters"]}
+                  - {name: "key", label: "App Key", widget: "string", pattern: ["^[A-Z]{1}([0-9]|[A-Z]){1}$", "1 letter followed by 1 letter or number, all uppercase"]}
+                  - {name: "longName", label: "App Long Name", widget: "string", pattern: [".{2,30}", "Min 2, Max 30 characters"]}
                   - name: "applets"
                     label: "Applets"
                     label_singular: "Applet"
                     widget: "list"
                     fields:
-                      - {name: "key", label: "Applet Key", widget: "string", pattern:["^[A-Z]{1}([0-9]|[A-Z]){1}$", "1 letter followed by 1 letter or number, all uppercase"]}
-                      - {name: "title", label: "Applet Key", widget: "string", pattern:["^[A-Z]{1}([0-9]|[a-zA-Z]){1}$", "1 uppercase letter followed by 1 letter or number"]}
-                      - {name: "ord", label: "Display Order", widget: "number", valueType: "int", min: 1, max: 2000000}
-                      - {name: "name", label: "App Short Name", widget: "string", pattern:[".{2,16}", "Min 2, Max 16 characters"]}
-                      - {name: "longName", label: "App Name", widget: "string", pattern:[".{2,30}", "Min 2, Max 30 characters"]}
+                      - {name: "name", label: "Applet Short Name", widget: "string", pattern: [".{2,12}", "Min 2, Max 12 characters"]}                      
+                      - {name: "key", label: "Applet Key", widget: "string", pattern: ["^[A-Z]{1}([0-9]|[A-Z]){1}$", "1 letter followed by 1 letter or number, all uppercase"]}
+                      - {name: "iconLabel", label: "Applet Icon Label", widget: "string", pattern: ["^[A-Z]{1}([0-9]|[a-zA-Z]){1}$", "1 uppercase letter followed by 1 letter or number"]}
+                      - {name: "ord", label: "Applet Display Order", widget: "number", valueType: "int", min: 1, max: 2000000}
+                      - {name: "longName", label: "Applet Long Name", widget: "string", pattern: [".{2,30}", "Min 2, Max 30 characters"]}
                       - name: "views"
                         label: "Views"
                         label_singular: "View"
                         widget: "list"
                         fields:
-                          - {name: "title", label: "Title", widget: "string", pattern:[".{2,30}", "Min 2, Max 30 characters"]}
-                          - {name: "default", label: "Applet Home Page?", widget: "boolean", default: false, required: true}
+                          - {name: "name", label: "View Name", widget: "string", pattern: [".{2,30}", "Min 2, Max 30 characters"]}
+                          - {name: "default", label: "View is Applet Home Page?", widget: "boolean", default: false, required: true}
                           - name: "type"
-                            label: "Type"
+                            label: "View Type"
                             widget: "select"
                             options:
                               - { label: "Custom Content Page", value: "page" }
@@ -68,7 +68,7 @@ collections:
                               - { label: "Delete", value: "delete" }
                               - { label: "Merge", value: "merge" }
                           - name: "subType"
-                            label: "Sub Type"
+                            label: "View Sub Type"
                             widget: "select"
                             options:
                               - { label: "Body as Markdown", value: "body-as-markdown" } # valid for type: page

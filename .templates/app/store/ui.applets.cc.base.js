@@ -83,20 +83,14 @@ module.exports = [
     shortName: 'Charge Back'
   },
   {
-    key: 'GR',
-    ord: 13,
-    name: 'Guaranteed Ride Home',
-    shortName: 'Guar. Ride'
-  },
-  {
     key: 'ML',
-    ord: 14,
+    ord: 13,
     name: 'Mail Log',
     shortName: 'Mail Log'
   },
   {
     key: 'PL',
-    ord: 15,
+    ord: 14,
     name: 'Parking Lot',
     shortName: 'Parking Lot'
   }
