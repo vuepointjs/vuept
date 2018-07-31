@@ -9,6 +9,7 @@
 */
 
 const suiteKey = process.argv[2];
+const suites = require('@vuept/solution-data').suites;
 
 if (!suiteKey) {
   console.log('\n\nadd:suite - Missing required <suite-key> arg');
@@ -16,7 +17,9 @@ if (!suiteKey) {
   process.exit(1);
 }
 
+console.log();
 console.log(`add-suite: Under construction. Soon your specified suite "${suiteKey}" will be added to the solution.`);
+console.log(`           Suite count: ${suites.length}\n`);
 
 // Main flow of execution for script ends here
 process.exit(0);
