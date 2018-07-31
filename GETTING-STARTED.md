@@ -27,6 +27,12 @@ It is recommended, especially on Windows, that you install Lerna globally to avo
 From a command prompt run:
 
 ```bash
+yarn global add lerna
+```
+
+Or with NPM:
+
+```bash
 npm install -g lerna
 ```
 
@@ -35,7 +41,7 @@ npm install -g lerna
 Now, from a command prompt (with your current working directory set to your clone or download location) run:
 
 ```bash
-yarn run bootstrap
+yarn bootstrap
 ```
 
 > Note that this is **not** the typical `npm install` command to get started. Instead, we use Yarn and Lerna to install and [bootstrap](https://github.com/lerna/lerna/tree/master/commands/bootstrap#readme) all of the packages.
@@ -43,3 +49,17 @@ yarn run bootstrap
 ## Create Your Suite of Web Apps
 
 Details Coming Soon!
+
+Simple scripts will be available from the command line, such as:
+
+```bash
+yarn add:suite
+```
+
+to add your Suite of Apps, and:
+
+```bash
+yarn add:app
+```
+
+to add an App to your Office Suite.

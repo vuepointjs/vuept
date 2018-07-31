@@ -8,39 +8,30 @@
       - Adding (if necessary) the suite to the json data in /solution/data/tenants/suites.json
 */
 
-// const suiteKey = process.argv[2];
-// const suites = require('@vuept/solution-data').suites;
-
-// if (!suiteKey) {
-//   console.log('\n\nadd:suite - Missing required <suite-key> arg');
-//   console.log('Format: npm run add:suite "<suite-key>"');
-//   process.exit(1);
-// }
-
-// console.log();
-// console.log(`add-suite: Under construction. Soon your specified suite "${suiteKey}" will be added to the solution.`);
-// console.log(`           Suite count: ${suites.length}\n`);
-
-// // Main flow of execution for script ends here
-// process.exit(0);
-
 const schema = require('@vuept/solution-admin').schema;
-
-console.log('\nsuite schema...');
-console.log(schema.suite);
-
-console.log('\napp schema...');
-console.log(schema.app);
-
-console.log('\napplet schema...');
-console.log(schema.applet);
-
-console.log('\nview schema...');
-console.log(schema.view);
-
+const suites = require('@vuept/solution-data').suites;
+const _ = require('lodash');
 const inquirer = require('inquirer');
-const questions = [];
 
-// inquirer.prompt(questions).then(answers => {
-//   console.log(answers);
-// });
+console.log('\n> Add Suite: Under construction.\n');
+
+inquirer.prompt(questionsFromSchema(schema.suite)).then(answers => {
+  console.log(answers);
+
+  // Main flow of execution for script ends here
+  process.exit(0);
+});
+
+// #region Helper Functions
+function questionsFromSchema(schema) {
+  // TODO: Expand validation, perhaps to sep. fxn., allow check for unique key (against existing data in "suites")
+  return _(schema)
+    .map(val => ({
+      type: 'input',
+      name: val.name,
+      message: `${val.label}:`,
+      validate: val.pattern ? input => (RegExp(val.pattern[0]).test(input) ? true : val.pattern[1]) : undefined
+    }))
+    .value();
+}
+// #endregion

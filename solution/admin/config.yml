@@ -28,7 +28,7 @@ collections:
             widget: "list"
             fields: # NOTE: Known flaw in Netlify CMS prevents validation of nested fields for now... https://github.com/netlify/netlify-cms/issues/467
               - {name: "name", label: "Suite Short Name", widget: "string", pattern: [".{2,12}", "Min 2, Max 12 characters"]}
-              - {name: "key", label: "Suite Key", widget: "string", pattern: ["^[A-Z]{1}([0-9]|[A-Z]){3}$", "1 letter followed by 3 letters or numbers, all uppercase"]}
+              - {name: "key", label: "Suite Key", widget: "string", pattern: ["^[A-Z]{1}([0-9]|[A-Z]){1,3}$", "1 letter followed by 1 to 3 letters or numbers, all uppercase"]}
               - {name: "longName", label: "Suite Long Name", widget: "string", pattern: [".{2,30}", "Min 2, Max 30 characters"]}
               - {name: "tenantKey", label: "Tenant Key", widget: "string", pattern: [".{2,4}", "Min 2, Max 4 characters"]}
               - {name: "tenantName", label: "Tenant Name", widget: "string", pattern: [".{2,30}", "Min 2, Max 30 characters"]}
@@ -45,7 +45,7 @@ collections:
                     label_singular: "Applet"
                     widget: "list"
                     fields:
-                      - {name: "name", label: "Applet Short Name", widget: "string", pattern: [".{2,12}", "Min 2, Max 12 characters"]}                      
+                      - {name: "name", label: "Applet Short Name", widget: "string", pattern: [".{2,12}", "Min 2, Max 12 characters"]}
                       - {name: "key", label: "Applet Key", widget: "string", pattern: ["^[A-Z]{1}([0-9]|[A-Z]){1}$", "1 letter followed by 1 letter or number, all uppercase"]}
                       - {name: "iconLabel", label: "Applet Icon Label", widget: "string", pattern: ["^[A-Z]{1}([0-9]|[a-zA-Z]){1}$", "1 uppercase letter followed by 1 letter or number"]}
                       - {name: "ord", label: "Applet Display Order", widget: "number", valueType: "int", min: 1, max: 2000000}
@@ -78,4 +78,3 @@ collections:
                               - { label: "Edit", value: "edit" }
                               - { label: "Delete", value: "delete" }
                               - { label: "Merge", value: "merge" }
-  

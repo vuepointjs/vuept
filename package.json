@@ -30,9 +30,15 @@
   },
   "homepage": "https://github.com/vuepointjs/vuept#readme",
   "devDependencies": {
+    "babel-eslint": "^8.2.3",
+    "eslint": "^4.19.1",
+    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-vue": "^4.5.0",
+    "prettier": "^1.13.5",
     "cross-env": "^5.1.4",
     "inquirer": "^6.0.0",
     "lerna": "^3.0.0-rc.0",
+    "lodash": "^4.17.10",
     "lowdb": "^1.0.0",
     "rimraf": "^2.6.2"
   },

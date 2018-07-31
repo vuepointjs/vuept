@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 
-let schema = {
+const schema = {
   suite: null,
   app: null,
   applet: null,
@@ -45,7 +45,9 @@ try {
 
   // console.log(suiteSchema);
 } catch (e) {
-  // console.log(e);
+  console.log(e);
 }
 
-module.exports.schema = schema;
+module.exports = {
+  schema
+};
