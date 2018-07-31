@@ -37,7 +37,7 @@ collections:
                 label_singular: "App"
                 widget: "list"
                 fields:
-                  - {name: "name", label: "App Short Name", widget: "string", pattern: [".{2,12}", "Min 2, Max 12 characters"]}
+                  - {name: "name", label: "App Short Name", widget: "string", pattern: [".{2,16}", "Min 2, Max 16 characters"]}
                   - {name: "key", label: "App Key", widget: "string", pattern: ["^[A-Z]{1}([0-9]|[A-Z]){1}$", "1 letter followed by 1 letter or number, all uppercase"]}
                   - {name: "longName", label: "App Long Name", widget: "string", pattern: [".{2,30}", "Min 2, Max 30 characters"]}
                   - name: "applets"
