@@ -4,7 +4,7 @@
 
 There are three prerequisites for working with this codebase:
 
-1.  [Node.js](https://nodejs.org/en/download/) v8.x (LTS version as of mid 2018)
+1.  [Node.js](https://nodejs.org/en/download/) v10.7 or greater (LTS version as of October 2018)
 1.  [Yarn](https://yarnpkg.com/en/docs/install) v1.9.2 or greater
 1.  [Docker](https://www.docker.com/community-edition#/download) (Latest Stable Docker Community Edition (CE))
 
