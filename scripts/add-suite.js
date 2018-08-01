@@ -7,16 +7,16 @@
       - Copying .templates/suite to solution/suite/{{suite-key}}
       - Adding (if necessary) the suite to the json data in /solution/data/tenants/suites.json
 */
-
-const schema = require('@vuept/solution-admin').schema;
-const suites = require('@vuept/solution-data').suites;
+const solutionSchema = require('@vuept/solution-admin').schema;
+const solutionData = require('@vuept/solution-data');
 const _ = require('lodash');
 const inquirer = require('inquirer');
 
 console.log('\n> Add Suite: Under construction.\n');
 
-inquirer.prompt(questionsFromSchema(schema.suite)).then(answers => {
-  console.log(answers);
+inquirer.prompt(questionsFromSchema(solutionSchema.suite)).then(answers => {
+  let suiteDataAdded = solutionData.mutations.addSuite(answers);
+  if (suiteDataAdded) console.log('\n* Suite added successfully!');
 
   // Main flow of execution for script ends here
   process.exit(0);
@@ -24,14 +24,18 @@ inquirer.prompt(questionsFromSchema(schema.suite)).then(answers => {
 
 // #region Helper Functions
 function questionsFromSchema(schema) {
-  // TODO: Expand validation, perhaps to sep. fxn., allow check for unique key (against existing data in "suites")
   return _(schema)
-    .map(val => ({
-      type: 'input',
-      name: val.name,
-      message: `${val.label}:`,
-      validate: val.pattern ? input => (RegExp(val.pattern[0]).test(input) ? true : val.pattern[1]) : undefined
-    }))
+    .map(field => netlifyFieldToInquirerQuestion(field))
     .value();
+}
+
+function netlifyFieldToInquirerQuestion(field) {
+  // TODO: Expand validation, perhaps to separate fxn. And expand input types (choice, int result)
+  return {
+    type: 'input',
+    name: field.name,
+    message: `${field.label}:`,
+    validate: field.pattern ? input => (RegExp(field.pattern[0]).test(input) ? true : field.pattern[1]) : undefined
+  };
 }
 // #endregion

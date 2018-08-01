@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 
+// Initialize placeholder to use when getting and exporting all of the individual schemas below
 const schema = {
   suite: null,
   app: null,
@@ -42,8 +43,6 @@ try {
     .first()
     .get('fields')
     .value();
-
-  // console.log(suiteSchema);
 } catch (e) {
   console.log(e);
 }

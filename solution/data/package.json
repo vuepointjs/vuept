@@ -16,7 +16,10 @@
     "url": "https://github.com/vuepointjs/vuept/issues"
   },
   "homepage": "https://github.com/vuepointjs/vuept#readme",
-  "dependencies": {},
+  "dependencies": {
+    "lodash-id": "^0.14.0",
+    "lowdb": "^1.0.0"
+  },
   "devDependencies": {
     "babel-eslint": "^8.2.3",
     "eslint": "^4.19.1",
