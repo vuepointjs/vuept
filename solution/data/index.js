@@ -26,7 +26,7 @@ const mutations = {
    * @param {object} suite Suite object with fields as specified in the solution admin schema (config.yml)
    * @returns True on success, false otherwise
    */
-  addSuite: suite => {
+  addSuite(suite) {
     try {
       db.get('suites')
         .insert(suite) // TODO: consider upsert/update case when key already exists

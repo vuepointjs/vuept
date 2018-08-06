@@ -1,6 +1,6 @@
 {
   "name": "vuept-solution-app-{{app-key}}",
-  "version": "0.1.0",
+  "version": "1.0.0-alpha.1",
   "description": "VuePoint.js Solution App - {{app-key}}",
   "author": "{{author-name}}",
   "license": "MIT",
@@ -30,6 +30,8 @@
     "vue-chartjs": "^3.3.1",
     "vue-markdown": "^2.2.4",
     "vue-mousetrap": "^1.0.1",
+    "@vuept/ui": ">=1.0.0-alpha.1",
+    "@vuept/lb": ">=1.0.0-alpha.1",
     "vuetify": "^1.1.7"
   },
   "devDependencies": {

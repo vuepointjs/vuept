@@ -1,6 +1,6 @@
 {
   "name": "vuept-solution-api-{{api-key}}",
-  "version": "0.1.0",
+  "version": "1.0.0-alpha.1",
   "description": "VuePoint.js Solution REST API - {{api-key}}",
   "author": "{{author-name}}",
   "license": "MIT",
