@@ -1,0 +1,20 @@
+{
+  "db": {
+    "name": "db",
+    "connector": "mssql",
+    "port": 1433,
+    "options": {
+      "appName": "VuePoint.js Solution - __app-name__ API",
+      "encrypt": true,
+      "useUTC": true
+    }
+  },
+  "mem": {
+    "name": "mem",
+    "connector": "memory"
+  },
+  "transient": {
+    "name": "transient",
+    "connector": "transient"
+  }
+}

@@ -4,7 +4,7 @@
     TODO: Implement script that adds a new API to the solution by accepting a api key string argument and:
 
       - Verifying that the api key is valid (of the right form) and that the specified api doesn't already exist
-      - Copying .templates/api to solution/api/{{api-key}}
+      - Copying .templates/api to solution/api/${api-key}
 
     NOTE: For dev, plan to use port range: 33880 - 33979 (max 100 APIs/ports)
 */

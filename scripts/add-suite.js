@@ -4,7 +4,7 @@
     TODO: Implement script that adds a new "suite" to the solution by prompting for required inputs and:
 
       - Verifying that the inputs (e.g., suite key) are valid and that the specified suite doesn't already exist
-      - Copying .templates/suite to solution/suite/{{suite-key}}
+      - Copying .templates/suite to solution/suite/${suite-key}
       - Adding (if necessary) the suite to the json data in /solution/data/tenants/suites.json
 
     NOTE: For dev, plan to use port range: 33990 - 33999 (max 10 suites/ports)

@@ -1,8 +1,8 @@
 {
-  "name": "vuept-solution-app-{{app-key}}",
+  "name": "vuept-solution-app-__app-key__",
   "version": "1.0.0-alpha.1",
-  "description": "VuePoint.js Solution App - {{app-key}}",
-  "author": "{{author-name}}",
+  "description": "VuePoint.js Solution App - __app-key__",
+  "author": "__author-name__",
   "license": "MIT",
   "private": true,
   "scripts": {
@@ -30,8 +30,6 @@
     "vue-chartjs": "^3.3.1",
     "vue-markdown": "^2.2.4",
     "vue-mousetrap": "^1.0.1",
-    "@vuept/ui": ">=1.0.0-alpha.1",
-    "@vuept/lb": ">=1.0.0-alpha.1",
     "vuetify": "^1.1.7"
   },
   "devDependencies": {

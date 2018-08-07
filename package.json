@@ -42,6 +42,7 @@
     "rimraf": "^2.6.2"
   },
   "workspaces": [
+    ".templates/*",
     "packages/**",
     "solution/**"
   ]

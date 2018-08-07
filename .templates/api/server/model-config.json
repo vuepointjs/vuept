@@ -1,0 +1,39 @@
+{
+  "_meta": {
+    "sources": [
+      "loopback/common/models",
+      "loopback/server/models",
+      "../common/models",
+      "./models"
+    ],
+    "mixins": [
+      "loopback/common/mixins",
+      "loopback/server/mixins",
+      "../common/mixins",
+      "./mixins"
+    ]
+  },
+  "User": {
+    "dataSource": "mem",
+    "public": false
+  },
+  "AccessToken": {
+    "dataSource": "mem",
+    "public": false
+  },
+  "ACL": {
+    "dataSource": "mem",
+    "public": false
+  },
+  "RoleMapping": {
+    "dataSource": "mem",
+    "public": false,
+    "options": {
+      "strictObjectIDCoercion": true
+    }
+  },
+  "Role": {
+    "dataSource": "mem",
+    "public": false
+  }
+}

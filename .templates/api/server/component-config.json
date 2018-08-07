@@ -1,0 +1,10 @@
+{
+  "loopback-component-explorer": {
+    "mountPath": "/",
+    "generateOperationScopedModels": true,
+    "apiInfo": {
+      "title": "VuePoint.js Solution REST API - __app-key__",
+      "description": "Application Programming Interface (API) for __app-long-name__"
+    }
+  }
+}

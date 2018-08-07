@@ -1,10 +1,10 @@
 {
-  "name": "@vuept/{{package-name}}",
+  "name": "@vuept/ui-or-lb-__package-name__",
   "version": "1.0.0-alpha.1",
-  "description": "{{package-description}}",
+  "description": "__package-description__",
   "author": "Copyright (c) 2018 Steve Lathrop",
   "license": "MIT",
-  "private": false,
+  "private": true,
   "publishConfig": {
     "access": "public"
   },
