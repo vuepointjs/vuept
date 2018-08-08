@@ -9,6 +9,9 @@
     "access": "public"
   },
   "main": "index.js",
+  "config": {
+    "vp-pkg-type": "__ui-or-lb__"
+  },
   "scripts": {},
   "repository": {
     "type": "git",

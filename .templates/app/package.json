@@ -5,6 +5,10 @@
   "author": "__author-name__",
   "license": "MIT",
   "private": true,
+  "config": {
+    "vp-solution-role": "app",
+    "vp-key": "__app-key__"
+  },
   "scripts": {
     "dev": "nuxt",
     "dev-debug": "node --inspect node_modules/nuxt/bin/nuxt",
