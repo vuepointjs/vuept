@@ -27,7 +27,8 @@
       </v-toolbar>
       -->
 
-        <v-flex slot="item" slot-scope="props" xs12 sm6 md4 lg3 style="min-width: 230px">
+        <!-- Grid classes dictate that "cards" are arranged, from largest- to smallest-width screen: 4 wide, 3 wide, 2 wide, 1 wide -->
+        <v-flex slot="item" slot-scope="props" xs12 sm6 md4 lg3>
 
           <v-expansion-panel focusable>
             <v-expansion-panel-content>
