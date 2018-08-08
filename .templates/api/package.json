@@ -1,5 +1,5 @@
 {
-  "name": "vuept-solution-api-__api-key__",
+  "name": "@vuept_template/solution-api",
   "version": "1.0.0-alpha.1",
   "description": "VuePoint.js Solution REST API - __api-key__",
   "author": "__author-name__",
