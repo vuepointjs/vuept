@@ -8,10 +8,10 @@
 var env = process.env.NODE_ENV || 'development';
 var isDev = env === 'development' || env === 'test';
 
-const explorerSecret = isDev ? 'explorer' : 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'; // TODO: Pull App ID from @vuept/solution-data to use for this
+const explorerSecret = isDev ? 'explorer' : 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'; // TODO: Pull App ID from @vuept_solution/data to use for this
 const mountPath = `/${explorerSecret}`;
 
-// TODO: Pull these pieces from @vuept/solution-data
+// TODO: Pull these pieces from @vuept_solution/data
 const tenantKey = 'MS';
 const suiteShortName = 'O365';
 const appKey = 'OL';

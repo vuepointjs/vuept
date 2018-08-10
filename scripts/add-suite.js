@@ -9,8 +9,8 @@
 
     NOTE: For dev, plan to use port range: 33990 - 33999 (max 10 suites/ports)
 */
-const solutionSchema = require('@vuept/solution-admin').schema;
-const solutionData = require('@vuept/solution-data');
+const solutionSchema = require('@vuept_solution/admin').schema;
+const solutionData = require('@vuept_solution/data');
 const _ = require('lodash');
 const inquirer = require('inquirer');
 
