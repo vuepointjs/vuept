@@ -22,7 +22,6 @@ const getters = {
 const mutations = {
   /**
    * Add specified Suite object to array of Suites in JSON data file. Any errors are logged to the console
-   *
    * @param {object} suite Suite object with fields as specified in the solution admin schema (config.yml)
    * @returns True on success, false otherwise
    */

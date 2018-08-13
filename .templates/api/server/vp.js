@@ -15,8 +15,9 @@ const ForeignKeys = {
   /**
    * Drop any existing FKs (specified in model json files under _vp... foreignKeys) so that
    * referenced tables can be dropped by automigrate(), if applicable
-   * @param app The LoopBack app
-   * @param conn LoopBack data source connector for SQL Server
+   * @param {object} app The LoopBack app
+   * @param {object} conn LoopBack data source connector for SQL Server
+   * @param {string} schema The name of the schema (e.g., 'dbo') used to scope the database tables/views
    */
   async drop(app, conn, schema) {
     if (!this.ddlScript.dropFKs) this.buildDDL(app, schema);
@@ -28,8 +29,9 @@ const ForeignKeys = {
 
   /**
    * Add (back) FKs (specified in model json files under _vp... foreignKeys)
-   * @param app The LoopBack app
-   * @param conn LoopBack data source connector for SQL Server
+   * @param {object} app The LoopBack app
+   * @param {object} conn LoopBack data source connector for SQL Server
+   * @param {string} schema The name of the schema (e.g., 'dbo') used to scope the database tables/views
    */
   async add(app, conn, schema) {
     if (!this.ddlScript.addFKs) this.buildDDL(app, schema);
@@ -115,8 +117,10 @@ const DataAuditing = {
   /**
    * Drop any existing temporal table (TT) elements (if specified in model json files under _vp... dataAuditing)
    * so that referenced tables can be dropped by automigrate(), if applicable
-   * @param app The LoopBack app
-   * @param conn LoopBack data source connector for SQL Server
+   * @param {object} app The LoopBack app
+   * @param {object} conn LoopBack data source connector for SQL Server
+   * @param {string} schema The name of the schema (e.g., 'dbo') used to scope the database tables/views
+   * @param {string} strategy The name of the schema migration strategy being used (e.g., 'force or 'preserve_data')
    */
   async drop(app, conn, schema, strategy) {
     if (!this.ddlScript.dropTTs) this.buildDDL(app, schema, strategy);
@@ -128,8 +132,10 @@ const DataAuditing = {
 
   /**
    * Add (back) temporal table (TT) elements
-   * @param app The LoopBack app
-   * @param conn LoopBack data source connector for SQL Server
+   * @param {object} app The LoopBack app
+   * @param {object} conn LoopBack data source connector for SQL Server
+   * @param {string} schema The name of the schema (e.g., 'dbo') used to scope the database tables/views
+   * @param {string} strategy The name of the schema migration strategy being used (e.g., 'force or 'preserve_data')
    */
   async add(app, conn, schema, strategy) {
     if (!this.ddlScript.addTTs) this.buildDDL(app, schema, strategy);
