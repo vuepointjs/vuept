@@ -34,4 +34,31 @@ module.exports = function(party) {
   //   console.dir(ctx.data);
   //   next();
   // });
+
+  // ** will match both prototype.* and *.*
+  // party.beforeRemote('**', async function(ctx, result) {
+  //   console.log(ctx.methodString, '(BEFORE) invoked remotely'); // .prototype.save was invoked remotely
+  //   console.dir(ctx.args);
+  // });
+
+  // // run before any static method eg. Party.find
+  // party.beforeRemote('*', ...);
+
+  // // run before any instance method eg. Party.prototype.save
+  // party.beforeRemote('prototype.*', ...);
+
+  // e.g., prevent password hashes from being sent to clients
+  // party.afterRemote('**', async function(ctx, result) {
+  //   console.log(ctx.methodString, '(AFTER) invoked remotely'); // .prototype.save was invoked remotely
+
+  //   if (ctx.result) {
+  //     if (Array.isArray(ctx.result)) {
+  //       ctx.result.forEach(function(result) {
+  //         // delete result.password;
+  //       });
+  //     } else {
+  //       // delete ctx.result.password;
+  //     }
+  //   }
+  // });
 };
