@@ -1,0 +1,337 @@
+{
+  "name": "Party",
+  "description": "A Party is a person/org relevant to the system",
+  "plural": "Parties",
+  "base": "PersistedModel",
+  "options": {
+    "validateUpsert": true
+  },
+  "_vp": {
+    "validations": {
+      "oneOf": {
+        "HomeState": {
+          "values": ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"],
+          "legend": "See https://en.wikipedia.org/wiki/List_of_U.S._state_abbreviations",
+          "allowNull": true
+        },
+        "BusState": {
+          "values": ["AL", "AK", "AZ", "AR", "CA", "CO", "CT", "DE", "DC", "FL", "GA", "HI", "ID", "IL", "IN", "IA", "KS", "KY", "LA", "ME", "MD", "MA", "MI", "MN", "MS", "MO", "MT", "NE", "NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH", "OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX", "UT", "VT", "VA", "WA", "WV", "WI", "WY"],
+          "legend": "See https://en.wikipedia.org/wiki/List_of_U.S._state_abbreviations",
+          "allowNull": true
+        }
+      }
+    },
+    "dataAuditing": {
+      "options": {
+        "enabled": true
+      }
+    }
+  },
+  "forceId": true,
+  "properties": {
+    "ID": {
+      "type": "string",
+      "id": true,
+      "description": "Party primary key"
+    },
+    "Email": {
+      "type": "string",
+      "required": true,
+      "index": {
+        "unique": true
+      }
+    },
+    "FName": {
+      "type": "string",
+      "description": "First name",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 50
+      }
+    },
+    "LName": {
+      "type": "string",
+      "description": "Last name",
+      "index": true,
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 100
+      }
+    },
+    "Nickname": {
+      "type": "string",
+      "description": "Nickname or goes by name",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 150
+      }
+    },
+    "ADA": {
+      "type": "boolean",
+      "required": true,
+      "description": "True if the Party falls under the Americans With Disabilities Act (ADA)",
+      "default": false
+    },
+    "DayPhone": {
+      "type": "string",
+      "index": true,
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 30
+      }
+    },
+    "EvePhone": {
+      "type": "string",
+      "description": "Evening phone",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 30
+      }
+    },
+    "MobilePhone": {
+      "type": "string",
+      "index": true,
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 30
+      }
+    },
+    "BusPhone": {
+      "type": "string",
+      "description": "Business phone, incl. extension",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 30
+      }
+    },
+    "FaxPhone": {
+      "type": "string",
+      "description": "Fax phone number",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 30
+      }
+    },
+    "BusFaxPhone": {
+      "type": "string",
+      "description": "Business fax phone number",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 30
+      }
+    },
+    "HomeAddressLine1": {
+      "type": "string",
+      "description": "Home address line 1",
+      "index": true,
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 60
+      }
+    },
+    "HomeAddressLine2": {
+      "type": "string",
+      "description": "Home address line 2",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 60
+      }
+    },
+    "HomeCity": {
+      "type": "string",
+      "description": "Home address city",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 60
+      }
+    },
+    "HomeState": {
+      "type": "string",
+      "description": "Home address State",
+      "default": null,
+      "mssql": {
+        "dataType": "nchar",
+        "dataLength": 2
+      }
+    },
+    "HomePostalCode": {
+      "type": "string",
+      "description": "Home address Zip/Postal Code",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 10
+      }
+    },
+    "HomeCountry": {
+      "type": "string",
+      "description": "Home country",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 60
+      }
+    },
+    "BusName": {
+      "type": "string",
+      "description": "Business/Employer/Organization Name",
+      "index": true,
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 100
+      }
+    },
+    "BusAddressLine1": {
+      "type": "string",
+      "description": "Business address line 1",
+      "index": true,
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 60
+      }
+    },
+    "BusAddressLine2": {
+      "type": "string",
+      "description": "Business address line 2",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 60
+      }
+    },
+    "BusCity": {
+      "type": "string",
+      "description": "Business address city",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 60
+      }
+    },
+    "BusState": {
+      "type": "string",
+      "description": "Business address State",
+      "default": null,
+      "mssql": {
+        "dataType": "nchar",
+        "dataLength": 2
+      }
+    },
+    "BusPostalCode": {
+      "type": "string",
+      "description": "Business address Zip/Postal Code",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 10
+      }
+    },
+    "BusCountry": {
+      "type": "string",
+      "description": "Business country",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 60
+      }
+    },
+    "DOB": {
+      "type": "date",
+      "description": "Date of birth"
+    },
+    "DLNum": {
+      "type": "string",
+      "description": "Driver's license number",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 30
+      }
+    },
+    "DLState": {
+      "type": "string",
+      "description": "Driver's license state of issuance",
+      "mssql": {
+        "dataType": "nchar",
+        "dataLength": 2
+      }
+    },
+    "DLCountry": {
+      "type": "string",
+      "description": "Driver's license country of issuance",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 60
+      }
+    },
+    "DDLIssued": {
+      "type": "date",
+      "description": "Date Driver's License issued"
+    },
+    "DDLExpires": {
+      "type": "date",
+      "description": "Date Driver's License expires"
+    },
+    "PptNum": {
+      "type": "string",
+      "description": "Passport number",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 64
+      }
+    },
+    "PptCountry": {
+      "type": "string",
+      "description": "Passport country of issuance",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 60
+      }
+    },
+    "DPptExpires": {
+      "type": "date",
+      "description": "Date Passport expires"
+    },
+    "User": {
+      "type": "string",
+      "description": "User who created or last modified the record"
+    },
+    "Archived": {
+      "type": "boolean",
+      "required": true,
+      "description": "True if the record is considered to be in the recycle bin",
+      "default": false
+    },
+    "HXRefParties": {
+      "type": "string",
+      "description": "Hidden JSON array of Connections for up to 4 unique, cross-referenced Parties (embedded, denormalized, no referential integrity)"
+    }
+  },
+  "hidden": ["HXRefParties"],
+  "validations": [],
+  "relations": {
+    "ConnectedParties": {
+      "type": "embedsMany",
+      "model": "PartyConnection",
+      "property": "HXRefParties"
+    },
+    "PartyConnections": {
+      "type": "hasMany",
+      "model": "PartyConnection",
+      "foreignKey": "cid"
+    },
+    "Labels": {
+      "type": "hasMany",
+      "model": "PartyLabel",
+      "foreignKey": "PartyID",
+      "through": "PartyLabelAssignment"
+    }
+  },
+  "acls": [{
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "tenantUser",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}

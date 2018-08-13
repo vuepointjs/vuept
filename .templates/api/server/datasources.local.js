@@ -19,7 +19,7 @@ const db = {
   password: process.env.DB_PWD,
   options: {
     appName: '__app-short-name__ API',
-    encrypt: true, // SQL Azure requires an encrypted connection
+    encrypt: false, // No encryption for local db connection... but SQL Azure requires an encrypted connection
     useUTC: true
   }
 };

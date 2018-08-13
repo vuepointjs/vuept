@@ -1,1 +1,18 @@
-{}
+{
+  "PartyConnection": {
+    "dataSource": "transient",
+    "public": false
+  },
+  "PartyLabelAssignment": {
+    "dataSource": "db",
+    "public": true
+  },
+  "PartyLabel": {
+    "dataSource": "db",
+    "public": true
+  },
+  "Party": {
+    "dataSource": "db",
+    "public": true
+  }
+}

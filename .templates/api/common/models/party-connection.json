@@ -1,0 +1,55 @@
+{
+  "name": "PartyConnection",
+  "description": "Party Connection Info",
+  "base": "PersistedModel",
+  "options": {
+    "validateUpsert": true
+  },
+  "_vp": {
+    "validations": {
+      "oneOf": {
+        "rcd": {
+          "values": ["FP", "FS", "FE", "GP", "GF", "GH", "BS", "RO"],
+          "legend": "Family (Parent), Family (Sibling), Family (Extended), Guardian (Parent), Guardian (Family Member), Guardian (Healthcare Worker), Business (Supervisor), Relationship (Other)",
+          "allowNull": false
+        }
+      }
+    }
+  },
+  "forceId": false,
+  "strict": true,
+  "properties": {
+    "cid": {
+      "type": "string",
+      "id": true,
+      "description": "Connection ID. Foreign key reference to Party. No referential integrity enforced."
+    },
+    "rcd": {
+      "type": "string",
+      "description": "Relationship code",
+      "required": true
+    }
+  },
+  "validations": [],
+  "relations": {
+    "Party": {
+      "type": "belongsTo",
+      "model": "Party",
+      "foreignKey": "cid"
+    }
+  },
+  "acls": [{
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "tenantUser",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}

@@ -1,0 +1,83 @@
+{
+  "name": "PartyLabel",
+  "description": "Labels available for categorizing Parties in the system",
+  "base": "PersistedModel",
+  "options": {
+    "validateUpsert": true
+  },
+  "_vp": {
+    "dataAuditing": {
+      "options": {
+        "enabled": true
+      }
+    }
+  },
+  "forceId": true,
+  "properties": {
+    "ID": {
+      "type": "string",
+      "id": true,
+      "description": "Party Label primary key"
+    },
+    "Name": {
+      "type": "string",
+      "required": true,
+      "description": "Party Label name",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 30
+      }
+    },
+    "Description": {
+      "type": "string",
+      "description": "Party Label description",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 100
+      }
+    },
+    "Color": {
+      "type": "string",
+      "required": true,
+      "description": "Party Label color in CSS Hex format, e.g. #0D47A1",
+      "default": "#eeeeee",
+      "mssql": {
+        "dataType": "nchar",
+        "dataLength": 7
+      }
+    },
+    "User": {
+      "type": "string",
+      "description": "User who created or last modified the record"
+    },
+    "Archived": {
+      "type": "boolean",
+      "required": true,
+      "description": "True if the record is considered to be in the recycle bin",
+      "default": false
+    }
+  },
+  "validations": [],
+  "relations": {
+    "Parties": {
+      "type": "hasMany",
+      "model": "Party",
+      "foreignKey": "PartyLabelID",
+      "through": "PartyLabelAssignment"
+    }
+  },
+  "acls": [{
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "tenantUser",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}
