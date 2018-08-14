@@ -38,20 +38,80 @@ Background information on integrating custom applications is available [here](ht
 
 1. Now in the "Search" field, type "App registrations" then click the "App registrations" item.
 
-1. Click "New application registration" and enter the details for the **client sites**:
+1. Click "New application registration", then
 
-   - Name: **&lt;SuiteName&gt; _App_**
+   a. Enter the details for the **API sites**:
+
+   - Name: **&lt;YourSuiteName&gt; _API_**
+
+   - Application type: **Web app / API**
+
+   - Home page: **&lt;YourSuiteURL&gt;**, or the URL for your API documentation
+
+   b. Click "Create"
+
+   c. Click "Settings", "Required permissions", then "Windows Azure Active Directory"
+
+   - Under "Application Permissions" check "Read directory data"
+
+   - Under "Delegated Permissions" check "Access the directory as the signed-in user" and "Read directory data"
+
+   - Click "Save" and then close all of the rightmost panes, leaving the main pane (with the "Settings" link) open
+
+   d. Next to "Settings" click "Manifest"
+
+   - A few important changes to the manifest must be made. For reference, details on these settings can be found [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/reference-app-manifest)
+
+   - In the text of the manifest, change the `"groupMembershipClaims"` value (around line 7) from `null` to `"SecurityGroup"`
+
+   - Change the `"oauth2AllowImplicitFlow"` value (around line 21) from `false` to `true`
+
+   - Click "Save" and then close all of the open panes. You should now be on the main "App registrations" page. If you don't see your new API registration, try changing the "My apps" dropdown to "All apps".
+
+1. Again, click "New application registration", then
+
+   a. Enter the details for the **client sites** this time:
+
+   - Name: **&lt;YourSuiteName&gt; _App_**
 
    - Application type: **Native**
 
    - Home page: **&lt;YourSuiteURL&gt;**
 
-1. Again, click "New application registration" and enter the details for the **API sites** this time:
+   b. Click "Create"
 
-   - Name: **&lt;SuiteName&gt; _API_**
+   c. Click "Settings", "Required permissions", "Add", "Select an API", and in the "Search for other..." field begin typing the name that you assigned to your API above. Once it appears in the list, click it and then click "Select"
 
-   - Application type: **Web app / API**
+   - Under "Delegated Permissions" check "Access &lt;YourSuiteName&gt; API" and then click "Select" and "Done"
 
-   - Home page: **&lt;YourSuiteURL&gt;**
+   - Close the "Required permissions" pane
 
-**...More Details Coming Soon!**
+   d. Click "Redirect URIs" under "Settings"
+
+   - Add a URL for local development: e.g., `http://localhost:<port>`, where `<port>` is the development port number assigned to your Suite (typically 33990)
+
+   - Click "Save" and then close the two rightmost panes, leaving the main pane (with the "Settings" link) open
+
+   e. Next to "Settings" click "Manifest"
+
+   - Similar to the manifest changes described above, one important change to the manifest must be made
+
+   - Change the `"oauth2AllowImplicitFlow"` value (around line 19) from `false` to `true`
+
+   - Click "Save" and then close all of the open panes. You should now be on the main "App registrations" page and you should see both of your new registrations, if not, try changing the "My apps" dropdown to "All apps"
+
+1. Finally, make note of the "Application ID" value (a GUID) displayed for each of your registrations. These values must be entered in your VP solution's `/solution/data/tenants/suites.json` config file under "suites", "azure". The API GUID goes in "apiId" and the App GUID goes in "clientId"
+
+## Registration Wrap-up
+
+That's it for Azure App Registrations. The only additional, optional things that you may wish to do are:
+
+1. Add a custom icon for to your registrations
+
+   - Users may be shown your icon under certain circumstances, so it helps to provide some branding that they will recognize
+
+   - This option is available under "Settings" then "Properties"
+
+1. Download a backup copy of your App Manifest files
+
+   - You can do that under "Manifest" by simply clicking "Download"
