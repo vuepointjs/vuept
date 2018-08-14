@@ -24,9 +24,9 @@ Your VuePoint.js solution consists of a top-level **Suite** site and a number of
 
 Rather than complicate things and map each of these VP sites to a separate Azure "App Registration", VP works with only **2 registrations** per **Suite**:
 
-1. One registration for all _client sites_ of the Suite (the Suite site itself and all of its App sites), and
+1. One registration for all **client sites** of the Suite (the Suite site itself and all of its App sites), and
 
-1. A second registration for all API sites
+1. A second registration for all **API sites**
 
 ## App Registrations
 
@@ -38,6 +38,20 @@ Background information on integrating custom applications is available [here](ht
 
 1. Now in the "Search" field, type "App registrations" then click the "App registrations" item.
 
-1. Click "New application registration"...
+1. Click "New application registration" and enter the details for the **client sites**:
 
-...More Details Coming Soon!
+   - Name: **&lt;SuiteName&gt; _App_**
+
+   - Application type: **Native**
+
+   - Home page: **&lt;YourSuiteURL&gt;**
+
+1. Again, click "New application registration" and enter the details for the **API sites** this time:
+
+   - Name: **&lt;SuiteName&gt; _API_**
+
+   - Application type: **Web app / API**
+
+   - Home page: **&lt;YourSuiteURL&gt;**
+
+**...More Details Coming Soon!**
