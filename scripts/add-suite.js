@@ -17,8 +17,10 @@ const inquirer = require('inquirer');
 console.log('\n> Add Suite: Under construction.\n');
 
 inquirer.prompt(questionsFromSchema(solutionSchema.suite)).then(answers => {
-  let suiteDataAdded = solutionData.mutations.addSuite(answers);
-  if (suiteDataAdded) console.log('\n* Suite added successfully!');
+  // TODO: Add default DEV (see port range above) and PROD (empty for now) Azure Configurations array to answers before calling mutation below
+
+  let suiteWasAdded = solutionData.mutations.addSuite(answers);
+  if (suiteWasAdded) console.log('\n* Suite added successfully!');
 
   // Main flow of execution for script ends here
   process.exit(0);

@@ -17,7 +17,7 @@ try {
   const schemaContainer = config.collections[0].files[0].fields[0];
 
   schema.suite = _(schemaContainer.fields)
-    .filter(val => val.name != 'apps')
+    .filter(val => val.widget != 'list')
     .value();
 
   const appFields = _.chain(schemaContainer.fields)
@@ -26,7 +26,7 @@ try {
     .get('fields')
     .value();
   schema.app = _(appFields)
-    .filter(val => val.name != 'applets')
+    .filter(val => val.widget != 'list')
     .value();
 
   const appletFields = _.chain(appFields)
@@ -35,7 +35,7 @@ try {
     .get('fields')
     .value();
   schema.applet = _(appletFields)
-    .filter(val => val.name != 'views')
+    .filter(val => val.widget != 'list')
     .value();
 
   schema.view = _.chain(appletFields)

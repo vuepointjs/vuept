@@ -32,10 +32,16 @@ collections:
               - {name: "longName", label: "Suite Long Name", widget: "string", pattern: [".{2,30}", "Min 2, Max 30 characters"]}
               - {name: "tenantKey", label: "Tenant Key", widget: "string", pattern: [".{2,4}", "Min 2, Max 4 characters"]}
               - {name: "tenantName", label: "Tenant Name", widget: "string", pattern: [".{2,30}", "Min 2, Max 30 characters"]}
-              - {name: "azureTenantHostName", label: "O365 Tenant Host Name", widget: "string", required: false, pattern: ["^[a-fA-F]{1}[0-9a-fA-F]{2,31}.onmicrosoft.com$", "<tenant-name>.onmicrosoft.com"]}
-              - {name: "azureClientId", label: "Azure-registered Client ID", widget: "string", required: false, pattern: ["^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", "32 hexadecimal digits, hyphenated, no curly braces"]}
-              - {name: "azureApiId", label: "Azure-registered API ID", widget: "string", required: false, pattern: ["^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", "32 hexadecimal digits, hyphenated, no curly braces"]}
-              - {name: "azureRedirectUri", label: "Azure-registered Client Redirect Uri", widget: "string", required: false, pattern: ["(http[s]?:\/\/)?[^\s(["<,>]*\.[^\s[",><]*"]}
+              - name: "azureConfigurations"
+                label: "Azure Configurations"
+                label_singular: "Azure Configuration"
+                widget: "list"
+                fields:
+                  - {name: "key", label: "Configuration Key", widget: "string", pattern: ["^[A-Z]{2,4}$", "2 to 4 letters, all uppercase. For example: DEV, PROD, etc."]}
+                  - {name: "tenantHostName", label: "O365 Tenant Host Name", widget: "string", required: false, pattern: ["^[a-fA-F]{1}[0-9a-fA-F]{2,31}.onmicrosoft.com$", "<tenant-name>.onmicrosoft.com"]}
+                  - {name: "clientId", label: "Azure-registered Client ID", widget: "string", required: false, pattern: ["^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", "32 hexadecimal digits, hyphenated, no curly braces"]}
+                  - {name: "apiId", label: "Azure-registered API ID", widget: "string", required: false, pattern: ["^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", "32 hexadecimal digits, hyphenated, no curly braces"]}
+                  - {name: "redirectUri", label: "Azure-registered Client Redirect Uri", widget: "string", required: false, pattern: ['(http[s]?:\/\/)?[^\s(["<,>]*\.[^\s[",><]*', "A valid URI starting with http or https"]}
               - name: "apps"
                 label: "Apps"
                 label_singular: "App"
