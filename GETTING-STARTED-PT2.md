@@ -98,15 +98,15 @@ Background information on integrating custom applications is available [here](ht
 
    - Change the `"oauth2AllowImplicitFlow"` value (around line 19) from `false` to `true`
 
-   - Click "Save" and then close all of the open panes. You should now be on the main "App registrations" page and you should see both of your new registrations, if not, try changing the "My apps" dropdown to "All apps"
+   - Click "Save" and then close all of the open panes. You should now be on the main "App registrations" page and you should see both of your new registrations. If not, try changing the "My apps" dropdown to "All apps"
 
 1. Finally, make note of the "Application ID" value (a GUID) displayed for each of your registrations. These values must be entered in your VP solution's `/solution/data/tenants/suites.json` config file under "suites", "azure". The API GUID goes in "apiId" and the App GUID goes in "clientId"
 
 ## Registration Wrap-up
 
-That's it for Azure App Registrations. The only additional, optional things that you may wish to do are:
+That's it for Azure App Registrations. The only additional, optional things that you may wish to do are as follows:
 
-1. Add a custom icon for to your registrations
+1. Add a custom icon to your registrations
 
    - Users may be shown your icon under certain circumstances, so it helps to provide some branding that they will recognize
 
