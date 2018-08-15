@@ -16,6 +16,9 @@ const inquirer = require('inquirer');
 
 console.log('\n> Add Suite: Under construction.\n');
 
+// console.dir(solutionData.getters.suiteByKey('VPJS'));
+// process.exit(0);
+
 inquirer.prompt(questionsFromSchema(solutionSchema.suite)).then(answers => {
   // TODO: Add default DEV (see port range above) and PROD (empty for now) Azure Configurations array to answers before calling mutation below
 
