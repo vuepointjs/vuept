@@ -43,14 +43,14 @@
     "strong-error-handler": "^2.3.2"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.3",
-    "cross-env": "^5.1.4",
+    "babel-eslint": "^9.0.0",
+    "cross-env": "^5.2.0",
     "debug": "^3.1.0",
-    "eslint": "^4.19.1",
+    "eslint": "^5.4.0",
     "eslint-config-loopback": "^8.0.0",
-    "eslint-plugin-prettier": "^2.6.0",
+    "eslint-plugin-prettier": "^2.6.2",
     "nodemon": "^1.18.3",
-    "prettier": "^1.13.5",
+    "prettier": "^1.14.2",
     "shx": "^0.3.2"
   }
 }
