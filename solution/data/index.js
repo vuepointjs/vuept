@@ -12,10 +12,17 @@ db._.id = 'key';
 
 const getters = {
   allSuites: () => db.get('suites').value(),
+
   allSuiteKeys: () =>
     db
       .get('suites')
       .map('key')
+      .value(),
+
+  suiteByKey: key =>
+    db
+      .get('suites')
+      .filter({ key })
       .value()
 };
 

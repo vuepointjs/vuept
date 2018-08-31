@@ -4,9 +4,9 @@
 
 There are three prerequisites for working with this codebase:
 
-1.  [Node.js](https://nodejs.org/en/download/) v10.7 or greater (LTS version as of October 2018)
-1.  [Yarn](https://yarnpkg.com/en/docs/install) v1.9.2 or greater
-1.  [Docker](https://www.docker.com/community-edition#/download) (Latest Stable Docker Community Edition (CE))
+1.  [Node.js](https://nodejs.org/en/download/) v10.8 or greater (LTS version as of October 2018)
+1.  [Yarn](https://yarnpkg.com/en/docs/install) v1.9.4 or greater
+1.  [Docker](https://www.docker.com/community-edition#/download) v18.06.1 or greater (Latest Stable Docker Community Edition (CE))
 
 [VSCode](https://code.visualstudio.com/download) is also highly recommended for code editing. The overall development experience with this codebase has been optimized for VSCode.
 
@@ -14,7 +14,7 @@ So before proceeding be sure to install those pieces if you don't already have t
 
 ## Clone or Download This Repo
 
-This repo is organized as a ["monorepo"](https://github.com/babel/babel/blob/master/doc/design/monorepo.md) containing multiple public and private sub-packages. [Lerna](https://github.com/lerna/lerna) is used to help manage all of the packages. So to get started, just:
+This repo is organized as a ["monorepo"](https://github.com/babel/babel/blob/master/doc/design/monorepo.md) containing multiple public and private sub-packages. [Lerna](https://github.com/lerna/lerna) is used to help manage all of the packages. So to get started the first step is to:
 
 - [Clone](https://github.com/slathrop/git-scripts-win/blob/master/README.md) or download [this repo](https://github.com/vuepointjs/vuept)
 - Open a command prompt, and

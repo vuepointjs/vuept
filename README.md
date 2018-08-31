@@ -14,7 +14,7 @@ This Toolkit aims to make it easy to create custom [Line-of-Business web apps](h
 
 # What it's _not_
 
-This project, though Vue-powered, is not to be confused with [_The Vue Point_](https://medium.com/the-vue-point), the official Vue.js Blog.
+> This project, though Vue-powered, is not to be confused with [_The Vue Point_](https://medium.com/the-vue-point), the official Vue.js Blog.
 
 The name of this project is clearly just a play on [Vue.js](https://vuejs.org/) and [SharePoint](https://products.office.com/en-us/sharepoint/sharepoint-online-collaboration-software). But it's definitely _not_ intended to compete somehow with SharePoint. SharePoint is primarily about creating Intranets to facilitate _ad hoc collaboration and communication_.
 
