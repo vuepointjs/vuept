@@ -32,7 +32,13 @@ Rather than complicate things and map each of these VP sites to a separate Azure
 
 Once you have logged-in to your O365 tenancy with a **global administrator** account you're ready to tell O365 and Azure about your VP Suite.
 
-Background information on integrating custom applications is available [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-how-applications-are-added) and [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v1-integrate-apps-with-azure-ad), but a quick step-by-step guide is provided below.
+Background information on integrating custom applications is available [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/active-directory-how-applications-are-added) and [here](https://docs.microsoft.com/en-us/azure/active-directory/develop/quickstart-v1-integrate-apps-with-azure-ad), but a step-by-step guide is provided below.
+
+### Manual Registration
+
+Jump in here if you'd like to perform point-and-click App Registrations in the Azure Portal.
+
+<details><summary>Details</summary>
 
 1. Go to https://portal.azure.com, and on the left choose "All services" then in the "Filter" field start typing "Azure Active Directory" until an option with that name appears. Click on the "Azure Active Directory" option.
 
@@ -102,6 +108,12 @@ Background information on integrating custom applications is available [here](ht
 
 1. Finally, make note of the "Application ID" value (a GUID) displayed for each of your registrations. These values must be entered in your VP solution's `/solution/data/tenants/suites.json` config file under "suites", "azure". The API GUID goes in "apiId" and the App GUID goes in "clientId"
 
+</details>
+
+### Scripted Registration
+
+Coming Soon... scripts for accomplishing the App Registration steps outlined in the previous section.
+
 ## Registration Wrap-up
 
 That's it for Azure App Registrations. The only additional, optional things that you may wish to do are as follows:
@@ -110,7 +122,7 @@ That's it for Azure App Registrations. The only additional, optional things that
 
    - Users may be shown your icon under certain circumstances, so it helps to provide some branding that they will recognize
 
-   - This option is available under "Settings" then "Properties"
+   - This option is available in your Azure Portal App Registrations under "Settings" then "Properties"
 
 1. Download a backup copy of your App Manifest files
 
