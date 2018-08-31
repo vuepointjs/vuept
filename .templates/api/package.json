@@ -8,13 +8,17 @@
   "main": "server/server.js",
   "config": {
     "vp-solution-role": "api",
-    "vp-key": "__api-key__"
+    "vp-key": "__api-key__",
+    "container-image-name": "__api-key__-__suite-key__",
+    "internal-port": "443",
+    "external-port": "443"
   },
   "scripts": {
     "lint": "eslint .",
     "clean": "shx rm -f *.log",
-    "start": "yarn clean && cross-env DEBUG= node .",
-    "dev": "yarn clean && cross-env NODE_ENV=development DEBUG=loopback:connector:mssql,loopback:datasource,loopback:security:* nodemon .",
+    "start": "cross-env NODE_ENV=production DEBUG= node .",
+    "dev": "yarn clean && cross-env HTTP_ONLY=1 NODE_ENV=development DEBUG=loopback:connector:mssql,loopback:datasource,loopback:security:* nodemon .",
+    "dev:noclient": "cross-env VP_LB_HOME=STATUS yarn dev",
     "debug": "yarn clean && cross-env NODE_ENV=development DEBUG=* && nodemon .",
     "prod": "cross-env NODE_ENV=production node ."
   },

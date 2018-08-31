@@ -2,6 +2,7 @@
   "recommendations": [
     "octref.vetur",
     "sysoev.language-stylus",
-    "thisismanta.stylus-supremacy"
+    "thisismanta.stylus-supremacy",
+    "redhat.vscode-yaml"
   ]
 }
