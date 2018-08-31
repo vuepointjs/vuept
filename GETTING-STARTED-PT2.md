@@ -106,7 +106,7 @@ Jump in here if you'd like to perform point-and-click App Registrations in the A
 
    - Click "Save" and then close all of the open panes. You should now be on the main "App registrations" page and you should see both of your new registrations. If not, try changing the "My apps" dropdown to "All apps"
 
-1. Finally, make note of the "Application ID" value (a GUID) displayed for each of your registrations. These values must be entered in your VP solution's `/solution/data/tenants/suites.json` config file under "suites", "azure". The API GUID goes in "apiId" and the App GUID goes in "clientId"
+1. Finally, make note of the "Application ID" value (a GUID) displayed for each of your registrations. These values must be entered in your VP solution's `/solution/data/tenants/suites.json` config file under "suites", "azure". The _API_ GUID goes in "apiId" and the _App_ GUID goes in "clientId"
 
 </details>
 
@@ -115,6 +115,8 @@ Jump in here if you'd like to perform point-and-click App Registrations in the A
 Coming Soon... scripts for accomplishing the App Registration steps outlined in the previous section.
 
 ## Registration Wrap-up
+
+Note that there is nothing sensitive or confidential about the registration information, it's akin to the public keys used for verifying digital signatures.
 
 That's it for Azure App Registrations. The only additional, optional things that you may wish to do are as follows:
 
