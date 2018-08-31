@@ -1,6 +1,6 @@
 {
   "name": "Party",
-  "description": "A Party is a person/org relevant to the system",
+  "description": "A \"Party\" is a person/org relevant to the system",
   "plural": "Parties",
   "base": "PersistedModel",
   "options": {

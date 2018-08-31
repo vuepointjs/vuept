@@ -1,6 +1,6 @@
 {
   "name": "PartyLabelAssignment",
-  "description": "Party Label assignments to Parties",
+  "description": "Assignments of Labels to Parties",
   "base": "PersistedModel",
   "options": {
     "validateUpsert": true
@@ -71,8 +71,7 @@
       "foreignKey": "PartyLabelID"
     }
   },
-  "acls": [
-    {
+  "acls": [{
       "accessType": "*",
       "principalType": "ROLE",
       "principalId": "$everyone",

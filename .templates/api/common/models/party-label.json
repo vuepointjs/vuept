@@ -1,6 +1,6 @@
 {
   "name": "PartyLabel",
-  "description": "Labels available for categorizing Parties in the system",
+  "description": "Labels available for categorizing Parties",
   "base": "PersistedModel",
   "options": {
     "validateUpsert": true
