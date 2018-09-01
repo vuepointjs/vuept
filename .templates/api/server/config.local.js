@@ -10,11 +10,12 @@
 
 var env = process.env.NODE_ENV || 'development';
 var isDev = env === 'development' || env === 'test';
+var httpOnly = !!process.env.HTTP_ONLY;
 
 const config = {
   restApiRoot: '/api/v1',
   host: process.env.API_HOST,
-  port: isDev ? 33880 : 443,
+  port: isDev || httpOnly ? 33880 : 443,
   isDev
 };
 
