@@ -63,7 +63,8 @@
       "type": "hasMany",
       "model": "Party",
       "foreignKey": "PartyLabelID",
-      "through": "PartyLabelAssignment"
+      "through": "PartyLabelAssignment",
+      "keyThrough": "PartyID"
     }
   },
   "acls": [{

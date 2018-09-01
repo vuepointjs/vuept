@@ -317,7 +317,8 @@
       "type": "hasMany",
       "model": "PartyLabel",
       "foreignKey": "PartyID",
-      "through": "PartyLabelAssignment"
+      "through": "PartyLabelAssignment",
+      "keyThrough": "PartyLabelID"
     }
   },
   "acls": [{
