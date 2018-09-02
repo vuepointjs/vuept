@@ -12,7 +12,8 @@
     "container-image-name": "__api-key__-__suite-key__",
     "internal-port": "443",
     "external-port": "443",
-    "client-rel-path": "../app/__app-key__/dist/."
+    "client-rel-path": "../app/__app-key__/dist/.",
+    "tdev-client-rel-path": "../app/dist/."
   },
   "scripts": {
     "lint": "eslint .",
@@ -23,7 +24,9 @@
     "dev:quiet": "yarn clean && cross-env HTTP_ONLY=1 NODE_ENV=development DEBUG= nodemon .",
     "debug": "yarn clean && cross-env NODE_ENV=development DEBUG=* && nodemon .",
     "client:clean": "shx rm -rf ./client/* && shx cp -r ./.client-default/. ./client/",
-    "client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path ./client/\""
+    "client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path ./client/\"",
+    "tdev:client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_tdev_client_rel_path ./client/\"",
+    "tdev:start": "docker start vuept-sql-dev1 && yarn dev"
   },
   "engines": {
     "node": ">=10.7.0"
