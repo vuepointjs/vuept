@@ -22,7 +22,6 @@
     "dev:noclient": "cross-env VP_LB_HOME=STATUS yarn dev",
     "dev:quiet": "yarn clean && cross-env HTTP_ONLY=1 NODE_ENV=development DEBUG= nodemon .",
     "debug": "yarn clean && cross-env NODE_ENV=development DEBUG=* && nodemon .",
-    "prod": "cross-env NODE_ENV=production node .",
     "client:clean": "shx rm -rf ./client/* && shx cp -r ./.client-default/. ./client/",
     "client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path ./client/\""
   },
