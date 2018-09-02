@@ -4,5 +4,11 @@ node_modules
 # logs
 npm-debug.log
 
+client/*
+
+!client/*.md
+!client/*.ico
+!client/index.html
+
 # For TEMPLATE DEV ONLY!
 !.env
