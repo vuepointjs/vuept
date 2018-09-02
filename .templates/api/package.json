@@ -26,7 +26,9 @@
     "client:clean": "shx rm -rf ./client/* && shx cp -r ./.client-default/. ./client/",
     "client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path ./client/\"",
     "tdev:client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_tdev_client_rel_path ./client/\"",
-    "tdev:start": "docker start vuept-sql-dev1 && yarn dev"
+    "tdev:db": "docker start vuept-sql-dev1",
+    "tdev": "yarn tdev:db && yarn dev",
+    "tdev:quiet": "yarn tdev:db && yarn dev:quiet"
   },
   "engines": {
     "node": ">=10.7.0"
