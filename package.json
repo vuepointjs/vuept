@@ -18,7 +18,8 @@
     "add:suite": "node ./scripts/add-suite",
     "add:app": "node ./scripts/add-app",
     "add:api": "node ./scripts/add-api",
-    "add:pkg": "node ./scripts/add-pkg"
+    "add:pkg": "node ./scripts/add-pkg",
+    "tdev:start": "lerna run tdev:start --stream --npm-client yarn --private --scope @vuept_template/*"
   },
   "repository": {
     "type": "git",
