@@ -1,6 +1,6 @@
 # Template Development
 
-The `.templates` folder contains baseline implementations for pieces of an overall VuePoint.js
+The `.templates` folder contains baseline implementations for pieces of an overall VuePoint.js (VP)
 solution: Suites, Apps, and APIs.
 
 Those who wish to implement an end-user solution using VuePoint.js would typically clone or download
@@ -9,9 +9,16 @@ needed to provide a harness for developing and testing the templates themselves.
 
 ## Getting Started
 
-Follow these steps to get started.
+Follow these steps to get started. These steps assume that you have already cloned the VP repo into a local folder
+and that you are at a command prompt with your clone folder as your current working directory.
 
-1. [Install Docker](https://store.docker.com/editions/community/docker-ce-desktop-windows) (if not already installed)
+1. Switch to the `template-dev` branch
+
+   ```bash
+   git checkout template-dev
+   ```
+
+1. [Install Docker](https://store.docker.com/editions/community/docker-ce-desktop-windows)
 
 1. Make sure that your Docker settings allow containers to access _at least_ 2GB of memory (4GB and 4 CPUs recommended)
 
@@ -43,6 +50,18 @@ Follow these steps to get started.
 
    ```bash
    docker exec vuept-sql-dev1 ls -lh /var/opt/mssql/data
+   ```
+
+1. (Coming Soon... instructions for generating the database tables via LoopBack auto-update/auto-migrate)
+
+1. Finally, execute the following command to launch the database, API, and App:
+
+   ```bash
+   # Kick-off template development and watch for source code changes
+   yarn tdev
+
+   # Alternatively, for minimal debug logging to the command console use this variant
+   yarn tdev:quiet
    ```
 
 Following the steps above is safe for local development and it's safe to document/expose the password because
