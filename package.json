@@ -21,6 +21,8 @@
     "add:pkg": "node ./scripts/add-pkg",
     "tdev": "lerna run tdev --stream --scope @vuept_template/*",
     "tdev:verbose": "lerna run tdev:verbose --stream --scope @vuept_template/*",
+    "tdev:install": "lerna run tdev:db:install --stream --scope @vuept_template/*",
+    "tdev:uninstall": "lerna run tdev:db:uninstall --stream --scope @vuept_template/*",
     "l:clean": "lerna clean --yes",
     "l:build": "lerna run build",
     "l:publish": "lerna publish",
