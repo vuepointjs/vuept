@@ -19,16 +19,22 @@
     "lint": "eslint .",
     "clean": "shx rm -f *.log",
     "start": "cross-env NODE_ENV=production DEBUG= node .",
-    "dev": "yarn clean && cross-env HTTP_ONLY=1 NODE_ENV=development DEBUG=loopback:connector:mssql,loopback:datasource,loopback:security:* nodemon .",
-    "dev:noclient": "cross-env VP_LB_HOME=STATUS yarn dev",
-    "dev:quiet": "yarn clean && cross-env HTTP_ONLY=1 NODE_ENV=development DEBUG= nodemon .",
-    "debug": "yarn clean && cross-env NODE_ENV=development DEBUG=* && nodemon .",
+    "dev": "cross-env HTTP_ONLY=1 NODE_ENV=development DEBUG= nodemon .",
+    "dev:verbose": "cross-env HTTP_ONLY=1 NODE_ENV=development DEBUG=loopback:connector:mssql,loopback:datasource,loopback:security:* nodemon .",
+    "dev:noclient": "cross-env HOME_STATUS_ONLY=1 yarn dev",
+    "debug": "cross-env NODE_ENV=development DEBUG=* && nodemon .",
     "client:clean": "shx rm -rf ./client/* && shx cp -r ./.client-default/. ./client/",
     "client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path ./client/\"",
     "tdev:client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_tdev_client_rel_path ./client/\"",
-    "tdev:db": "docker start vuept-sql-dev1",
-    "tdev": "yarn tdev:db && yarn dev",
-    "tdev:quiet": "yarn tdev:db && yarn dev:quiet"
+    "tdev:db:install:container": "docker run -e \"ACCEPT_EULA=Y\" -e \"SA_PASSWORD=vueptDEV1!\" -e \"MSSQL_PID=Express\" --name vuept-sql-dev1 -p 1433:1433 -d microsoft/mssql-server-linux:latest",
+    "tdev:db:install:db": "docker exec vuept-sql-dev1 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P vueptDEV1! -Q \"create database vpdev\"",
+    "tdev:db:install:schema": "cross-env SCHEMA_ONLY=1 SCHEMA_STRATEGY=force HTTP_ONLY=1 NODE_ENV=development DEBUG= node .",
+    "tdev:db:install": "run-s tdev:db:install:*",
+    "tdev:db:ls": "docker exec vuept-sql-dev1 ls -lh /var/opt/mssql/data",
+    "tdev:db:start": "docker start vuept-sql-dev1",
+    "tdev:db:uninstall": "docker container rm vuept-sql-dev1 -f",
+    "tdev": "run-s tdev:db:start clean dev",
+    "tdev:verbose": "run-s tdev:db:start clean dev:verbose"
   },
   "engines": {
     "node": ">=10.7.0"
@@ -61,6 +67,7 @@
     "eslint-config-loopback": "^8.0.0",
     "eslint-plugin-prettier": "^2.6.2",
     "nodemon": "^1.18.3",
+    "npm-run-all": "^4.1.3",
     "prettier": "^1.14.2",
     "shx": "^0.3.2"
   }
