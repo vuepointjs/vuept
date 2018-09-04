@@ -2,8 +2,17 @@
 const bb = require('bluebird');
 const vp = require('../vp');
 
-// TODO: use environment variable or .env file for this kind of setting. See npm pkg "convict".
 let MIGRATION_STRATEGY = 'none';
+
+// Optionally (based on env var) set DB schema migration strategy to something other than the default 'none'
+let envVarSchemaMigration = process.env.VP_LB_SCHEMA;
+if (envVarSchemaMigration) {
+  envVarSchemaMigration = envVarSchemaMigration.toLowerCase();
+  if (['preserve_data', 'force', 'force_no_auditing'].includes(envVarSchemaMigration)) {
+    console.log(`Schema migration strategy changed from '${MIGRATION_STRATEGY}' to '${envVarSchemaMigration}'.`);
+    MIGRATION_STRATEGY = envVarSchemaMigration;
+  }
+}
 
 // LoopBack boot script main entry point
 module.exports = async function(app) {
