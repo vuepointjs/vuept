@@ -9,7 +9,7 @@ let envVarSchemaMigration = process.env.VP_LB_SCHEMA;
 if (envVarSchemaMigration) {
   envVarSchemaMigration = envVarSchemaMigration.toLowerCase();
   if (['preserve_data', 'force', 'force_no_auditing'].includes(envVarSchemaMigration)) {
-    console.log(`Schema migration strategy changed from ${MIGRATION_STRATEGY} to '${envVarSchemaMigration}'.`);
+    console.log(`Schema migration strategy changed from '${MIGRATION_STRATEGY}' to '${envVarSchemaMigration}'.`);
     MIGRATION_STRATEGY = envVarSchemaMigration;
   }
 }
