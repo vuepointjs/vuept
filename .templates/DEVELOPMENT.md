@@ -35,10 +35,10 @@ and that you are at a command prompt with your clone folder as your current work
 
    ```bash
    # List the SQL Server database files on the container's file system
-   docker exec vuept-sql-dev1 ls -lh /var/opt/mssql/data
+   yarn tdev:db:ls
 
    # Or issue a SQL Server command to list the names of the tables in the "vpdev" DB
-   docker exec vuept-sql-dev1 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P vueptDEV1! -h -1 -W -Q "use vpdev; select name from sysobjects where type = 'U'"
+   yarn tdev:sql "use vpdev; select name from sysobjects where type = 'U'"
    ```
 
 1. Finally, execute the following command to launch the database, API, and App:
