@@ -31,6 +31,7 @@
     "tdev:db:install:schema": "cross-env SCHEMA_ONLY=1 SCHEMA_STRATEGY=force HTTP_ONLY=1 NODE_ENV=development DEBUG= node .",
     "tdev:db:install": "run-s tdev:db:install:*",
     "tdev:db:uninstall": "docker container rm vuept-sql-dev1 -f",
+    "tdev:db:start": "docker start vuept-sql-dev1",
     "tdev": "run-s tdev:db:start clean dev",
     "tdev:verbose": "run-s tdev:db:start clean dev:verbose"
   },
