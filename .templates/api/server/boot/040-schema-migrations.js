@@ -10,6 +10,7 @@ if (envVarSchemaMigration) {
   envVarSchemaMigration = envVarSchemaMigration.toLowerCase();
   if (['preserve_data', 'force', 'force_no_auditing'].includes(envVarSchemaMigration)) {
     MIGRATION_STRATEGY = envVarSchemaMigration;
+    console.log(`Schema migration strategy set to '${envVarSchemaMigration}'.`);
   }
 }
 
