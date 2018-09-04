@@ -22,37 +22,24 @@ and that you are at a command prompt with your clone folder as your current work
 
 1. Make sure that your Docker settings allow containers to access _at least_ 2GB of memory (4GB and 4 CPUs recommended)
 
-1. Setup and start a local SQL Server Docker container:
+1. Install a local SQL Server Docker container, create the VP Dev DB, and initialize the DB schema:
 
    ```bash
-   docker run -e "ACCEPT_EULA=Y" -e "SA_PASSWORD=vueptDEV1!" -e "MSSQL_PID=Express" --name vuept-sql-dev1 -p 1433:1433 -d microsoft/mssql-server-linux:latest
+   yarn tdev:install
+
+   # If necessary, you can reverse the above and uninstall by running:
+   # yarn tdev:uninstall
    ```
 
-1. Now use Docker to execute a local SQL command on the container to create the VuePoint.js DEV database `vpdev`:
+1. Now (optional) you can verify the installation if you wish:
 
    ```bash
-   docker exec vuept-sql-dev1 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P vueptDEV1! -Q "create database vpdev"
-   ```
-
-   and to query SQL Server and verify that the database was created you can run:
-
-   ```bash
-   docker exec vuept-sql-dev1 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P vueptDEV1! -h -1 -W -Q "sp_helpdb" | grep vpdev
-   ```
-
-   which should return:
-
-   ```bash
-   vpdev      16.00 MB sa ...
-   ```
-
-   or you could list the SQL Server database files on the container's file system using this command:
-
-   ```bash
+   # List the SQL Server database files on the container's file system
    docker exec vuept-sql-dev1 ls -lh /var/opt/mssql/data
-   ```
 
-1. (Coming Soon... instructions for generating the database tables via LoopBack auto-update/auto-migrate)
+   # Or issue a SQL Server command to list the names of the tables in the "vpdev" DB
+   docker exec vuept-sql-dev1 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P vueptDEV1! -h -1 -W -Q "use vpdev; select name from sysobjects where type = 'U'"
+   ```
 
 1. Finally, execute the following command to launch the database, API, and App:
 
@@ -60,8 +47,8 @@ and that you are at a command prompt with your clone folder as your current work
    # Kick-off template development and watch for source code changes
    yarn tdev
 
-   # Alternatively, for minimal debug logging to the command console use this variant
-   yarn tdev:quiet
+   # Alternatively, for verbose logging to the command console use this variant
+   yarn tdev:verbose
    ```
 
 Following the steps above is safe for local development and it's safe to document/expose the password because
