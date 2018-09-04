@@ -30,8 +30,6 @@
     "tdev:db:install:db": "docker exec vuept-sql-dev1 /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P vueptDEV1! -Q \"create database vpdev\"",
     "tdev:db:install:schema": "cross-env SCHEMA_ONLY=1 SCHEMA_STRATEGY=force HTTP_ONLY=1 NODE_ENV=development DEBUG= node .",
     "tdev:db:install": "run-s tdev:db:install:*",
-    "tdev:db:ls": "docker exec vuept-sql-dev1 ls -lh /var/opt/mssql/data",
-    "tdev:db:start": "docker start vuept-sql-dev1",
     "tdev:db:uninstall": "docker container rm vuept-sql-dev1 -f",
     "tdev": "run-s tdev:db:start clean dev",
     "tdev:verbose": "run-s tdev:db:start clean dev:verbose"
