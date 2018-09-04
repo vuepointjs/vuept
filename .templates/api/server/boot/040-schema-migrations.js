@@ -4,12 +4,12 @@ const vp = require('../vp');
 
 let MIGRATION_STRATEGY = 'none';
 
-// Optionally (based on env var) set DB schema migration strategy
+// Optionally (based on env var) set DB schema migration strategy to something other than the default 'none'
 const envVarSchemaMigration = process.env.VP_LB_SCHEMA;
 if (envVarSchemaMigration) {
-  envVarSchemaMigration = envVarSchemaMigration.toUpperCase();
-  if (['PRESERVE_DATA', 'FORCE'].includes(envVarSchemaMigration)) {
-    MIGRATION_STRATEGY = envVarSchemaMigration.toLowerCase();
+  envVarSchemaMigration = envVarSchemaMigration.toLowerCase();
+  if (['preserve_data', 'force', 'force_no_auditing'].includes(envVarSchemaMigration)) {
+    MIGRATION_STRATEGY = envVarSchemaMigration;
   }
 }
 
