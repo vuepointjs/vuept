@@ -14,7 +14,7 @@ module.exports = async function(app) {
     // bb.promisifyAll(conn, asyncNowSuffix);
 
     conn.observe('before execute', function(ctx, next) {
-      console.log('>>> MSSQL *BEFORE* Hook');
+      // console.log('>>> MSSQL *BEFORE* Hook');
       // console.dir(ctx);
 
       // let oldSQL = ctx.req.sql;
@@ -29,7 +29,7 @@ module.exports = async function(app) {
     });
 
     conn.observe('after execute', function(ctx, next) {
-      console.log('>>> MSSQL *AFTER* Hook');
+      // console.log('>>> MSSQL *AFTER* Hook');
       // console.dir(ctx);
       // console.dir(ctx.results);
       next();
