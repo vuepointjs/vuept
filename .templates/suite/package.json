@@ -7,7 +7,7 @@
   "private": true,
   "config": {
     "vp-solution-role": "suite",
-    "vp-key": "__suite-key__"
+    "vp-suite-key": "__suite-key__"
   },
   "scripts": {
     "dev": "nuxt",

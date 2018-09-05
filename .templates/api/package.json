@@ -8,7 +8,8 @@
   "main": "server/server.js",
   "config": {
     "vp-solution-role": "api",
-    "vp-key": "__app-key__",
+    "vp-suite-key": "__suite-key__",
+    "vp-app-key": "__app-key__",
     "container-image-name": "__app-key__-__suite-key__",
     "internal-port": "443",
     "external-port": "443",
