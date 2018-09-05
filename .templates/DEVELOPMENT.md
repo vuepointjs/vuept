@@ -35,10 +35,8 @@ and that you are at a command prompt with your clone folder as your current work
 
    ```bash
    # List the SQL Server database files on the container's file system
+   # and issue a SQL Server command to list the names of the tables in the dev DB
    yarn tdev:db:ls
-
-   # Or issue a SQL Server command to list the names of the tables in the "vpdev" DB
-   yarn tdev:sql "use vpdev; select name from sysobjects where type = 'U'"
    ```
 
 1. Finally, execute the following command to launch the database, API, and App:
