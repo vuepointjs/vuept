@@ -3,6 +3,7 @@
     "octref.vetur",
     "sysoev.language-stylus",
     "thisismanta.stylus-supremacy",
-    "redhat.vscode-yaml"
+    "redhat.vscode-yaml",
+    "Gruntfuggly.todo-tree"
   ]
 }
