@@ -13,33 +13,19 @@
     "internal-port": "443",
     "external-port": "443",
     "client-rel-path": "../app/__app-key__/dist/.",
-    "tdev-client-rel-path": "../app/dist/.",
-    "tdev-db-image": "microsoft/mssql-server-linux:latest",
-    "tdev-db-container": "vuept-sql-dev1",
-    "tdev-db-name": "vpdev",
-    "tdev-db-pwd": "vueptDEV1!",
-    "tdev-db-sqlcmd": "/opt/mssql-tools/bin/sqlcmd"
+    "client-rel-path-tdev": "../app/dist/."
   },
   "scripts": {
     "lint": "eslint .",
     "clean": "shx rm -f *.log",
     "start": "cross-env NODE_ENV=production DEBUG= node .",
-    "dev": "cross-env HTTP_ONLY=1 NODE_ENV=development DEBUG= nodemon .",
-    "dev:verbose": "cross-env HTTP_ONLY=1 NODE_ENV=development DEBUG=loopback:connector:mssql,loopback:datasource,loopback:security:* nodemon .",
+    "dev": "yarn clean && cross-env HTTP_ONLY=1 NODE_ENV=development DEBUG= nodemon .",
+    "dev:verbose": "yarn clean && cross-env HTTP_ONLY=1 NODE_ENV=development DEBUG=loopback:connector:mssql,loopback:datasource,loopback:security:* nodemon .",
     "dev:noclient": "cross-env HOME_STATUS_ONLY=1 yarn dev",
-    "debug": "cross-env NODE_ENV=development DEBUG=* && nodemon .",
+    "debug": "cross-env NODE_ENV=development DEBUG=* nodemon .",
     "client:clean": "shx rm -rf ./client/* && shx cp -r ./.client-default/. ./client/",
     "client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path ./client/\"",
-    "tdev:client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_tdev_client_rel_path ./client/\"",
-    "tdev:db:install:container": "cross-env-shell ACCEPT_EULA=Y SA_PASSWORD=\"$npm_package_config_tdev_db_pwd\" MSSQL_PID=Express yarn tdev:db:install:container:run",
-    "tdev:db:install:container:run": "cross-env-shell \"docker run -e ACCEPT_EULA -e SA_PASSWORD -e MSSQL_PID --name $npm_package_config_tdev_db_container -p 1433:1433 -d $npm_package_config_tdev_db_image\"",
-    "tdev:db:install:db": "cross-env-shell \"docker exec $npm_package_config_tdev_db_container $npm_package_config_tdev_db_sqlcmd -S localhost -U sa -P $npm_package_config_tdev_db_pwd -Q \\\"create database $npm_package_config_tdev_db_name\\\"\"",
-    "tdev:db:install:schema": "cross-env SCHEMA_ONLY=1 SCHEMA_STRATEGY=force HTTP_ONLY=1 NODE_ENV=development DEBUG= node .",
-    "tdev:db:install": "run-s tdev:db:install:*",
-    "tdev:db:uninstall": "cross-env-shell \"docker container rm $npm_package_config_tdev_db_container -f\"",
-    "tdev:db:start": "cross-env-shell \"docker start $npm_package_config_tdev_db_container\"",
-    "tdev": "run-s tdev:db:start clean dev",
-    "tdev:verbose": "run-s tdev:db:start clean dev:verbose"
+    "client:update:tdev": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path_tdev ./client/\""
   },
   "engines": {
     "node": ">=10.7.0"
