@@ -4,8 +4,10 @@
 console.log('Read env variables in .env file.');
 const dotenv = require('dotenv');
 const dotenvConfig = dotenv.config();
+const envVarInfoOnly = process.env.INFO_ONLY;
 if (dotenvConfig.error) {
-  throw dotenvConfig.error;
+  if (envVarInfoOnly) console.log('Error reading .env file.');
+  else throw dotenvConfig.error;
 }
 
 var http = require('http');

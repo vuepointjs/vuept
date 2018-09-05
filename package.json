@@ -27,6 +27,8 @@
     "add:app": "node ./scripts/add-app",
     "add:api": "node ./scripts/add-api",
     "add:pkg": "node ./scripts/add-pkg",
+    "info:all": "lerna run dev:info --stream",
+    "info:all:verbose": "lerna run dev:info:verbose --stream",
     "tdev": "run-s -s tdev:db:start tdev:all",
     "tdev:verbose": "run-s -s tdev:db:start tdev:all:verbose",
     "tdev:all": "lerna run dev --stream --scope @vuept_template/*",
