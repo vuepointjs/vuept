@@ -1,5 +1,6 @@
 const path = require('path');
-const dataPath = path.resolve(__dirname, './tenants/suites.json');
+const envVarTdev = process.env.TDEV;
+const dataPath = path.resolve(__dirname, `./tenants/${envVarTdev ? '.tdev' : 'suites'}.json`);
 const lodashId = require('lodash-id');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
