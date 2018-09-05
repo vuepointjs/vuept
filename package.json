@@ -32,7 +32,7 @@
     "tdev:all": "lerna run dev --stream --scope @vuept_template/*",
     "tdev:all:verbose": "lerna run dev:verbose --stream --scope @vuept_template/*",
     "tdev:install": "run-s -s tdev:db:install",
-    "tdev:uninstall": "lerna run tdev:db:uninstall --stream --scope @vuept_template/*",
+    "tdev:uninstall": "run-s -s tdev:db:uninstall",
     "tdev:db:start": "cross-env-shell \"docker start $npm_package_config_tdev_db_container\"",
     "tdev:db:stop": "cross-env-shell \"docker stop $npm_package_config_tdev_db_container\"",
     "tdev:db:exec:sql": "cross-env-shell \"docker exec $npm_package_config_tdev_db_container $npm_package_config_tdev_db_sqlcmd -S localhost -U sa -P $npm_package_config_tdev_db_pwd -h -1 -W -Q \\\"$SQL\\\"\"",
