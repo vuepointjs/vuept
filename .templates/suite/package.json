@@ -10,7 +10,7 @@
     "vp-suite-key": "__suite-key__"
   },
   "scripts": {
-    "dev": "nuxt",
+    "dev": "nuxt --port 33990",
     "dev-debug": "node --inspect node_modules/nuxt/bin/nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
