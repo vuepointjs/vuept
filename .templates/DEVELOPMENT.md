@@ -56,10 +56,12 @@ Note that you can now safely _stop_ and _start_ your container:
 
 ```bash
 # stop
-docker stop vuept-sql-dev1
+# equivalent to: docker stop vuept-sql-dev1
+yarn tdev:db:stop
 
 # start again
-docker start vuept-sql-dev1
+# equivalent to: docker start vuept-sql-dev1
+yarn tdev:db:start
 
 # list containers, check status
 docker container ls --all
