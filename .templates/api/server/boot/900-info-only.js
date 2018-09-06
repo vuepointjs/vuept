@@ -14,6 +14,8 @@ module.exports = function(server) {
     // Show some basic info and we're finished
     console.log(`NODE_ENV: "${process.env.NODE_ENV}"`);
     console.log(`TDEV: ${process.env.TDEV}`);
+
+    console.log(`Solution Data File Path: "${solutionData.filePath}"`);
     console.log(`Suite Key: "${suiteKey}"`);
     console.log(`App Key: "${appKey}"`);
 
@@ -22,6 +24,7 @@ module.exports = function(server) {
 
     console.log('App Data:');
     console.dir(appData, { depth: 1 });
+    console.log(`App Path: "${solutionData.getters.appPathByKey(appKey)}"`);
 
     console.log(`Server configured for port ${server.get('port')}`);
 
