@@ -3,6 +3,7 @@
 module.exports = function(server) {
   // Optionally (based on env var) end the LoopBack process after simply displaying the boot sequence and some basic information
   const envVarInfoOnly = process.env.INFO_ONLY;
+  const envVarVerbose = process.env.VERBOSE;
 
   if (envVarInfoOnly) {
     const suiteKey = process.env.npm_package_config_vp_suite_key;
@@ -12,6 +13,7 @@ module.exports = function(server) {
     const appData = solutionData.getters.appByKey(suiteData, appKey);
 
     // Show some basic info and we're finished
+    console.log('----------');
     console.log(`NODE_ENV: "${process.env.NODE_ENV}"`);
     console.log(`TDEV: ${process.env.TDEV}`);
 
@@ -19,16 +21,19 @@ module.exports = function(server) {
     console.log(`Suite Key: "${suiteKey}"`);
     console.log(`App Key: "${appKey}"`);
 
-    console.log('Suite Data:');
-    console.dir(suiteData, { depth: 1 });
+    if (envVarVerbose) {
+      console.log('Suite Data:');
+      console.dir(suiteData, { depth: 1 });
 
-    console.log('App Data:');
-    console.dir(appData, { depth: 1 });
+      console.log('App Data:');
+      console.dir(appData, { depth: 1 });
+    }
+
     console.log(`App Path: "${solutionData.getters.appPathByKey(appKey)}"`);
 
     console.log(`Server configured for port ${server.get('port')}`);
 
-    console.log('Shutting down LoopBack API server process due to INFO_ONLY flag.');
+    console.log('>>> Shutting down LoopBack API server process due to INFO_ONLY flag.');
     process.exit(0);
   }
 };
