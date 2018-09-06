@@ -6,6 +6,7 @@ const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
 const adapter = new FileSync(dataPath);
 const db = low(adapter);
+const _ = require('lodash');
 
 // Add lowdb methods for insert, upsert, etc. and set id field to 'key'. See: https://github.com/typicode/lodash-id
 db._.mixin(lodashId);
@@ -24,7 +25,18 @@ const getters = {
     db
       .get('suites')
       .filter({ key })
-      .value()
+      .first()
+      .value(),
+
+  appByKey: (suiteData, key) =>
+    _(suiteData.apps)
+      .filter({ key })
+      .first(),
+
+  azureProfileByKey: (suiteData, key) =>
+    _(suiteData.azure)
+      .filter({ key })
+      .first()
 };
 
 const mutations = {
