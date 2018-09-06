@@ -1,5 +1,8 @@
 'use strict';
 
+console.log('----------');
+console.log('>>> Starting LoopBack API server...');
+
 // Attempt to read .env file
 console.log('Read env variables in .env file.');
 const dotenv = require('dotenv');

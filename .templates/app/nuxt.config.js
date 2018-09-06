@@ -5,6 +5,40 @@ const taxonomy = require(`./store/ui.taxonomy.${scenario}.base`);
 const nodeExternals = require('webpack-node-externals');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
+// Optionally (based on env var) end the nuxt build process after simply displaying some basic information
+const envVarInfoOnly = process.env.INFO_ONLY;
+const envVarVerbose = process.env.VERBOSE;
+
+if (envVarInfoOnly) {
+  const suiteKey = process.env.npm_package_config_vp_suite_key;
+  const appKey = process.env.npm_package_config_vp_app_key;
+  const solutionData = require('@vuept_solution/data');
+  const suiteData = solutionData.getters.suiteByKey(suiteKey);
+  const appData = solutionData.getters.appByKey(suiteData, appKey);
+
+  // Show some basic info and we're finished
+  console.log('----------');
+  console.log(`NODE_ENV: "${process.env.NODE_ENV}"`);
+  console.log(`TDEV: ${process.env.TDEV}`);
+
+  console.log(`Solution Data File Path: "${solutionData.filePath}"`);
+  console.log(`Suite Key: "${suiteKey}"`);
+  console.log(`App Key: "${appKey}"`);
+
+  if (envVarVerbose) {
+    console.log('Suite Data:');
+    console.dir(suiteData, { depth: 1 });
+
+    console.log('App Data:');
+    console.dir(appData, { depth: 1 });
+  }
+
+  console.log(`App Path: "${solutionData.getters.appPathByKey(appKey)}"`);
+
+  console.log('>>> Terminating nuxt build process due to INFO_ONLY flag.');
+  process.exit(0);
+}
+
 module.exports = {
   mode: 'spa',
   rootDir: '../../',
@@ -109,8 +143,8 @@ module.exports = {
      ** You can extend webpack config here
      */
     extend(config, ctx) {
-      console.log('Webpack base config...');
-      console.log(JSON.stringify(config));
+      // console.log('Webpack base config...');
+      // console.log(JSON.stringify(config));
 
       if (ctx.isDev && ctx.isClient) {
         config.devtool = '#source-map';
