@@ -1,10 +1,10 @@
 const path = require('path');
 const envVarTdev = process.env.TDEV;
-const dataPath = path.resolve(__dirname, `./tenants/${envVarTdev ? '.tdev' : 'suites'}.json`);
+const filePath = path.resolve(__dirname, `./tenants/${envVarTdev ? '.tdev' : 'suites'}.json`);
 const lodashId = require('lodash-id');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
-const adapter = new FileSync(dataPath);
+const adapter = new FileSync(filePath);
 const db = low(adapter);
 const _ = require('lodash');
 
@@ -32,6 +32,8 @@ const getters = {
     _(suiteData.apps)
       .filter({ key })
       .first(),
+
+  appPathByKey: key => path.resolve(__dirname, key === '__app-key__' ? '../../.templates/app/' : `../app/${key.toLowerCase()}/`),
 
   azureProfileByKey: (suiteData, key) =>
     _(suiteData.azure)
@@ -65,5 +67,6 @@ const mutations = {
 
 module.exports = {
   getters,
-  mutations
+  mutations,
+  filePath
 };

@@ -7,6 +7,9 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   mode: 'spa',
+  rootDir: '../../',
+  srcDir: '.templates/app',
+  buildDir: '.nuxt-vpjs-app',
 
   /*
    ** Headers of the page
@@ -106,6 +109,9 @@ module.exports = {
      ** You can extend webpack config here
      */
     extend(config, ctx) {
+      console.log('Webpack base config...');
+      console.log(JSON.stringify(config));
+
       if (ctx.isDev && ctx.isClient) {
         config.devtool = '#source-map';
       }
