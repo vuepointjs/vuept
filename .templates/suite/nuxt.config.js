@@ -7,6 +7,9 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
   mode: 'spa',
+  rootDir: '../../',
+  srcDir: '.templates/suite', // appPath,
+  buildDir: '.nuxt-vpjs-suite',
 
   /*
    ** Headers of the page
