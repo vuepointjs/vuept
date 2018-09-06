@@ -1,36 +1,51 @@
 {
-  "suites": [{
-    "name": "VuePoint.js",
-    "key": "__suite-key__",
-    "longName": "VuePoint.js Example Suite",
-    "tenantKey": "VP",
-    "tenantName": "VuePoint.js Example Tenant",
-    "azure": [{
-      "key": "DEV",
-      "tenant": "example.onmicrosoft.com",
-      "clientId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-      "apiId": "dddddddd-cccc-bbbb-aaaa-00000000000",
-      "redirectUri": "http://localhost:33990/"
-    }],
-    "apps": [{
-      "name": "Groupware",
-      "key": "__app-key__",
-      "longName": "Groupware App",
-      "applets": [{
-          "name": "Contacts",
-          "key": "CO",
-          "iconLabel": "Co",
-          "ord": 1,
-          "longName": "Shared Contacts"
-        },
+  "suites": [
+    {
+      "name": "VuePoint.js",
+      "key": "__suite-key__",
+      "longName": "VuePoint.js Example Suite",
+      "tenantKey": "VP",
+      "tenantName": "VuePoint.js Example Tenant",
+      "devPorts": {
+        "api": "33980",
+        "suite": "33990"
+      },
+      "azure": [
         {
-          "name": "Discuss",
-          "key": "DI",
-          "iconLabel": "Di",
-          "ord": 2,
-          "longName": "Contact Discussions"
+          "key": "DEV",
+          "tenant": "example.onmicrosoft.com",
+          "clientId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+          "apiId": "dddddddd-cccc-bbbb-aaaa-00000000000",
+          "redirectUri": "http://localhost:33990/"
+        }
+      ],
+      "apps": [
+        {
+          "name": "Groupware",
+          "key": "__app-key__",
+          "longName": "Groupware App",
+          "devPorts": {
+            "app": "33770",
+            "api": "33880"
+          },
+          "applets": [
+            {
+              "name": "Contacts",
+              "key": "CO",
+              "iconLabel": "Co",
+              "ord": 1,
+              "longName": "Shared Contacts"
+            },
+            {
+              "name": "Discuss",
+              "key": "DI",
+              "iconLabel": "Di",
+              "ord": 2,
+              "longName": "Contact Discussions"
+            }
+          ]
         }
       ]
-    }]
-  }]
+    }
+  ]
 }

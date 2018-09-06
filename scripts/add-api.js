@@ -6,7 +6,7 @@
       - Verifying that the api key is valid (of the right form) and that the specified api doesn't already exist
       - Copying .templates/api to solution/api/${api-key}
 
-    NOTE: For dev, plan to use port range: 33880 - 33979 (max 100 APIs/ports)
+    NOTE: For dev, plan to use port range: 33880 - 33989 (max 110 APIs/ports: 100 app APIs 33880 - 33979, 10 suite APIs 33980 - 33989)
 */
 
 const apiKey = process.argv[2];

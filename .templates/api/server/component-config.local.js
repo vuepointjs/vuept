@@ -5,18 +5,24 @@
 */
 'use strict';
 
-var env = process.env.NODE_ENV || 'development';
-var isDev = env === 'development' || env === 'test';
+const env = process.env.NODE_ENV || 'development';
+const isDev = env === 'development' || env === 'test';
 
-const explorerSecret = isDev ? 'explorer' : 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'; // TODO: Pull App ID from @vuept_solution/data to use for this
+const suiteKey = process.env.npm_package_config_vp_suite_key;
+const appKey = process.env.npm_package_config_vp_app_key;
+const solutionData = require('@vuept_solution/data');
+const suiteData = solutionData.getters.suiteByKey(suiteKey);
+const appData = solutionData.getters.appByKey(suiteData, appKey);
+const azureProfileKey = isDev ? 'DEV' : 'PROD';
+const azureData = solutionData.getters.azureProfileByKey(suiteData, azureProfileKey);
+
+const tenantKey = suiteData.tenantKey;
+const suiteShortName = suiteData.name;
+const appShortName = appData.name;
+const appLongName = appData.longName;
+
+const explorerSecret = isDev ? 'explorer' : azureData.apiId;
 const mountPath = `/${explorerSecret}`;
-
-// TODO: Pull these pieces from @vuept_solution/data
-const tenantKey = 'MS';
-const suiteShortName = 'O365';
-const appKey = 'OL';
-const appShortName = 'Outlook';
-const appLongName = 'Outlook Email';
 
 const apiTitle = `${tenantKey} ${suiteShortName} API - ${appShortName} (${appKey})`;
 const apiDescription = `Application Programming Interface (API) for ${appLongName}`;

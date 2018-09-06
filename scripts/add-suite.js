@@ -7,7 +7,7 @@
       - Copying .templates/suite to solution/suite/${suite-key}
       - Adding (if necessary) the suite to the json data in /solution/data/tenants/suites.json
 
-    NOTE: For dev, plan to use port range: 33990 - 33999 (max 10 suites/ports)
+    NOTE: For dev, plan to use suite site port range: 33990 - 33999 (max 10 suite sites/ports)
 */
 const solutionSchema = require('@vuept_solution/admin').schema;
 const solutionData = require('@vuept_solution/data');

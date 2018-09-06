@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/vuepointjs/vuept#readme",
   "dependencies": {
+    "lodash": "^4.17.10",
     "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0"
   },

@@ -5,15 +5,25 @@ module.exports = function(server) {
   const envVarInfoOnly = process.env.INFO_ONLY;
 
   if (envVarInfoOnly) {
+    const suiteKey = process.env.npm_package_config_vp_suite_key;
+    const appKey = process.env.npm_package_config_vp_app_key;
+    const solutionData = require('@vuept_solution/data');
+    const suiteData = solutionData.getters.suiteByKey(suiteKey);
+    const appData = solutionData.getters.appByKey(suiteData, appKey);
+
     // Show some basic info and we're finished
     console.log(`NODE_ENV: "${process.env.NODE_ENV}"`);
     console.log(`TDEV: ${process.env.TDEV}`);
-    console.log(`Suite Key: "${process.env.npm_package_config_vp_suite_key}"`);
-    console.log(`App Key: "${process.env.npm_package_config_vp_app_key}"`);
+    console.log(`Suite Key: "${suiteKey}"`);
+    console.log(`App Key: "${appKey}"`);
 
-    const solutionData = require('@vuept_solution/data');
     console.log('Suite Data:');
-    console.dir(solutionData.getters.suiteByKey(process.env.npm_package_config_vp_suite_key), { depth: null });
+    console.dir(suiteData, { depth: 1 });
+
+    console.log('App Data:');
+    console.dir(appData, { depth: 1 });
+
+    console.log(`Server configured for port ${server.get('port')}`);
 
     console.log('Shutting down LoopBack API server process due to INFO_ONLY flag.');
     process.exit(0);
