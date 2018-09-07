@@ -31,7 +31,7 @@
     "info:all:verbose": "lerna run dev:info:verbose --stream --scope @vuept_solution/*",
     "tdev": "run-s -s tdev:db:start tdev:all",
     "tdev:verbose": "run-s -s tdev:db:start tdev:all:verbose",
-    "tdev:all": "cross-env-shell TDEV=1 lerna run dev --stream --scope @vuept_template/*",
+    "tdev:all": "cross-env-shell TDEV=1 lerna run dev --parallel --no-bail --scope @vuept_template/*",
     "tdev:all:verbose": "cross-env-shell TDEV=1 lerna run dev:verbose --stream --scope @vuept_template/*",
     "tdev:info:all": "cross-env-shell TDEV=1 lerna run dev:info --stream --concurrency 1 --loglevel warn --scope @vuept_template/*",
     "tdev:info:all:verbose": "cross-env-shell TDEV=1 lerna run dev:info:verbose --stream --concurrency 1 --loglevel verbose --scope @vuept_template/*",
