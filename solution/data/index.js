@@ -30,12 +30,72 @@ const getters = {
       .first()
       .value(),
 
+  suitePathByKey: key => path.resolve(__dirname, key === '__suite-key__' ? '../../.templates/suite/' : `../suite/${key.toLowerCase()}/`),
+
   appByKey: (suiteData, key) =>
-    _(suiteData.apps)
-      .filter({ key })
-      .first(),
+    key
+      ? _(suiteData.apps)
+          .filter({ key })
+          .first()
+      : {},
+
+  appByKeys: function(suiteKey, appKey) {
+    return appKey && suiteKey
+      ? _(this.suiteByKey(suiteKey).apps)
+          .filter({ key: appKey })
+          .first()
+      : {};
+  },
 
   appPathByKey: key => path.resolve(__dirname, key === '__app-key__' ? '../../.templates/app/' : `../app/${key.toLowerCase()}/`),
+
+  appPathByRoleAndKey: function(role, key) {
+    return role === 'suite' ? this.suitePathByKey(key) : this.appPathByKey(key);
+  },
+
+  sourcePathByRoleAndKeys: function(role, suiteKey, appKey) {
+    switch (role) {
+      case 'suite':
+        return this.suitePathByKey(suiteKey);
+      case 'app':
+        return this.appPathByKey(appKey);
+      default:
+        return null;
+    }
+  },
+
+  buildDirByRoleAndKeys: function(role, suiteKey, appKey) {
+    switch (role) {
+      case 'suite':
+        return suiteKey === '__suite-key__' ? `.nuxt-tdev-${role}` : `.nuxt-${suiteKey.toLowerCase()}-${role}`;
+      case 'app':
+        return appKey === '__app-key__' ? `.nuxt-tdev-${role}` : `.nuxt-${suiteKey.toLowerCase()}-${appKey.toLowerCase()}`;
+      default:
+        return null;
+    }
+  },
+
+  portByRoleAndKeys: function(role, suiteKey, appKey) {
+    switch (role) {
+      case 'suite':
+        return this.suiteByKey(suiteKey).devPorts.suite;
+      case 'app':
+        return this.appByKeys(suiteKey, appKey).devPorts.app;
+      default:
+        return null;
+    }
+  },
+
+  titleByRoleAndKeys: function(role, suiteKey, appKey) {
+    switch (role) {
+      case 'suite':
+        return `${this.suiteByKey(suiteKey).name} Suite`;
+      case 'app':
+        return `${this.suiteByKey(suiteKey).name} - ${this.appByKeys(suiteKey, appKey).name} App`;
+      default:
+        return null;
+    }
+  },
 
   azureProfileByKey: (suiteData, key) =>
     _(suiteData.azure)
@@ -67,7 +127,28 @@ const mutations = {
   }
 };
 
+const context = {
+  fromRoleAndKeys: (solutionRole, suiteKey, appKey) => ({
+    nodeEnv: process.env.NODE_ENV || 'development',
+    isDev: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test',
+    isTemplateDev: !!process.env.TDEV,
+    isInfoOnly: !!process.env.INFO_ONLY,
+    isVerbose: !!process.env.VERBOSE,
+    solutionDataFilePath: getters.filePath,
+    solutionRole,
+    suiteKey,
+    appKey,
+    suiteData: getters.suiteByKey(suiteKey),
+    appData: getters.appByKeys(suiteKey, appKey),
+    sourcePath: getters.sourcePathByRoleAndKeys(solutionRole, suiteKey, appKey),
+    buildDir: getters.buildDirByRoleAndKeys(solutionRole, suiteKey, appKey),
+    port: process.env.TDEV ? getters.portByRoleAndKeys(solutionRole, suiteKey, appKey) : process.env.PORT || process.env.NUXT_PORT,
+    title: getters.titleByRoleAndKeys(solutionRole, suiteKey, appKey)
+  })
+};
+
 module.exports = {
   getters,
-  mutations
+  mutations,
+  context
 };
