@@ -10,13 +10,13 @@
     NOTE: For dev, plan to use suite site port range: 33990 - 33999 (max 10 suite sites/ports)
 */
 const solutionSchema = require('@vuept_solution/admin').schema;
-const solutionData = require('@vuept_solution/data');
+const solutionData = require('@vuept_solution/data').getters;
 const _ = require('lodash');
 const inquirer = require('inquirer');
 
 console.log('\n> Add Suite: Under construction.\n');
 
-// console.dir(solutionData.getters.suiteByKey('VPJS'));
+// console.dir(solutionData.suiteByKey('VPJS'));
 // process.exit(0);
 
 inquirer.prompt(questionsFromSchema(solutionSchema.suite)).then(answers => {

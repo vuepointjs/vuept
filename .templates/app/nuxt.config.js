@@ -5,28 +5,31 @@ const taxonomy = require(`./store/ui.taxonomy.${scenario}.base`);
 const nodeExternals = require('webpack-node-externals');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
+const env = process.env.NODE_ENV || 'development';
+const isDev = env === 'development' || env === 'test';
+const isTemplateDev = process.env.TDEV;
 const suiteKey = process.env.npm_package_config_vp_suite_key;
 const appKey = process.env.npm_package_config_vp_app_key;
-const solutionData = require('@vuept_solution/data');
-const suiteData = solutionData.getters.suiteByKey(suiteKey);
-const appData = solutionData.getters.appByKey(suiteData, appKey);
-const appPath = solutionData.getters.appPathByKey(appKey);
+const solutionData = require('@vuept_solution/data').getters;
+const suiteData = solutionData.suiteByKey(suiteKey);
+const appData = solutionData.appByKey(suiteData, appKey);
+const appPath = solutionData.appPathByKey(appKey);
 
 // Optionally (based on env var) end the nuxt build process after simply displaying some basic information
-const envVarInfoOnly = process.env.INFO_ONLY;
-const envVarVerbose = process.env.VERBOSE;
+const isInfoOnly = process.env.INFO_ONLY;
+const isVerbose = process.env.VERBOSE;
 
-if (envVarInfoOnly) {
+if (isInfoOnly) {
   // Show some basic info and we're finished
   console.log('----------');
-  console.log(`NODE_ENV: "${process.env.NODE_ENV}"`);
-  console.log(`TDEV: ${process.env.TDEV}`);
+  console.log(`NODE_ENV: "${env}"`);
+  console.log(`TDEV: ${isTemplateDev}`);
 
   console.log(`Solution Data File Path: "${solutionData.filePath}"`);
   console.log(`Suite Key: "${suiteKey}"`);
   console.log(`App Key: "${appKey}"`);
 
-  if (envVarVerbose) {
+  if (isVerbose) {
     console.log('Suite Data:');
     console.dir(suiteData, { depth: 1 });
 
@@ -35,6 +38,8 @@ if (envVarInfoOnly) {
   }
 
   console.log(`App Path: "${appPath}"`);
+
+  console.log(`Nuxt configured for port ${appData.devPorts.app}`);
 
   console.log('>>> Terminating nuxt build process due to INFO_ONLY flag.');
   process.exit(0);

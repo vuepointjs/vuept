@@ -5,17 +5,17 @@ const vp = require('../vp');
 let MIGRATION_STRATEGY = 'none';
 
 // Optionally (based on env var) set DB schema migration strategy to something other than the default 'none'
-let envVarSchemaStrategy = process.env.SCHEMA_STRATEGY;
-if (envVarSchemaStrategy) {
-  envVarSchemaStrategy = envVarSchemaStrategy.toLowerCase();
-  if (['preserve_data', 'force', 'force_no_auditing'].includes(envVarSchemaStrategy)) {
-    console.log(`Schema migration strategy changed from '${MIGRATION_STRATEGY}' to '${envVarSchemaStrategy}'.`);
-    MIGRATION_STRATEGY = envVarSchemaStrategy;
+let schemaStrategyVar = process.env.SCHEMA_STRATEGY;
+if (schemaStrategyVar) {
+  schemaStrategyVar = schemaStrategyVar.toLowerCase();
+  if (['preserve_data', 'force', 'force_no_auditing'].includes(schemaStrategyVar)) {
+    console.log(`Schema migration strategy changed from '${MIGRATION_STRATEGY}' to '${schemaStrategyVar}'.`);
+    MIGRATION_STRATEGY = schemaStrategyVar;
   }
 }
 
 // Optionally end the LoopBack bootup sequence and LoopBack process after schema migrations
-let envVarBootSchemaOnly = process.env.SCHEMA_ONLY;
+let isSchemaOnly = process.env.SCHEMA_ONLY;
 
 // LoopBack boot script main entry point
 module.exports = async function(app) {
@@ -60,5 +60,5 @@ module.exports = async function(app) {
   }
 
   // If boot schema only option was set, we're finished
-  if (envVarBootSchemaOnly) process.exit(0);
+  if (isSchemaOnly) process.exit(0);
 };
