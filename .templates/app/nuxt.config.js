@@ -5,42 +5,23 @@ const taxonomy = require(`./store/ui.taxonomy.${scenario}.base`);
 const nodeExternals = require('webpack-node-externals');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-const env = process.env.NODE_ENV || 'development';
-const isDev = env === 'development' || env === 'test';
-const isTemplateDev = process.env.TDEV;
-const suiteKey = process.env.npm_package_config_vp_suite_key;
-const appKey = process.env.npm_package_config_vp_app_key;
+const solutionContext = require('@vuept_solution/data').context;
 const solutionData = require('@vuept_solution/data').getters;
-const suiteData = solutionData.suiteByKey(suiteKey);
-const appData = solutionData.appByKey(suiteData, appKey);
-const appPath = solutionData.appPathByKey(appKey);
+const solutionRole = process.env.npm_package_config_vp_solution_role;
+const suiteKey = process.env.npm_package_config_vp_suite_key;
+const appKey = process.env.npm_package_config_vp_app_key || null;
+const vpCtx = solutionContext.fromRoleAndKeys(solutionRole, suiteKey, appKey);
+
+// Tweak Nuxt runtime config during template development
+if (vpCtx.isTemplateDev) {
+  process.env.PORT = vpCtx.port;
+}
 
 // Optionally (based on env var) end the nuxt build process after simply displaying some basic information
-const isInfoOnly = process.env.INFO_ONLY;
-const isVerbose = process.env.VERBOSE;
-
-if (isInfoOnly) {
+if (vpCtx.isInfoOnly) {
   // Show some basic info and we're finished
   console.log('----------');
-  console.log(`NODE_ENV: "${env}"`);
-  console.log(`TDEV: ${isTemplateDev}`);
-
-  console.log(`Solution Data File Path: "${solutionData.filePath}"`);
-  console.log(`Suite Key: "${suiteKey}"`);
-  console.log(`App Key: "${appKey}"`);
-
-  if (isVerbose) {
-    console.log('Suite Data:');
-    console.dir(suiteData, { depth: 1 });
-
-    console.log('App Data:');
-    console.dir(appData, { depth: 1 });
-  }
-
-  console.log(`App Path: "${appPath}"`);
-
-  console.log(`Nuxt configured for port ${appData.devPorts.app}`);
-
+  console.dir(vpCtx, { depth: vpCtx.isVerbose ? 2 : 0 });
   console.log('>>> Terminating nuxt build process due to INFO_ONLY flag.');
   process.exit(0);
 }
@@ -48,14 +29,16 @@ if (isInfoOnly) {
 module.exports = {
   mode: 'spa',
   rootDir: '../../',
-  srcDir: appPath, // '.templates/app',
-  buildDir: '.nuxt-vpjs-app',
+  srcDir: vpCtx.sourcePath,
+  buildDir: vpCtx.buildDir,
+
+  env: vpCtx,
 
   /*
    ** Headers of the page
    */
   head: {
-    title: taxonomy.appName, // pkg.description,
+    title: vpCtx.title, // taxonomy.appName, // pkg.description,
     meta: [
       {
         charset: 'utf-8'
