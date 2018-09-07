@@ -39,7 +39,9 @@ app.start = function(httpOnly) {
 
   // Start the web server
   server.listen(app.get('port'), function() {
-    var baseUrl = (httpOnly ? 'http://' : 'https://') + app.get('host') + ':' + app.get('port');
+    var host = app.get('host');
+    if (host === '0.0.0.0') host = 'localhost';
+    var baseUrl = (httpOnly ? 'http://' : 'https://') + host + ':' + app.get('port');
     app.emit('started', baseUrl);
     console.log('Web server listening at: %s%s', baseUrl, '/');
 
