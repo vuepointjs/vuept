@@ -14,9 +14,9 @@ const httpOnly = !!process.env.HTTP_ONLY;
 
 const suiteKey = process.env.npm_package_config_vp_suite_key;
 const appKey = process.env.npm_package_config_vp_app_key;
-const solutionData = require('@vuept_solution/data');
-const suiteData = solutionData.getters.suiteByKey(suiteKey);
-const appData = solutionData.getters.appByKey(suiteData, appKey);
+const solutionData = require('@vuept_solution/data').getters;
+const suiteData = solutionData.suiteByKey(suiteKey);
+const appData = solutionData.appByKey(suiteData, appKey);
 
 const config = {
   restApiRoot: '/api/v1',

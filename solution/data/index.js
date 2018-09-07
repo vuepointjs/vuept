@@ -1,6 +1,6 @@
 const path = require('path');
-const envVarTdev = process.env.TDEV;
-const filePath = path.resolve(__dirname, `./tenants/${envVarTdev ? '.tdev' : 'suites'}.json`);
+const isTemplateDev = process.env.TDEV;
+const filePath = path.resolve(__dirname, `./tenants/${isTemplateDev ? '.tdev' : 'suites'}.json`);
 const lodashId = require('lodash-id');
 const low = require('lowdb');
 const FileSync = require('lowdb/adapters/FileSync');
@@ -13,6 +13,8 @@ db._.mixin(lodashId);
 db._.id = 'key';
 
 const getters = {
+  filePath,
+
   allSuites: () => db.get('suites').value(),
 
   allSuiteKeys: () =>
@@ -67,6 +69,5 @@ const mutations = {
 
 module.exports = {
   getters,
-  mutations,
-  filePath
+  mutations
 };
