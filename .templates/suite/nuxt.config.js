@@ -6,7 +6,6 @@ const nodeExternals = require('webpack-node-externals');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const solutionContext = require('@vuept_solution/data').context;
-const solutionData = require('@vuept_solution/data').getters;
 const solutionRole = process.env.npm_package_config_vp_solution_role;
 const suiteKey = process.env.npm_package_config_vp_suite_key;
 const appKey = process.env.npm_package_config_vp_app_key || null;
@@ -52,7 +51,7 @@ module.exports = {
       {
         hid: 'description',
         name: 'description',
-        content: pkg.description
+        content: vpCtx.description // pkg.description
       }
     ],
     link: [
