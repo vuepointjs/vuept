@@ -5,35 +5,25 @@
 */
 'use strict';
 
-const env = process.env.NODE_ENV || 'development';
-const isDev = env === 'development' || env === 'test';
-
+const solutionContext = require('@vuept_solution/data').context;
+const solutionRole = process.env.npm_package_config_vp_solution_role;
 const suiteKey = process.env.npm_package_config_vp_suite_key;
-const appKey = process.env.npm_package_config_vp_app_key;
-const solutionData = require('@vuept_solution/data').getters;
-const suiteData = solutionData.suiteByKey(suiteKey);
-const appData = solutionData.appByKey(suiteData, appKey);
-const azureProfileKey = isDev ? 'DEV' : 'PROD';
-const azureData = solutionData.azureProfileByKey(suiteData, azureProfileKey);
+const appKey = process.env.npm_package_config_vp_app_key || null;
+const vpCtx = solutionContext.fromRoleAndKeys(solutionRole, suiteKey, appKey);
 
-const tenantKey = suiteData.tenantKey;
-const suiteShortName = suiteData.name;
-const appShortName = appData.name;
-const appLongName = appData.longName;
+const azureProfileKey = vpCtx.isDev ? 'DEV' : 'PROD';
+const azureData = require('@vuept_solution/data').getters.azureProfileByKey(vpCtx.suiteData, azureProfileKey);
 
-const explorerSecret = isDev ? 'explorer' : azureData.apiId;
+const explorerSecret = vpCtx.isDev ? 'explorer' : azureData.apiId;
 const mountPath = `/${explorerSecret}`;
-
-const apiTitle = `${tenantKey} ${suiteShortName} API - ${appShortName} (${appKey})`;
-const apiDescription = `Application Programming Interface (API) for ${appLongName}`;
 
 const componentConfig = {
   'loopback-component-explorer': {
     mountPath: mountPath,
     generateOperationScopedModels: true,
     apiInfo: {
-      title: apiTitle,
-      description: apiDescription
+      title: vpCtx.title,
+      description: vpCtx.description
     }
   }
 };

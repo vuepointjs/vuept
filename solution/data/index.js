@@ -12,6 +12,9 @@ const _ = require('lodash');
 db._.mixin(lodashId);
 db._.id = 'key';
 
+// We'll need a simple Lodash memoize resolver below
+const memoizeKeyResolver = (...args) => _.join(args); // JSON.stringify(args);
+
 const getters = {
   filePath,
 
@@ -23,12 +26,13 @@ const getters = {
       .map('key')
       .value(),
 
-  suiteByKey: key =>
+  _suiteByKeyRaw: key =>
     db
       .get('suites')
       .filter({ key })
       .first()
       .value(),
+  suiteByKey: null, // See assignment below after getters initialized
 
   suitePathByKey: key => path.resolve(__dirname, key === '__suite-key__' ? '../../.templates/suite/' : `../suite/${key.toLowerCase()}/`),
 
@@ -39,25 +43,27 @@ const getters = {
           .first()
       : {},
 
-  appByKeys: function(suiteKey, appKey) {
+  _appByKeysRaw(suiteKey, appKey) {
     return appKey && suiteKey
       ? _(this.suiteByKey(suiteKey).apps)
           .filter({ key: appKey })
           .first()
       : {};
   },
+  appByKeys: null,
 
   appPathByKey: key => path.resolve(__dirname, key === '__app-key__' ? '../../.templates/app/' : `../app/${key.toLowerCase()}/`),
 
-  appPathByRoleAndKey: function(role, key) {
+  appPathByRoleAndKey(role, key) {
     return role === 'suite' ? this.suitePathByKey(key) : this.appPathByKey(key);
   },
 
-  sourcePathByRoleAndKeys: function(role, suiteKey, appKey) {
+  sourcePathByRoleAndKeys(role, suiteKey, appKey) {
     switch (role) {
       case 'suite':
         return this.suitePathByKey(suiteKey);
       case 'app':
+      case 'api':
         return this.appPathByKey(appKey);
       default:
         return null;
@@ -69,29 +75,53 @@ const getters = {
       case 'suite':
         return suiteKey === '__suite-key__' ? `.nuxt-tdev-${role}` : `.nuxt-${suiteKey.toLowerCase()}-${role}`;
       case 'app':
-        return appKey === '__app-key__' ? `.nuxt-tdev-${role}` : `.nuxt-${suiteKey.toLowerCase()}-${appKey.toLowerCase()}`;
+      case 'api':
+        return appKey === '__app-key__' ? '.nuxt-tdev-app' : `.nuxt-${suiteKey.toLowerCase()}-${appKey.toLowerCase()}`;
       default:
         return null;
     }
   },
 
-  portByRoleAndKeys: function(role, suiteKey, appKey) {
+  portByRoleAndKeys(role, suiteKey, appKey) {
     switch (role) {
       case 'suite':
         return this.suiteByKey(suiteKey).devPorts.suite;
       case 'app':
         return this.appByKeys(suiteKey, appKey).devPorts.app;
+      case 'api':
+        return this.appByKeys(suiteKey, appKey).devPorts.api;
       default:
         return null;
     }
   },
 
-  titleByRoleAndKeys: function(role, suiteKey, appKey) {
+  titleByRoleAndKeys(role, suiteKey, appKey) {
+    const suite = this.suiteByKey(suiteKey);
+    const app = this.appByKeys(suiteKey, appKey);
+
     switch (role) {
       case 'suite':
-        return `${this.suiteByKey(suiteKey).name} Suite`;
+        return `${suite.name} Suite`;
       case 'app':
-        return `${this.suiteByKey(suiteKey).name} - ${this.appByKeys(suiteKey, appKey).name} App`;
+        return `${suite.name} - ${app.name} App`;
+      case 'api':
+        return `${suite.tenantKey} ${suite.name} API - ${app.name} (${app.key})`;
+      default:
+        return null;
+    }
+  },
+
+  descriptionByRoleAndKeys(role, suiteKey, appKey) {
+    const suite = this.suiteByKey(suiteKey);
+    const app = this.appByKeys(suiteKey, appKey);
+
+    switch (role) {
+      case 'suite':
+        return `${suite.tenantKey} ${suite.longName}`;
+      case 'app':
+        return `${suite.name} ${app.longName}`;
+      case 'api':
+        return `Application Programming Interface (API) for ${app.longName}`;
       default:
         return null;
     }
@@ -102,6 +132,10 @@ const getters = {
       .filter({ key })
       .first()
 };
+
+// Assign optimized versions of some getters
+getters.suiteByKey = _.memoize(getters._suiteByKeyRaw);
+getters.appByKeys = _.memoize(getters._appByKeysRaw, memoizeKeyResolver);
 
 const mutations = {
   /**
@@ -128,7 +162,7 @@ const mutations = {
 };
 
 const context = {
-  fromRoleAndKeys: (solutionRole, suiteKey, appKey) => ({
+  _fromRoleAndKeysRaw: (solutionRole, suiteKey, appKey) => ({
     nodeEnv: process.env.NODE_ENV || 'development',
     isDev: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test',
     isTemplateDev: !!process.env.TDEV,
@@ -143,9 +177,14 @@ const context = {
     sourcePath: getters.sourcePathByRoleAndKeys(solutionRole, suiteKey, appKey),
     buildDir: getters.buildDirByRoleAndKeys(solutionRole, suiteKey, appKey),
     port: process.env.TDEV ? getters.portByRoleAndKeys(solutionRole, suiteKey, appKey) : process.env.PORT || process.env.NUXT_PORT,
-    title: getters.titleByRoleAndKeys(solutionRole, suiteKey, appKey)
-  })
+    title: getters.titleByRoleAndKeys(solutionRole, suiteKey, appKey),
+    description: getters.descriptionByRoleAndKeys(solutionRole, suiteKey, appKey)
+  }),
+  fromRoleAndKeys: null
 };
+
+// Assign optimized context routine
+context.fromRoleAndKeys = _.memoize(context._fromRoleAndKeysRaw, memoizeKeyResolver);
 
 module.exports = {
   getters,
