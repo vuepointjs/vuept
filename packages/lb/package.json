@@ -1,16 +1,16 @@
 {
-  "name": "@vuept_template/package",
+  "name": "@vuept/lb",
   "version": "1.0.0-alpha.1",
-  "description": "__package-description__",
+  "description": "VuePoint.js LoopBack Library",
   "author": "Copyright (c) 2018 Steve Lathrop",
   "license": "MIT",
-  "private": true,
+  "private": false,
   "publishConfig": {
     "access": "public"
   },
   "main": "index.js",
   "config": {
-    "vp-pkg-type": "__ui-or-lb__"
+    "vp-pkg-type": "lb"
   },
   "scripts": {},
   "repository": {

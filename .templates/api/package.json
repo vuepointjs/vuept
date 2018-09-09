@@ -26,7 +26,7 @@
     "dev:info": "cross-env INFO_ONLY=1 HTTP_ONLY=1 NODE_ENV=development DEBUG= node .",
     "dev:info:verbose": "cross-env INFO_ONLY=1 VERBOSE=1 HTTP_ONLY=1 NODE_ENV=development DEBUG=loopback:connector:mssql,loopback:datasource,loopback:security:* node .",
     "debug": "cross-env NODE_ENV=development DEBUG=* nodemon .",
-    "client:clean": "shx rm -rf ./client/* && shx cp -r ./.client-default/. ./client/",
+    "client:clean": "shx rm -rf ./client/* && shx touch ./client/.keep",
     "client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path ./client/\"",
     "client:update:tdev": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path_tdev ./client/\""
   },

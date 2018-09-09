@@ -1,6 +1,8 @@
 // VuePoint.js LoopBack customizations
 
 'use strict';
+console.log('\x1b[33m%s\x1b[0m', `>>> >>> BOOT: ${__filename}`);
+
 const SQL_BATCH_DELIMITER = 'GO;';
 
 /**

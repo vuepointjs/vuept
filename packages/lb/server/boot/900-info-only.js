@@ -1,4 +1,5 @@
 'use strict';
+console.log('\x1b[33m%s\x1b[0m', `>>> >>> BOOT: ${__filename}`);
 
 module.exports = function(server) {
   const solutionContext = require('@vuept_solution/data').context;
