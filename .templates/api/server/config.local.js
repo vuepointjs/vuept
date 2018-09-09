@@ -8,21 +8,18 @@
 */
 'use strict';
 
-const env = process.env.NODE_ENV || 'development';
-const isDev = env === 'development' || env === 'test';
 const httpOnly = !!process.env.HTTP_ONLY;
-
+const solutionContext = require('@vuept_solution/data').context;
+const solutionRole = process.env.npm_package_config_vp_solution_role;
 const suiteKey = process.env.npm_package_config_vp_suite_key;
-const appKey = process.env.npm_package_config_vp_app_key;
-const solutionData = require('@vuept_solution/data').getters;
-const suiteData = solutionData.suiteByKey(suiteKey);
-const appData = solutionData.appByKey(suiteData, appKey);
+const appKey = process.env.npm_package_config_vp_app_key || null;
+const vpCtx = solutionContext.fromRoleAndKeys(solutionRole, suiteKey, appKey);
 
 const config = {
   restApiRoot: '/api/v1',
   host: process.env.API_HOST,
-  port: isDev || httpOnly ? appData.devPorts.api : 443,
-  isDev
+  port: vpCtx.isDev || httpOnly ? vpCtx.port : 443,
+  isDev: vpCtx.isDev
 };
 
 module.exports = config;

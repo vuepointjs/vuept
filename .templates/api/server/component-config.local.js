@@ -16,14 +16,15 @@ const azureData = require('@vuept_solution/data').getters.azureProfileByKey(vpCt
 
 const explorerSecret = vpCtx.isDev ? 'explorer' : azureData.apiId;
 const mountPath = `/${explorerSecret}`;
+const configErrMsg = 'ERROR: Missing Suite Configuration Data';
 
 const componentConfig = {
   'loopback-component-explorer': {
     mountPath: mountPath,
     generateOperationScopedModels: true,
     apiInfo: {
-      title: vpCtx.title,
-      description: vpCtx.description
+      title: vpCtx.title || configErrMsg,
+      description: vpCtx.description || configErrMsg
     }
   }
 };

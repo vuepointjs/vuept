@@ -37,15 +37,16 @@ const getters = {
   suitePathByKey: key => path.resolve(__dirname, key === '__suite-key__' ? '../../.templates/suite/' : `../suite/${key.toLowerCase()}/`),
 
   appByKey: (suiteData, key) =>
-    key
+    suiteData && suiteData.apps && key
       ? _(suiteData.apps)
           .filter({ key })
           .first()
       : {},
 
   _appByKeysRaw(suiteKey, appKey) {
-    return appKey && suiteKey
-      ? _(this.suiteByKey(suiteKey).apps)
+    let suiteData = this.suiteByKey(suiteKey);
+    return suiteKey && appKey && suiteData && suiteData.apps
+      ? _(suiteData.apps)
           .filter({ key: appKey })
           .first()
       : {};
@@ -101,11 +102,11 @@ const getters = {
 
     switch (role) {
       case 'suite':
-        return `${suite.name} Suite`;
+        return suite ? `${suite.name} Suite` : null;
       case 'app':
-        return `${suite.name} - ${app.name} App`;
+        return suite && app ? `${suite.name} - ${app.name} App` : null;
       case 'api':
-        return `${suite.tenantKey} ${suite.name} API - ${app.name} (${app.key})`;
+        return suite && app ? `${suite.tenantKey} ${suite.name} API - ${app.name} (${app.key})` : null;
       default:
         return null;
     }
@@ -128,9 +129,11 @@ const getters = {
   },
 
   azureProfileByKey: (suiteData, key) =>
-    _(suiteData.azure)
-      .filter({ key })
-      .first()
+    suiteData && suiteData.azure
+      ? _(suiteData.azure)
+          .filter({ key })
+          .first()
+      : {}
 };
 
 // Assign optimized versions of some getters
@@ -161,6 +164,7 @@ const mutations = {
   }
 };
 
+const configErrMsg = 'ERROR: Missing Suite Configuration Data';
 const context = {
   _fromRoleAndKeysRaw: (solutionRole, suiteKey, appKey) => ({
     nodeEnv: process.env.NODE_ENV || 'development',
@@ -172,7 +176,7 @@ const context = {
     solutionRole,
     suiteKey,
     appKey,
-    suiteData: getters.suiteByKey(suiteKey),
+    suiteData: getters.suiteByKey(suiteKey) || configErrMsg,
     appData: getters.appByKeys(suiteKey, appKey),
     sourcePath: getters.sourcePathByRoleAndKeys(solutionRole, suiteKey, appKey),
     buildDir: getters.buildDirByRoleAndKeys(solutionRole, suiteKey, appKey),
