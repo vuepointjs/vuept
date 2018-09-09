@@ -7,6 +7,7 @@
       https://loopback.io/doc/en/lb3/Environment-specific-configuration.html#application-wide-configuration
 */
 'use strict';
+console.log('\x1b[33m%s\x1b[0m', `>>> >>> BOOT: ${__filename}`);
 
 const httpOnly = !!process.env.HTTP_ONLY;
 const solutionContext = require('@vuept_solution/data').context;

@@ -14,6 +14,8 @@
   qry str param or auth header.
 */
 'use strict';
+console.log('\x1b[33m%s\x1b[0m', `>>> >>> BOOT: ${__filename}`);
+
 const jwt = require('jsonwebtoken');
 const x5 = require('../ms-azure-ad-keys.json');
 
