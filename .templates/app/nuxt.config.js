@@ -111,6 +111,7 @@ module.exports = {
 
   // Call out dynamic routes for rendering during "nuxt generate"
   generate: {
+    dir: `${vpCtx.buildDir}-dist`,
     routes: []
   },
 
