@@ -28,7 +28,7 @@ if (vpCtx.isInfoOnly) {
 
 module.exports = {
   mode: 'spa',
-  rootDir: '../../',
+  rootDir: vpCtx.isTemplateDev ? '../../' : '../../../',
   srcDir: vpCtx.sourcePath,
   buildDir: vpCtx.buildDir,
 
