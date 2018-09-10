@@ -23,7 +23,7 @@ if (!vpCtx.isTemplateDev) {
 const middleware = {
   'initial:before': {
     'loopback#favicon': {
-      params: '../client/favicon.ico'
+      params: '$!../client/favicon.ico'
     }
   },
   files: {
