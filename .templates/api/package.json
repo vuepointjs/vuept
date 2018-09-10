@@ -38,18 +38,15 @@
     "url": "git+https://github.com/vuepointjs/vuept.git"
   },
   "dependencies": {
-    "bluebird": "^3.5.1",
     "compression": "^1.7.3",
     "cors": "^2.8.4",
     "dotenv": "^6.0.0",
     "helmet": "^3.13.0",
-    "jsonwebtoken": "^8.3.0",
     "loopback": "^3.22.2",
     "loopback-boot": "^3.1.1",
     "loopback-component-explorer": "^6.2.0",
     "loopback-connector-mssql": "^3.3.0",
     "loopback-connector-rest": "^3.2.0",
-    "moment": "^2.22.2",
     "serve-favicon": "^2.5.0",
     "strong-error-handler": "^2.3.2"
   },

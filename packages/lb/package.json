@@ -22,6 +22,11 @@
     "url": "https://github.com/vuepointjs/vuept/issues"
   },
   "homepage": "https://github.com/vuepointjs/vuept#readme",
+  "dependencies": {
+    "bluebird": "^3.5.1",
+    "jsonwebtoken": "^8.3.0",
+    "moment": "^2.22.2"
+  },
   "devDependencies": {
     "babel-eslint": "^9.0.0",
     "eslint": "^5.5.0",
