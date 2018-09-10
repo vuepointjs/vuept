@@ -2,8 +2,8 @@
 /*
     Requirements:
       key: Exactly 2 characters, unique (case-insensitive)
-      name: Max 30 characters
-      shortName: Max 12 characters
+      longName: Max 30 characters
+      name: Max 12 characters
 */
 
 // import colors from 'vuetify/es5/util/colors';
@@ -12,86 +12,86 @@ module.exports = [
   {
     key: 'Cu',
     ord: 1,
-    name: 'Customers',
-    shortName: 'Customers'
+    longName: 'Customers',
+    name: 'Customers'
     // iconColor: colors.blue.lighten3
   },
   {
     key: 'RF',
     ord: 2,
-    name: 'Reduced Fare',
-    shortName: 'Reduced Fare'
+    longName: 'Reduced Fare',
+    name: 'Reduced Fare'
   },
   {
     key: 'Su',
     ord: 3,
-    name: 'Summons',
-    shortName: 'Summons'
+    longName: 'Summons',
+    name: 'Summons'
   },
   {
     key: 'LF',
     ord: 4,
-    name: 'Lost and Found',
-    shortName: 'Lost & Found'
+    longName: 'Lost and Found',
+    name: 'Lost & Found'
   },
   {
     key: 'LT',
     ord: 5,
-    name: 'Lost Ticket',
-    shortName: 'Lost Ticket'
+    longName: 'Lost Ticket',
+    name: 'Lost Ticket'
   },
   {
     key: 'CC',
     ord: 6,
-    name: 'Customer Comments',
-    shortName: 'Comments'
+    longName: 'Customer Comments',
+    name: 'Comments'
   },
   {
     key: 'RR',
     ord: 7,
-    name: 'Refund Request',
-    shortName: 'Refunds'
+    longName: 'Refund Request',
+    name: 'Refunds'
   },
   {
     key: 'SB',
     ord: 8,
-    name: 'Security Blanket',
-    shortName: 'Sec. Blanket'
+    longName: 'Security Blanket',
+    name: 'Sec. Blanket'
   },
   {
     key: 'FR',
     ord: 9,
-    name: 'Free Ride Cert.',
-    shortName: 'Free Ride'
+    longName: 'Free Ride Cert.',
+    name: 'Free Ride'
   },
   {
     key: 'GF',
     ord: 10,
-    name: 'Group Fare',
-    shortName: 'Group Fare'
+    longName: 'Group Fare',
+    name: 'Group Fare'
   },
   {
     key: 'CT',
     ord: 11,
-    name: 'Captured Tickets',
-    shortName: 'Captured Tix'
+    longName: 'Captured Tickets',
+    name: 'Captured Tix'
   },
   {
     key: 'CB',
     ord: 12,
-    name: 'Charge Back',
-    shortName: 'Charge Back'
+    longName: 'Charge Back',
+    name: 'Charge Back'
   },
   {
     key: 'ML',
     ord: 13,
-    name: 'Mail Log',
-    shortName: 'Mail Log'
+    longName: 'Mail Log',
+    name: 'Mail Log'
   },
   {
     key: 'PL',
     ord: 14,
-    name: 'Parking Lot',
-    shortName: 'Parking Lot'
+    longName: 'Parking Lot',
+    name: 'Parking Lot'
   }
 ];
