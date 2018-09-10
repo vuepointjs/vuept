@@ -23,6 +23,8 @@
     "clean:nuxt": "rimraf ./.nuxt*",
     "reset": "run-s -s clean l:clean",
     "build": "run-s -s clean l:build:apps l:build:apis",
+    "docker:build": "run-s -s build l:docker:build",
+    "docker:build:only": "yarn l:docker:build",
     "dryrun": "yarn l:dryrun",
     "publish": "run-s -s bootstrap build l:publish",
     "add:suite": "node ./scripts/add-suite",
@@ -54,6 +56,7 @@
     "l:clean": "lerna clean --yes",
     "l:build:apps": "lerna run build --scope @vuept_solution/app-*",
     "l:build:apis": "lerna run build --scope @vuept_solution/api-*",
+    "l:docker:build": "lerna run docker:build --scope @vuept_solution/api-*",
     "l:publish": "lerna publish",
     "l:dryrun": "lerna publish --skip-npm --skip-git",
     "l:watch": "lerna run watch --parallel"
