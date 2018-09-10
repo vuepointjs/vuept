@@ -4,7 +4,7 @@
     This file overrides baseline settings in component-config.json.
 */
 'use strict';
-console.log('\x1b[33m%s\x1b[0m', `>>> >>> BOOT: ${__filename}`);
+// console.log('\x1b[33m%s\x1b[0m', `>>> >>> BOOT: ${__filename}`);
 
 const solutionContext = require('@vuept_solution/data').context;
 const solutionRole = process.env.npm_package_config_vp_solution_role;
