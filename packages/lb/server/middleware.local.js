@@ -14,24 +14,32 @@ const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRo
 
 let clientPath = '../client';
 if (!vpCtx.isTemplateDev) {
-  clientPath = vpCtx.sourcePath.replace('/app', '/api');
+  clientPath = vpCtx.sourcePath.replace(`${path.sep}app`, `${path.sep}api`);
   clientPath = path.join(clientPath, 'client');
 }
 
 // console.log(`>>> Client path: ${clientPath}`);
 
 const middleware = {
+  'initial:before': {
+    'loopback#favicon': {
+      params: '../client/favicon.ico'
+    }
+  },
+  files: {
+    'loopback#static': {
+      params: clientPath
+    }
+  },
+  final: {
+    './middleware/url-not-found-handler': {}
+  },
   'final:after': {
     'strong-error-handler': {
       params: {
         debug: vpCtx.isDev,
         log: vpCtx.isDev
       }
-    }
-  },
-  files: {
-    'loopback#static': {
-      params: clientPath
     }
   }
 };
