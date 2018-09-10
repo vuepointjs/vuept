@@ -23,7 +23,7 @@
         {
           "name": "Groupware",
           "key": "__app-key__",
-          "longName": "Groupware App",
+          "longName": "Cloud Groupware",
           "devPorts": {
             "app": "33770",
             "api": "33880"
