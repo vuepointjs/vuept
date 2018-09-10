@@ -71,7 +71,7 @@ export default {
       return {
         suiteName: this.mediaSize === 'xs' ? this.taxonomy.suiteShortName : this.taxonomy.suiteName,
         appName: this.mediaSize === 'xs' ? this.taxonomy.appShortName : this.taxonomy.appName,
-        appletName: this.mediaSize === 'xs' ? applet.shortName : applet.name,
+        appletName: this.mediaSize === 'xs' ? applet.name : applet.longName,
         dividerClasses: this.mediaPixelWidth <= 420 ? 'mx-2' : 'mx-3'
       };
     }

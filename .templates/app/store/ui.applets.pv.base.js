@@ -2,43 +2,43 @@
 /*
     Requirements:
       key: Exactly 2 characters, unique (case-insensitive)
-      name: Max 30 characters
-      shortName: Max 12 characters
+      longName: Max 30 characters
+      name: Max 12 characters
 */
 module.exports = [
   {
     key: 'Pt',
     ord: 1,
+    longName: 'Patients',
     name: 'Patients',
-    shortName: 'Patients',
     iconColor: null
   },
   {
     key: 'BV',
     ord: 2,
-    name: 'Benefit Verification',
-    shortName: 'Benefit Ver.',
+    longName: 'Benefit Verification',
+    name: 'Benefit Ver.',
     iconColor: null
   },
   {
     key: 'AE',
     ord: 3,
-    name: 'Adverse Events',
-    shortName: 'Adv. Events',
+    longName: 'Adverse Events',
+    name: 'Adv. Events',
     iconColor: null
   },
   {
     key: 'PA',
     ord: 4,
-    name: 'Patient Assistance',
-    shortName: 'Pt. Assist',
+    longName: 'Patient Assistance',
+    name: 'Pt. Assist',
     iconColor: null
   },
   {
     key: 'AT',
     ord: 5,
-    name: 'Adherence Training',
-    shortName: 'Adherence',
+    longName: 'Adherence Training',
+    name: 'Adherence',
     iconColor: null
   }
 ];
