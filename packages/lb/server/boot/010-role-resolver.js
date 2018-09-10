@@ -19,6 +19,14 @@
 const jwt = require('jsonwebtoken');
 const x5 = require('../ms-azure-ad-keys.json');
 
+const solutionRole = process.env.npm_package_config_vp_solution_role;
+const suiteKey = process.env.npm_package_config_vp_suite_key;
+const appKey = process.env.npm_package_config_vp_app_key || null;
+const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRole, suiteKey, appKey);
+
+const azureProfileKey = vpCtx.isDev ? 'DEV' : 'PROD';
+const azureData = require('@vuept_solution/data').getters.azureProfileByKey(vpCtx.suiteData, azureProfileKey);
+
 module.exports = function(app) {
   var Role = app.models.Role;
 
@@ -32,7 +40,7 @@ module.exports = function(app) {
       var decodedToken = {};
       var tokenVerifyOptions = {
         algorithms: ['RS256'],
-        audience: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee' // TODO: Pull Azure App ID from solution data
+        audience: azureData.apiId
       };
       var verifiedToken = {};
 
@@ -79,15 +87,16 @@ module.exports = function(app) {
         var email = verifiedToken.upn ? verifiedToken.upn.toLowerCase() : '';
         if (!email) return cb(null, false);
 
-        var msTenantName = process.env.MS_TENANT_NAME ? process.env.MS_TENANT_NAME.toLowerCase() : '';
-        if (!msTenantName) return cb(null, false);
-
         // See: https://support.office.com/en-us/article/domains-faq-1272bad0-4bd4-4796-8005-67d6fb3afc5a#bkmk_whydoihaveanonmicrosoft.comdomain
         // and: https://blog.lawrencecawood.com/heres-what-happens-when-you-pick-the-wrong-office-365-tenant-name-27b657e8acbd
-        var msTenantDomain = `${msTenantName}.onmicrosoft.com`;
+        var msTenantDomain = azureData.tenant;
+        if (!msTenantDomain) return cb(null, false);
+        msTenantDomain = msTenantDomain.toLowerCase();
+        if (!msTenantDomain.includes('.onmicrosoft.com')) return cb(null, false);
 
-        var tenantPrimaryDomain = process.env.TENANT_PRIMARY_DOMAIN ? process.env.TENANT_PRIMARY_DOMAIN.toLowerCase() : '';
+        var tenantPrimaryDomain = vpCtx.suiteData.tenantPrimaryDomain;
         if (!tenantPrimaryDomain) return cb(null, false);
+        tenantPrimaryDomain = tenantPrimaryDomain.toLowerCase();
 
         var isValidTenantUser = false;
         if (email.includes(`@${msTenantDomain}`)) isValidTenantUser = true;

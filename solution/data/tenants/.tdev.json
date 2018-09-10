@@ -6,6 +6,7 @@
       "longName": "VuePoint.js Example Suite",
       "tenantKey": "VP",
       "tenantName": "VuePoint.js Example Tenant",
+      "tenantPrimaryDomain": "vuept.org",
       "devPorts": {
         "api": "33980",
         "suite": "33990"
