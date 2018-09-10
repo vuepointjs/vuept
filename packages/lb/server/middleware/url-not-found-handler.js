@@ -1,5 +1,5 @@
 'use strict';
-console.log('\x1b[33m%s\x1b[0m', `>>> >>> BOOT: ${__filename}`);
+// console.log('\x1b[33m%s\x1b[0m', `>>> >>> BOOT: ${__filename}`);
 
 module.exports = function() {
   console.log('Custom "URL not found" middleware installed.');
