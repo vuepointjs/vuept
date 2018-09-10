@@ -5,11 +5,10 @@ const taxonomy = require(`./store/ui.taxonomy.${scenario}.base`);
 const nodeExternals = require('webpack-node-externals');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
-const solutionContext = require('@vuept_solution/data').context;
 const solutionRole = process.env.npm_package_config_vp_solution_role;
 const suiteKey = process.env.npm_package_config_vp_suite_key;
 const appKey = process.env.npm_package_config_vp_app_key || null;
-const vpCtx = solutionContext.fromRoleAndKeys(solutionRole, suiteKey, appKey);
+const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRole, suiteKey, appKey);
 
 // Tweak Nuxt runtime config during template development
 if (vpCtx.isTemplateDev) {

@@ -10,11 +10,10 @@
 // console.log('\x1b[33m%s\x1b[0m', `>>> >>> BOOT: ${__filename}`);
 
 const httpOnly = !!process.env.HTTP_ONLY;
-const solutionContext = require('@vuept_solution/data').context;
 const solutionRole = process.env.npm_package_config_vp_solution_role;
 const suiteKey = process.env.npm_package_config_vp_suite_key;
 const appKey = process.env.npm_package_config_vp_app_key || null;
-const vpCtx = solutionContext.fromRoleAndKeys(solutionRole, suiteKey, appKey);
+const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRole, suiteKey, appKey);
 
 const config = {
   restApiRoot: '/api/v1',
