@@ -13,6 +13,8 @@
     "container-image-name": "__app-key__-__suite-key__",
     "internal-port": "443",
     "external-port": "443",
+    "root-rel-path": "../../..",
+    "root-rel-dockerfile-path": "./solution/api/__app-key__/Dockerfile",
     "client-rel-path": "../app/__app-key__/dist/.",
     "client-rel-path-tdev": "../app/dist/."
   },
@@ -29,7 +31,10 @@
     "build": "yarn client:update",
     "client:clean": "shx rm -rf ./client/* && shx touch ./client/.keep",
     "client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path ./client/\"",
-    "client:update:tdev": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path_tdev ./client/\""
+    "client:update:tdev": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path_tdev ./client/\"",
+    "docker:build": "cross-env-shell \"cd $npm_package_config_root_rel_path && docker build -f $npm_package_config_root_rel_dockerfile_path -t $npm_package_config_container_image_name:$npm_package_version .\"",
+    "docker:clean": "cross-env-shell \"docker rm -f $npm_package_config_container_image_name\"",
+    "docker:run": "cross-env-shell \"docker run --name $npm_package_config_container_image_name -d -p $npm_package_config_external_port:$npm_package_config_internal_port $npm_package_config_container_image_name:$npm_package_version\""
   },
   "engines": {
     "node": ">=10.7.0"
