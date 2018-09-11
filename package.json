@@ -25,7 +25,7 @@
     "build": "run-s -s clean l:build:apps l:build:apis",
     "docker:build": "run-s -s build l:docker:build",
     "docker:build:only": "yarn l:docker:build",
-    "export:version": "export VERSION=\"$npm_package_version\"",
+    "export:version": "cross-env-shell \"export VERSION=$npm_package_version\"",
     "dryrun": "yarn l:dryrun",
     "publish": "run-s -s bootstrap build l:publish",
     "add:suite": "node ./scripts/add-suite",
