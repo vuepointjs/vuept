@@ -4,11 +4,28 @@ const tlsConfig = require('./.tls/tls');
 
 const server = {
   start(dotenvConfig, boot, app, http, https, serverDirAPI, isServerStartup) {
-    if (dotenvConfig.error) {
-      if (isInfoOnly) console.log('Error reading .env file.');
-      else throw dotenvConfig.error;
+    // Confirm that we have the required env. vars for DB connection, etc.
+    const pe = process.env;
+    if (
+      pe.API_HOST && // Env vars could be in .env file or set via CI/CD or docker run
+      pe.DB_HOST &&
+      pe.DB_NAME &&
+      pe.DB_SCHEMA &&
+      pe.DB_USER &&
+      pe.DB_PWD
+    ) {
+      console.log('Env vars confirmed.');
+    } else if (isInfoOnly) {
+      console.log('Env vars not set.');
+    } else {
+      throw `Error reading env vars. Use .env file or pass env vars into process:
+              API_HOST,
+              DB_HOST,
+              DB_NAME,
+              DB_SCHEMA,
+              DB_USER, and
+              DB_PWD`;
     }
-    // console.dir(dotenvConfig);
 
     app.start = function(httpOnly) {
       // console.log('\x1b[33m%s\x1b[0m', '>>> In LoopBack app.start callback');
