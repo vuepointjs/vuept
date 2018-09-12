@@ -1,0 +1,19 @@
+version: '1.0'
+steps:
+  BuildClient:
+    title: Building Client
+    image: node:10.9-alpine
+    working_directory: ${{main_clone}}
+    commands:
+      - yarn bootstrap && yarn build
+      - yarn export:version:cf
+
+  BuildingDockerImage:
+    title: Building Docker Image
+    type: build
+    no_cache: true
+    no_cf_cache: true
+    image_name: zz-demo
+    working_directory: ./
+    tag: '${{VERSION_TAG}}'
+    dockerfile: solution/api/zz/Dockerfile
