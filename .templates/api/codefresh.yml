@@ -1,19 +1,32 @@
 version: '1.0'
 steps:
-  BuildClient:
+  BuildingClient:
     title: Building Client
+    description: Use yarn to execute npm scripts that bootstrap the solution and build the client
     image: node:10.9-alpine
     working_directory: ${{main_clone}}
     commands:
+      # Consider using non-alpine node image w/ bash and updating yarn to lastest w/ following cmd
+      # - curl --compressed -o- -L https://yarnpkg.com/install.sh | bash
       - yarn bootstrap && yarn build
+
+  ConfiguringEnvironment:
+    title: Configuring Environment For Docker Build
+    description: Generate image version tag. Build .env file from vars in pipeline on CF site
+    image: node:10.9-alpine
+    working_directory: ${{main_clone}}
+    commands:
       - yarn export:version:cf
+      - dotenv=./solution/api/__app-key__/.env
+      - echo -e "API_HOST=$API_HOST\nDB_HOST=$DB_HOST\nDB_NAME=$DB_NAME" >> $dotenv
+      - echo -e "DB_SCHEMA=$DB_SCHEMA\nDB_USER=$DB_USER\nDB_PWD=$DB_PWD" >> $dotenv
 
   BuildingDockerImage:
     title: Building Docker Image
     type: build
-    no_cache: true
+    no_cache: true # Sometimes bad builds happen, and we wanna replace an image (w/ same version tag)
     no_cf_cache: true
-    image_name: zz-demo
+    image_name: __app-key__-__suite-key___
     working_directory: ./
     tag: '${{VERSION_TAG}}'
-    dockerfile: solution/api/zz/Dockerfile
+    dockerfile: solution/api/__app-key__/Dockerfile
