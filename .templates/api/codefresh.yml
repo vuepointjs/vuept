@@ -23,10 +23,39 @@ steps:
 
   BuildingDockerImage:
     title: Building Docker Image
+    description: Build docker image using Dockerfile from the repo, tagging it with the version
     type: build
     no_cache: true # Sometimes bad builds happen, and we wanna replace an image (w/ same version tag)
     no_cf_cache: true
-    image_name: __app-key__-__suite-key___
+    image_name: __app-key__-__suite-key__
     working_directory: ./
     tag: '${{VERSION_TAG}}'
     dockerfile: solution/api/__app-key__/Dockerfile
+
+  PushingToAzureContainerRegistry:
+    title: Pushing Image to Azure Container Registry
+    description: Push the image to the named ACR instance configured via integrations on the CF site
+    type: push
+    candidate: '${{BuildingDockerImage}}'
+    tag: '${{VERSION_TAG}}'
+    registry: 'vp__suite-key__containers'
+    when:
+      branch:
+        only:
+          - master
+
+  RunningAKSDeployment:
+    title: Running AKS Deployment
+    description: Deploy the image to the already-running, named AKS cluster and service
+    type: deploy
+    kind: kubernetes
+    cluster: 'vp-__suite-key__-cluster'
+    namespace: default
+    service: '__app-key__-__suite-key__-service'
+    candidate:
+      image: '${{BuildingDockerImage}}'
+      registry: 'vp__suite-key__containers'
+    when:
+      branch:
+        only:
+          - master
