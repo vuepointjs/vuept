@@ -12,7 +12,9 @@
   "config": {
     "vp-pkg-type": "__ui-or-lb__"
   },
-  "scripts": {},
+  "scripts": {
+    "bump:version": "npm --no-git-tag-version --no-commit-hooks version prerelease"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vuepointjs/vuept.git"

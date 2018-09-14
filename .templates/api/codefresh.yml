@@ -16,7 +16,7 @@ steps:
     image: node:10.9-alpine
     working_directory: ${{main_clone}}
     commands:
-      - yarn export:version:cf
+      - yarn export:version:solution:cf
       - dotenv=./solution/api/__app-key__/.env
       - echo -e "API_HOST=$API_HOST\nDB_HOST=$DB_HOST\nDB_NAME=$DB_NAME" >> $dotenv
       - echo -e "DB_SCHEMA=$DB_SCHEMA\nDB_USER=$DB_USER\nDB_PWD=$DB_PWD" >> $dotenv

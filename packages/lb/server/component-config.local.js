@@ -26,7 +26,7 @@ const componentConfig = {
       title: vpCtx.title || configErrMsg,
       description: vpCtx.description || configErrMsg
     },
-    version: vpCtx.suiteVersion
+    version: vpCtx.solutionVersion
   }
 };
 
