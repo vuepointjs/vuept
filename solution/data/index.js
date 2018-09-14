@@ -172,11 +172,11 @@ const context = {
     isTemplateDev: !!process.env.TDEV,
     isInfoOnly: !!process.env.INFO_ONLY,
     isVerbose: !!process.env.VERBOSE,
+    solutionVersion: require('@vuept_solution/admin/package.json').version, // We (arbitrarily) use the admin pkg as version banner carrier for entire solution
     solutionDataFilePath: getters.filePath,
     solutionRole,
     suiteKey,
     appKey,
-    suiteVersion: require('@vuept_solution/admin/package.json').version, // The admin pkg carries the version banner for the suite
     suiteData: getters.suiteByKey(suiteKey) || configErrMsg,
     appData: getters.appByKeys(suiteKey, appKey),
     sourcePath: getters.sourcePathByRoleAndKeys(solutionRole, suiteKey, appKey),
