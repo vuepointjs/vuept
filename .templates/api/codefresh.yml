@@ -3,7 +3,7 @@ steps:
   BuildingClient:
     title: Building Client
     description: Use yarn to execute npm scripts that bootstrap the solution and build the client
-    image: node:10.9-alpine
+    image: node:10.10-alpine
     working_directory: ${{main_clone}}
     commands:
       # Consider using non-alpine node image w/ bash and updating yarn to lastest w/ following cmd
@@ -13,7 +13,7 @@ steps:
   ConfiguringEnvironment:
     title: Configuring Environment For Docker Build
     description: Generate image version tag. Build .env file from vars in pipeline on CF site
-    image: node:10.9-alpine
+    image: node:10.10-alpine
     working_directory: ${{main_clone}}
     commands:
       - yarn export:version:solution:cf

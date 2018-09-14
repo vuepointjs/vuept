@@ -3,6 +3,8 @@ const fs = require('fs');
 const path = require('path');
 const _ = require('lodash');
 
+const version = require(path.resolve(__dirname, './package.json')).version;
+
 // Initialize placeholder to use when getting and exporting all of the individual schemas below
 const schema = {
   suite: null,
@@ -48,5 +50,6 @@ try {
 }
 
 module.exports = {
-  schema
+  schema,
+  version
 };
