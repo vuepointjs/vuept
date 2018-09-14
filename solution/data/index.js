@@ -176,6 +176,7 @@ const context = {
     solutionRole,
     suiteKey,
     appKey,
+    suiteVersion: require('@vuept_solution/admin/package.json').version, // The admin pkg carries the version banner for the suite
     suiteData: getters.suiteByKey(suiteKey) || configErrMsg,
     appData: getters.appByKeys(suiteKey, appKey),
     sourcePath: getters.sourcePathByRoleAndKeys(solutionRole, suiteKey, appKey),

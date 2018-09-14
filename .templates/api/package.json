@@ -30,6 +30,7 @@
     "db:schema:update": "cross-env SCHEMA_STRATEGY=preserve_data yarn dev:info:verbose",
     "db:schema:reset": "cross-env SCHEMA_STRATEGY=force yarn dev:info:verbose",
     "debug": "cross-env NODE_ENV=development DEBUG=* nodemon .",
+    "bump:version": "npm --no-git-tag-version --no-commit-hooks version prerelease",
     "build": "yarn client:update",
     "client:clean": "shx rm -rf ./client/* && shx touch ./client/.keep",
     "client:update": "yarn client:clean && cross-env-shell \"shx cp -r $npm_package_config_client_rel_path ./client/\"",

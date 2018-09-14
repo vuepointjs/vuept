@@ -25,7 +25,8 @@ const componentConfig = {
     apiInfo: {
       title: vpCtx.title || configErrMsg,
       description: vpCtx.description || configErrMsg
-    }
+    },
+    version: vpCtx.suiteVersion
   }
 };
 

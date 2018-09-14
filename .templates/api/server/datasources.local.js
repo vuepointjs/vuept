@@ -10,7 +10,7 @@ var isDev = env === 'development' || env === 'test';
 
 const db = {
   name: 'db',
-  connector: 'mssql',
+  connector: '@vuept/loopback-connector-mssql',
   host: process.env.DB_HOST,
   port: 1433,
   database: process.env.DB_NAME,
