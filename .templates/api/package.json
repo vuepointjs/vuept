@@ -40,7 +40,7 @@
     "docker:run": "cross-env-shell \"docker run --name $npm_package_config_container_image_name -d -p $npm_package_config_external_port:$npm_package_config_internal_port $npm_package_config_container_image_name:$npm_package_version\""
   },
   "engines": {
-    "node": ">=10.7.0"
+    "node": ">=10.10.0"
   },
   "repository": {
     "type": "git",

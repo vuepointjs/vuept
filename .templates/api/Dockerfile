@@ -1,5 +1,5 @@
 # Use node.js running on Alpine Linux w/ Yarn installed
-FROM node:10.9-alpine
+FROM node:10.10-alpine
 
 # Create the solution directory structure in the container
 RUN mkdir -p /usr/src/zz-demo/packages
