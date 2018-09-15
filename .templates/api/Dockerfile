@@ -1,11 +1,10 @@
 # Use node.js running on Alpine Linux w/ Yarn installed
 FROM node:10.10-alpine
 
-# Create the solution directory structure in the container
-RUN mkdir -p /usr/src/zz-demo/packages
-RUN mkdir -p /usr/src/zz-demo/solution/data
-RUN mkdir -p /usr/src/zz-demo/solution/api/zz
+# Create the solution folder in the container
+RUN mkdir -p /usr/src/zz-demo
 
+# ...and use it as our working directory for now
 WORKDIR /usr/src/zz-demo
 
 # Copy solution files into container
@@ -22,6 +21,7 @@ RUN yarn bootstrap && yarn cache clean
 # Expose API port to the outside
 EXPOSE 443
 
+# Set run-time working directory
 WORKDIR /usr/src/zz-demo/solution/api/zz
 
 # Launch API server
