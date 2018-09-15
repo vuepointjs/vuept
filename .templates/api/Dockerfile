@@ -12,6 +12,7 @@ WORKDIR /usr/src/zz-demo
 COPY package.json .
 COPY lerna.json .
 COPY packages ./packages
+COPY solution/admin ./solution/admin
 COPY solution/data ./solution/data
 COPY solution/api/zz ./solution/api/zz
 
