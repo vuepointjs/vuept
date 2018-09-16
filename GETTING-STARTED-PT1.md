@@ -4,7 +4,7 @@
 
 There are three prerequisites for working with this codebase:
 
-1.  [Node.js](https://nodejs.org/en/download/) v10.8 or greater (LTS version as of October 2018)
+1.  [Node.js](https://nodejs.org/en/download/) v10.10 or greater (LTS version as of October 2018)
 1.  [Yarn](https://yarnpkg.com/en/docs/install) v1.9.4 or greater
 1.  [Docker](https://www.docker.com/community-edition#/download) v18.06.1 or greater (Latest Stable Docker Community Edition (CE))
 
@@ -56,10 +56,14 @@ Simple scripts will be available from the command line, such as:
 yarn add:suite
 ```
 
-to add your Suite of Apps, and:
+to add your Suite of Apps.
+
+And:
 
 ```bash
 yarn add:app
 ```
 
 to add an App to your Office Suite.
+
+Until these scripts become available you can copy the relevant pieces from the `.templates` folders to the `solution` folder. Examples for this will be made available.
