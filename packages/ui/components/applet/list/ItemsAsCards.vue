@@ -54,7 +54,7 @@
 </template>
 
 <script>
-import AppletsNavPanel from '~/components/AppletsNavPanel.vue';
+import AppletsNavPanel from '@vuept/ui/components/AppletsNavPanel.vue';
 
 export default {
   components: {

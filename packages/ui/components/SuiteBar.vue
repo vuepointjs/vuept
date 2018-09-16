@@ -80,8 +80,8 @@ export default {
 </script>
 
 <style lang="stylus">
-@require '~@/assets/vp/stylus/variables'
-@require '~@/assets/vp/stylus/selectors'
+@require '~@vuept/ui/stylus/variables'
+@require '~@vuept/ui/stylus/selectors'
 
 {vp-toolbar}
   & .v-divider--vertical

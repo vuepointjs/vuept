@@ -31,7 +31,7 @@
 
 <script>
 import SuiteBar from '@vuept/ui/components/SuiteBar.vue';
-import AppletsNavPanel from '~/components/AppletsNavPanel.vue';
+import AppletsNavPanel from '@vuept/ui/components/AppletsNavPanel.vue';
 import _ from 'lodash';
 
 export default {

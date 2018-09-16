@@ -133,7 +133,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-@require '~@/assets/vp/stylus/variables'
+@require '~@vuept/ui/stylus/variables'
 
 .vp-applet-nav-items-container
   padding: 12px 10px 12px 24px

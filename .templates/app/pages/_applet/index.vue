@@ -12,9 +12,9 @@
 </template>
 
 <script>
-import BodyAsMarkdown from '~/components/applet/page/BodyAsMarkdown.vue';
-import ItemsAsCards from '~/components/applet/list/ItemsAsCards.vue';
-import ItemsAsGrid from '~/components/applet/list/ItemsAsGrid.vue';
+import BodyAsMarkdown from '@vuept/ui/components/applet/page/BodyAsMarkdown.vue';
+import ItemsAsCards from '@vuept/ui/components/applet/list/ItemsAsCards.vue';
+import ItemsAsGrid from '@vuept/ui/components/applet/list/ItemsAsGrid.vue';
 
 export default {
   validate({ params, store }) {
