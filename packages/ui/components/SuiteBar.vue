@@ -23,11 +23,21 @@
         {{ suiteBarTitles.appletName }}
       </span>
     </template>
+
+    <!-- Right-aligned menu(s) -->
+    <v-spacer></v-spacer>
+    <user-menu />
   </v-toolbar>
 </template>
 
 <script>
+import UserMenu from '@vuept/ui/components/UserMenu.vue';
+
 export default {
+  components: {
+    UserMenu
+  },
+
   data: () => ({}),
 
   created() {
