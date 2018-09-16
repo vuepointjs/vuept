@@ -21,7 +21,8 @@
   "dependencies": {
     "lodash": "^4.17.10",
     "lodash-id": "^0.14.0",
-    "lowdb": "^1.0.0"
+    "lowdb": "^1.0.0",
+    "@vuept_solution/admin": ">=1.0.0-alpha.1"
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",
