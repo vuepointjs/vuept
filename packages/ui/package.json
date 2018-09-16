@@ -1,0 +1,43 @@
+{
+  "name": "@vuept/ui",
+  "version": "1.0.0-alpha.1",
+  "description": "VuePoint.js UI Library",
+  "author": "Copyright (c) 2018 Steve Lathrop",
+  "license": "MIT",
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "main": "index.js",
+  "config": {
+    "vp-pkg-type": "ui"
+  },
+  "scripts": {
+    "bump:version": "npm --no-git-tag-version --no-commit-hooks version prerelease"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vuepointjs/vuept.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/vuepointjs/vuept/issues"
+  },
+  "homepage": "https://github.com/vuepointjs/vuept#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-eslint": "^9.0.0",
+    "cross-env": "^5.2.0",
+    "eslint": "^5.5.0",
+    "eslint-loader": "^2.1.0",
+    "eslint-plugin-prettier": "^2.6.2",
+    "eslint-plugin-vue": "^4.7.1",
+    "js-beautify": "^1.8.4",
+    "prettier": "^1.14.2",
+    "style-loader": "^0.23.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "uglifyjs-webpack-plugin": "^1.3.0",
+    "vue-eslint-parser": "^3.2.2"
+  }
+}

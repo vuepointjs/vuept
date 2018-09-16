@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import SuiteBar from '~/components/SuiteBar.vue';
+import SuiteBar from '@vuept/ui/components/SuiteBar.vue';
 import AppletsNavPanel from '~/components/AppletsNavPanel.vue';
 import _ from 'lodash';
 
