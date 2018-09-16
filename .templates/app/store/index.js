@@ -8,6 +8,7 @@ const appData = process.env.appData;
 const taxonomy = {
   suiteName: suiteData.name,
   suiteShortName: suiteData.key,
+  suiteVersion: process.env.solutionVersion,
   appName: appData.name,
   appLongName: appData.longName,
   appShortName: appData.key

@@ -17,7 +17,7 @@
                   <div class="vp-applet-icon-container" @click="appletLinkClickEmit(applet.key)">
 
                     <v-avatar :style="{backgroundColor: applet.iconColor}" class="vp-applet-icon" :class="{'vp-applet-icon-dense': dense}">
-                      <span class="white--text headline">{{ applet.key }}</span>
+                      <span class="white--text headline">{{ applet.iconLabel }}</span>
                     </v-avatar>
 
                   </div>
