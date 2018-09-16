@@ -37,7 +37,9 @@
     "vue-chartjs": "^3.4.0",
     "vue-markdown": "^2.2.4",
     "vue-mousetrap": "^1.0.1",
-    "vuetify": "^1.2.3"
+    "vuetify": "^1.2.3",
+    "@vuept_solution/data": ">=1.0.0-alpha.1",
+    "@vuept/ui": ">=1.0.0-alpha.1"
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",

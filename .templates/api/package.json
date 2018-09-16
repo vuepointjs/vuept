@@ -57,7 +57,8 @@
     "@vuept/loopback-connector-mssql": "^3.3.0-vp.6",
     "loopback-connector-rest": "^3.2.0",
     "serve-favicon": "^2.5.0",
-    "strong-error-handler": "^2.3.2"
+    "strong-error-handler": "^2.3.2",
+    "@vuept/lb": ">=1.0.0-alpha.1"
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",
