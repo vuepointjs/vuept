@@ -5,9 +5,6 @@
 */
 'use strict';
 
-var env = process.env.NODE_ENV || 'development';
-var isDev = env === 'development' || env === 'test';
-
 const db = {
   name: 'db',
   connector: '@vuept/loopback-connector-mssql',
