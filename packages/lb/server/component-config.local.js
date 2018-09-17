@@ -11,10 +11,10 @@ const suiteKey = process.env.npm_package_config_vp_suite_key;
 const appKey = process.env.npm_package_config_vp_app_key || null;
 const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRole, suiteKey, appKey);
 
-const azureProfileKey = vpCtx.isDev ? 'DEV' : 'PROD';
+const azureProfileKey = vpCtx.isNodeDev ? 'DEV' : 'PROD';
 const azureData = require('@vuept_solution/data').getters.azureProfileByKey(vpCtx.suiteData, azureProfileKey);
 
-const explorerSecret = vpCtx.isDev ? 'explorer' : azureData.apiId;
+const explorerSecret = vpCtx.isNodeDev ? 'explorer' : azureData.apiId;
 const mountPath = `/${explorerSecret}`;
 const configErrMsg = 'ERROR: Missing Suite Configuration Data';
 

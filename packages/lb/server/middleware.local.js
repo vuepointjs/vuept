@@ -37,8 +37,8 @@ const middleware = {
   'final:after': {
     'strong-error-handler': {
       params: {
-        debug: vpCtx.isDev,
-        log: vpCtx.isDev
+        debug: vpCtx.isNodeDev,
+        log: vpCtx.isNodeDev
       }
     }
   }

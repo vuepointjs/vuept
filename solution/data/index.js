@@ -168,7 +168,7 @@ const configErrMsg = 'ERROR: Missing Suite Configuration Data';
 const context = {
   _fromRoleAndKeysRaw: (solutionRole, suiteKey, appKey) => ({
     nodeEnv: process.env.NODE_ENV || 'development',
-    isDev: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test',
+    isNodeDev: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test',
     isTemplateDev: !!process.env.TDEV,
     isInfoOnly: !!process.env.INFO_ONLY,
     isVerbose: !!process.env.VERBOSE,

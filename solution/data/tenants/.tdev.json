@@ -18,6 +18,13 @@
           "clientId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
           "apiId": "dddddddd-cccc-bbbb-aaaa-00000000000",
           "redirectUri": "http://localhost:33990/"
+        },
+        {
+          "key": "PROD",
+          "tenant": "example.onmicrosoft.com",
+          "clientId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+          "apiId": "dddddddd-cccc-bbbb-aaaa-00000000000",
+          "redirectUri": "http://localhost:33990/"
         }
       ],
       "apps": [

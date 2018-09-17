@@ -18,8 +18,8 @@ const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRo
 const config = {
   restApiRoot: '/api/v1',
   host: process.env.API_HOST,
-  port: vpCtx.isDev || httpOnly ? vpCtx.port : 443,
-  isDev: vpCtx.isDev
+  port: vpCtx.isNodeDev || httpOnly ? vpCtx.port : 443,
+  isNodeDev: vpCtx.isNodeDev
 };
 
 module.exports = config;
