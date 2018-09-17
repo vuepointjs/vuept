@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 const authentication = {
   _config: null, // ADAL constructor config
   _context: null, // ADAL instance
+  _useFakes: false,
 
   appToken: null, // The logged-in user's JWT token (if any) for the App. Retrieved via ADAL based on "clientId" in supplied config
   apiToken: null, // The logged-in user's JWT token (if any) for API access. Retrieved via ADAL based on "apiId" in supplied config
@@ -13,20 +14,24 @@ const authentication = {
    * @param {Object} config Authentication configuration object: see MS ADAL constructor docs here:
    * https://github.com/AzureAD/azure-activedirectory-library-for-js#usage
    * Typically you'd define "tenant", "clientId", and "redirectUri". We also support "apiId"
-   * @param {Boolean} [enableVerboseLogging=false] When supplied and set to true, console.log verbose ADAL messages
+   * @param {Boolean} [useFakes=false] When supplied and set to true, don't authenticate or use ADAL, instead fake authentication
+   * @param {Boolean} [enableVerboseLogging=false] When supplied and set to true, console.log verbose ADAL messages. Ignored when useFakes=true
    * @return {Promise}
    */
-  initialize(config, enableVerboseLogging) {
-    // Do nothing if we already initialized ADAL
-    if (this._context) {
-      console.log('>>> ADAL already initialized. Ignoring additional initialize call');
+  initialize(config, useFakes, enableVerboseLogging) {
+    this._useFakes = !!useFakes;
+    enableVerboseLogging = !!enableVerboseLogging;
+
+    // Do nothing if we already initialized ADAL or we're configured to use fakes
+    if (this._context || this._useFakes) {
+      console.log(`AUTH: >>> ADAL already ${useFakes ? '(fake) ' : ''}initialized. Ignoring initialize call`);
       return new Promise((resolve, reject) => {
         resolve();
       });
     }
 
-    console.log('Initializing ADAL authentication...');
-    enableVerboseLogging = !!enableVerboseLogging;
+    console.log('AUTH: Initializing ADAL authentication...');
+
     this._config = config;
     this._context = new AuthenticationContext(this._config);
 
@@ -54,9 +59,9 @@ const authentication = {
         }
         throw err;
       });
-      console.log('Axios: configured interceptor to send API access token');
+      console.log('AUTH: configured Axios interceptor to send API access token');
     } catch (e1) {
-      console.log('Axios: failed to configure interceptor to send API access token');
+      console.log('AUTH: failed to configure Axios interceptor to send API access token');
     }
 
     return new Promise((resolve, reject) => {
@@ -66,7 +71,7 @@ const authentication = {
         var user = null;
 
         if (isAuthCallback || !isMainWindow) {
-          console.log('>>> Performing Auth Callback via ADAL...');
+          console.log('AUTH: >>> Performing Auth Callback via ADAL...');
           // Redirect to the location specified in the url params
           this._context.handleWindowCallback();
         } else {
@@ -82,7 +87,7 @@ const authentication = {
           }
         }
       } catch (e2) {
-        console.log('ADAL initialization error:', e2);
+        console.log('AUTH: ADAL initialization error:', e2);
       }
     });
   },
@@ -91,16 +96,21 @@ const authentication = {
    * @return {Boolean} Indicates if there is a valid, non-expired access token present in localStorage
    */
   isAuthenticated() {
-    console.log('Calling ADAL "getCachedToken()"...');
+    if (this._useFakes) {
+      console.log('AUTH: isAuthenticated() faked as true');
+      return true;
+    }
+
+    console.log('AUTH: Calling ADAL "getCachedToken()"...');
 
     // getCachedToken will only return a valid, non-expired token
     this.appToken = this._context.getCachedToken(this._config.clientId);
     if (this.appToken) {
-      console.log('Acquire App Token Succeeded');
+      console.log('AUTH: Acquire App Token Succeeded');
       return true;
     }
 
-    console.log('Acquire App Token Failed');
+    console.log('AUTH: Acquire App Token Failed');
     return false;
   },
 
@@ -108,14 +118,26 @@ const authentication = {
    * @return An ADAL user profile object
    */
   getUserProfile() {
+    if (this._useFakes) {
+      console.log('AUTH: getUserProfile() faked');
+      const fakeUpn = 'fake.user@example.com';
+      return {
+        name: fakeUpn,
+        upn: fakeUpn,
+        email: fakeUpn
+      };
+    }
+
     return this._context.getCachedUser().profile;
   },
 
   signIn() {
+    if (this._useFakes) return;
     this._context.login();
   },
 
   signOut() {
+    if (this._useFakes) return;
     this._context.logOut();
   }
 };
@@ -128,13 +150,22 @@ function acquireApiToken() {
   authentication.userRoles = [];
 
   return new Promise((resolve, reject) => {
+    if (this._useFakes) {
+      console.log('AUTH: Acquire (fake) API Token Succeeded');
+      token =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+      authentication.apiToken = token;
+      authentication.userRoles = userRolesFromApiToken();
+      return resolve(token);
+    }
+
     authentication._context.acquireToken(authentication._config.apiId, (errDescription, token, err) => {
       if (errDescription || !token) {
-        var msg = `Acquire API Token Failed: ${errDescription} [${err}]`;
+        var msg = `AUTH: Acquire API Token Failed: ${errDescription} [${err}]`;
         console.log(msg);
         return reject(msg);
       } else {
-        console.log('Acquire API Token Succeeded');
+        console.log('AUTH: Acquire API Token Succeeded');
         authentication.apiToken = token;
         authentication.userRoles = userRolesFromApiToken();
         return resolve(token);
@@ -147,13 +178,17 @@ function acquireApiToken() {
  * @return {Array} An array with the user's roles found in the apiToken
  */
 function userRolesFromApiToken() {
+  if (this._useFakes) {
+    return ['FakeRoleA', 'FakeRoleB'];
+  }
+
   try {
     var decodedToken = jwt.decode(authentication.apiToken);
     var roles = decodedToken.roles || [];
-    console.log(`User roles: ${JSON.stringify(roles)}`);
+    console.log(`AUTH: User roles... ${JSON.stringify(roles, null, 2)}`);
     return roles;
   } catch (e) {
-    console.log('Error reading Api Token', e);
+    console.log('AUTH: Error reading API Token', e);
   }
 }
 
