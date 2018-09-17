@@ -30,7 +30,7 @@ module.exports = {
   srcDir: vpCtx.sourcePath,
   buildDir: vpCtx.buildDir,
 
-  env: vpCtx,
+  env: { vpCtx },
 
   /*
    ** Headers of the page
@@ -90,9 +90,10 @@ module.exports = {
   plugins: [
     '@/plugins/vuetify',
     '@/plugins/vue-markdown',
-    { src: '@/plugins/vue-chartjs', ssr: false },
+    { src: '@/plugins/authentication', ssr: false },
     { src: '@/plugins/helpers', ssr: false },
-    { src: '@/plugins/mousetrap', ssr: false }
+    { src: '@/plugins/mousetrap', ssr: false },
+    { src: '@/plugins/vue-chartjs', ssr: false }
   ],
 
   /*
