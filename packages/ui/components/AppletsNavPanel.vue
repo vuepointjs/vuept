@@ -13,7 +13,7 @@
             <v-tooltip max-width="80" open-delay="50" close-delay="50" v-bind="tooltipAttrsFromIndex(applet.ord)" v-model="appletTooltipShow[applet.ord - 1]">
               <v-badge overlap slot="activator">
                 <span v-if="applet.openItemCount > 0" slot="badge">{{ applet.openItemCount }}</span>
-                <nuxt-link :to="$helpers.appletBaseRouteFromKey(applet.key)">
+                <nuxt-link :to="$applet.baseRouteFromKey(applet.key)">
                   <div class="vp-applet-icon-container" @click="appletLinkClickEmit(applet.key)">
 
                     <v-avatar :style="{backgroundColor: applet.iconColor}" class="vp-applet-icon" :class="{'vp-applet-icon-dense': dense}">
@@ -80,7 +80,7 @@ export default {
 
     appletKeybindings() {
       let items = _(this.applets)
-        .map(val => this.$helpers.appletKeybindingFromKey(val.key))
+        .map(val => this.$applet.keybindingFromKey(val.key))
         .value();
 
       return items;
@@ -89,7 +89,7 @@ export default {
 
   methods: {
     appletLinkClickEmit(key) {
-      if (this.$helpers.appletRouteActive(key, this.$route)) this.$emit('active-applet-click');
+      if (this.$applet.routeIsActive(key, this.$route)) this.$emit('active-applet-click');
     },
 
     mountKeybindings() {
@@ -111,8 +111,8 @@ export default {
       // Navigate to applet's home page when sequence of keys pressed that match its 2 character "key" value
       this.$mousetrap.bind(this.appletKeybindings, (evt, combo) => {
         console.log(`KBD: "${combo}" triggered`);
-        let key = this.$helpers.appletKeyFromKeybinding(combo);
-        let route = this.$helpers.appletBaseRouteFromKey(key);
+        let key = this.$applet.keyFromKeybinding(combo);
+        let route = this.$applet.baseRouteFromKey(key);
         this.$router.push(route);
         this.appletLinkClickEmit(key);
       });

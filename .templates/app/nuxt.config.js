@@ -1,3 +1,4 @@
+const path = require('path');
 const pkg = require('./package');
 const app = require('./app.config');
 const scenario = app.SCENARIO_KEY.toLowerCase();
@@ -24,6 +25,9 @@ if (vpCtx.isInfoOnly) {
   process.exit(0);
 }
 
+const vpUiPkgPath = path.dirname(require.resolve('@vuept/ui'));
+const vpPlugins = path.join(vpUiPkgPath, '/plugins');
+
 module.exports = {
   mode: 'spa',
   rootDir: vpCtx.isTemplateDev ? '../../' : '../../../',
@@ -35,9 +39,9 @@ module.exports = {
   /*
    ** Router config
    */
-  // router: {
-  //   middleware: 'check-auth'
-  // },
+  router: {
+    middleware: 'check-auth'
+  },
 
   /*
    ** Headers of the page
@@ -97,8 +101,9 @@ module.exports = {
   plugins: [
     '@/plugins/vuetify',
     '@/plugins/vue-markdown',
-    { src: '@/plugins/authentication', ssr: false },
-    { src: '@/plugins/helpers', ssr: false },
+    { src: path.join(vpPlugins, '/authentication'), ssr: false },
+    { src: path.join(vpPlugins, '/helpers'), ssr: false },
+    { src: path.join(vpPlugins, '/applet'), ssr: false },
     { src: '@/plugins/mousetrap', ssr: false },
     { src: '@/plugins/vue-chartjs', ssr: false }
   ],

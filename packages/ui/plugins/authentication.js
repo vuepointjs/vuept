@@ -25,4 +25,6 @@ authentication.initialize(azureData, useFakeAuth, vpCtx.isVerbose).then(_ => {
   };
 
   Vue.use(authenticationPlugin);
+
+  console.log('PI: $auth installed');
 });
