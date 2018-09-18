@@ -101,11 +101,11 @@ module.exports = {
   plugins: [
     '@/plugins/vuetify',
     '@/plugins/vue-markdown',
-    { src: path.join(vpPlugins, '/authentication'), ssr: false },
+    { src: '@/plugins/mousetrap', ssr: false },
+    { src: '@/plugins/vue-chartjs', ssr: false },
     { src: path.join(vpPlugins, '/helpers'), ssr: false },
     { src: path.join(vpPlugins, '/applet'), ssr: false },
-    { src: '@/plugins/mousetrap', ssr: false },
-    { src: '@/plugins/vue-chartjs', ssr: false }
+    { src: path.join(vpPlugins, '/auth'), ssr: false }
   ],
 
   /*
