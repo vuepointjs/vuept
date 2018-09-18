@@ -14,7 +14,7 @@
     <v-layout column>
       <v-flex>
 
-        <h2>{{ $helpers.activeAppletFromRoute(this.$route, this.$store).name }} - All Items</h2>
+        <h2>{{ $applet.fromRoute(this.$route, this.$store).name }} - All Items</h2>
         <div style="width: 100%; height: 40px; background-color: #efefef; margin: 5px"></div>
       </v-flex>
 
