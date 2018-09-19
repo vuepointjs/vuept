@@ -42,7 +42,7 @@ export default (ctx, inject) => {
       }),
 
       async created() {
-        console.log('PI: Created vue instance for $auth');
+        console.log('PI: $auth vue instance created');
 
         await this.initialize(azureData, useFakeAuth, vpCtx.isVerbose);
       },
@@ -168,7 +168,8 @@ export default (ctx, inject) => {
             };
           }
 
-          return this._context.getCachedUser().profile;
+          let user = this._context.getCachedUser();
+          return user ? user.profile : {};
         },
 
         parseUserProfile(userProfile) {
@@ -201,7 +202,7 @@ export default (ctx, inject) => {
         },
 
         clearUserProfile() {
-          this.userFullName = this.userEmail = this.userName = this.userApiToken = '';
+          this.userFullName = this.userEmail = this.userName = this.apiToken = '';
           this.userRoles = [];
         },
 
