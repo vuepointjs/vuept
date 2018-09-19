@@ -28,21 +28,21 @@ const azureProfileKey = vpCtx.isNodeDev ? 'DEV' : 'PROD';
 const azureData = require('@vuept_solution/data').getters.azureProfileByKey(vpCtx.suiteData, azureProfileKey);
 
 module.exports = function(app) {
-  var Role = app.models.Role;
+  let Role = app.models.Role;
 
   Role.registerResolver('tenantUser', function(role, context, cb) {
     try {
-      var nodeEnv = process.env.NODE_ENV;
-      var bearerTokenStr = '';
-      var tokenDecodeOptions = {
+      let nodeEnv = process.env.NODE_ENV;
+      let bearerTokenStr = '';
+      let tokenDecodeOptions = {
         complete: true
       };
-      var decodedToken = {};
-      var tokenVerifyOptions = {
+      let decodedToken = {};
+      let tokenVerifyOptions = {
         algorithms: ['RS256'],
         audience: azureData.apiId
       };
-      var verifiedToken = {};
+      let verifiedToken = {};
 
       // console.log('>>>>> In tenantUser Role Resolver: %s (%s)', role, nodeEnv);
 
@@ -50,11 +50,11 @@ module.exports = function(app) {
       if (nodeEnv === 'development' && process.env.FORCE_RBAC != 'YES') return cb(null, true);
 
       // We have an auth header?
-      var headers = context.remotingContext.req.headers;
-      var authHeader = headers && headers['authorization'];
+      let headers = context.remotingContext.req.headers;
+      let authHeader = headers && headers['authorization'];
       if (authHeader) {
         // With two pieces beginning with "Bearer"?
-        var authHeaderPieces = authHeader.split(' ');
+        let authHeaderPieces = authHeader.split(' ');
         if (authHeaderPieces.length != 2) return cb(null, false);
         if (authHeaderPieces[0] != 'Bearer') return cb(null, false);
 
@@ -76,29 +76,29 @@ module.exports = function(app) {
       if (!decodedToken || !decodedToken.header) return cb(null, false);
       // console.log(decodedToken);
 
-      var x5cString = x5.keyByThumbprint[decodedToken.header.x5t];
-      var publicKey = '-----BEGIN CERTIFICATE-----\n' + x5cString + '\n-----END CERTIFICATE-----';
+      let x5cString = x5.keyByThumbprint[decodedToken.header.x5t];
+      let publicKey = '-----BEGIN CERTIFICATE-----\n' + x5cString + '\n-----END CERTIFICATE-----';
 
       // Verify bearer token and user (by email aka "user principle name" or UPN)
       try {
         verifiedToken = jwt.verify(bearerTokenStr, publicKey, tokenVerifyOptions);
         // console.log(verifiedToken);
 
-        var email = verifiedToken.upn ? verifiedToken.upn.toLowerCase() : '';
+        let email = verifiedToken.upn ? verifiedToken.upn.toLowerCase() : '';
         if (!email) return cb(null, false);
 
         // See: https://support.office.com/en-us/article/domains-faq-1272bad0-4bd4-4796-8005-67d6fb3afc5a#bkmk_whydoihaveanonmicrosoft.comdomain
         // and: https://blog.lawrencecawood.com/heres-what-happens-when-you-pick-the-wrong-office-365-tenant-name-27b657e8acbd
-        var msTenantDomain = azureData.tenant;
+        let msTenantDomain = azureData.tenant;
         if (!msTenantDomain) return cb(null, false);
         msTenantDomain = msTenantDomain.toLowerCase();
         if (!msTenantDomain.includes('.onmicrosoft.com')) return cb(null, false);
 
-        var tenantPrimaryDomain = vpCtx.suiteData.tenantPrimaryDomain;
+        let tenantPrimaryDomain = vpCtx.suiteData.tenantPrimaryDomain;
         if (!tenantPrimaryDomain) return cb(null, false);
         tenantPrimaryDomain = tenantPrimaryDomain.toLowerCase();
 
-        var isValidTenantUser = false;
+        let isValidTenantUser = false;
         if (email.includes(`@${msTenantDomain}`)) isValidTenantUser = true;
         else if (email.includes(`@${tenantPrimaryDomain}`)) isValidTenantUser = true;
 
@@ -120,7 +120,7 @@ module.exports = function(app) {
     //        in LoopBack to allow auditing of who did what
     //
     // Is the user logged in? (there will be an accessToken with an ID if so)
-    // var userId = context.accessToken.userId;
+    // let userId = context.accessToken.userId;
     // if (!userId) {
     //   // A: No, user is NOT logged in: callback with FALSE
     //   return process.nextTick(() => cb(null, false));

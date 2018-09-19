@@ -7,11 +7,14 @@ import AuthenticationContext from 'adal-angular/lib/adal.js';
 import jwt from 'jsonwebtoken';
 
 const vpCtx = process.env.vpCtx;
-const useFakeAuth = vpCtx.isTemplateDev;
+const useFakeAuth = vpCtx.isTemplateDev && !vpCtx.isForceRBAC;
 const azureProfileKey = vpCtx.isNodeDev ? 'DEV' : 'PROD';
 const azureData = _(vpCtx.suiteData.azure)
   .filter({ key: azureProfileKey })
   .first();
+
+let msTenantDomain = azureData.tenant;
+let tenantPrimaryDomain = vpCtx.suiteData.tenantPrimaryDomain;
 
 // console.log('In $auth plugin...');
 // console.log(`vpCtx: ${JSON.stringify(vpCtx, null, 2)}`);
@@ -25,13 +28,17 @@ export default (ctx, inject) => {
     'auth',
     new Vue({
       data: () => ({
-        config: null, // ADAL constructor config
-        context: null, // ADAL instance
-        useFakes: false,
+        _config: null, // ADAL constructor config
+        _context: null, // ADAL instance
+        _useFakes: false,
 
         appToken: null, // The logged-in user's JWT token (if any) for the App. Retrieved via ADAL based on "clientId" in supplied config
         apiToken: null, // The logged-in user's JWT token (if any) for API access. Retrieved via ADAL based on "apiId" in supplied config
-        userRoles: [] // An array of the logged-in user's assigned roles (if any) from the set of API roles
+        userRoles: [], // An array of the logged-in user's assigned roles (if any) from the set of API roles
+
+        userFullName: '',
+        userEmail: '',
+        userName: ''
       }),
 
       async created() {
@@ -73,41 +80,43 @@ export default (ctx, inject) => {
             };
           }
 
+          let vm = this;
+
           // Handle API authentication errors by (re-) acquiring the pass-thru token and adding it to the default headers
           try {
-            axios.interceptors.response.use(undefined, err => {
+            ctx.$axios.interceptors.response.use(undefined, err => {
               if (err.response.status === 401 && err.response.config && !err.response.config.__isRetryRequest) {
                 err.response.config.__isRetryRequest = true;
 
                 return new Promise((resolve, reject) => {
-                  acquireApiToken().then(token => {
-                    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                  vm.acquireApiToken().then(token => {
+                    ctx.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                     err.config.headers.Authorization = `Bearer ${token}`;
 
-                    axios(err.config).then(resolve, reject);
+                    ctx.$axios(err.config).then(resolve, reject);
                   });
                 });
               }
               throw err;
             });
-            console.log('AUTH: configured Axios interceptor to send API access token');
+            console.log('AUTH: configured axios interceptor to send API access token');
           } catch (e1) {
-            console.log('AUTH: failed to configure Axios interceptor to send API access token');
+            console.log('AUTH: failed to configure axios interceptor to send API access token');
           }
 
           return new Promise((resolve, reject) => {
             try {
-              var isAuthCallback = this._context.isCallback(window.location.hash);
-              var isMainWindow = window.self === window.top;
-              var user = null;
+              let isAuthCallback = vm._context.isCallback(window.location.hash);
+              let isMainWindow = window.self === window.top;
+              let user = null;
 
               if (isAuthCallback || !isMainWindow) {
                 console.log('AUTH: >>> Performing Auth Callback via ADAL...');
                 // Redirect to the location specified in the url params
-                this._context.handleWindowCallback();
+                vm._context.handleWindowCallback();
               } else {
                 // Try to pull the user out of local storage
-                user = this._context.getCachedUser();
+                user = vm._context.getCachedUser();
 
                 if (user) {
                   // Great, we have a user
@@ -153,13 +162,47 @@ export default (ctx, inject) => {
             console.log('AUTH: getUserProfile() faked');
             const fakeUpn = 'fake.user@example.com';
             return {
-              name: fakeUpn,
+              name: 'Fake User',
               upn: fakeUpn,
               email: fakeUpn
             };
           }
 
           return this._context.getCachedUser().profile;
+        },
+
+        parseUserProfile(userProfile) {
+          this.userFullName = userProfile.name;
+          this.userEmail = userProfile.upn;
+          this.userName = userProfile.upn && userProfile.upn.split('@')[0];
+          console.log('AUTH: Parsed user profile', ctx.app.$helpers.stringifyObj(userProfile));
+        },
+
+        isWithTenant() {
+          if (this._useFakes) {
+            console.log('AUTH: isWithTenant() faked');
+            return true;
+          }
+
+          let email = this.userEmail ? this.userEmail.toLowerCase() : '';
+          if (!email) return false;
+          if (!msTenantDomain) false;
+
+          msTenantDomain = msTenantDomain.toLowerCase();
+          if (!msTenantDomain.includes('.onmicrosoft.com')) return false;
+
+          if (!tenantPrimaryDomain) return false;
+          tenantPrimaryDomain = tenantPrimaryDomain.toLowerCase();
+
+          if (email.includes(`@${msTenantDomain}`)) return true;
+          else if (email.includes(`@${tenantPrimaryDomain}`)) return true;
+
+          return false;
+        },
+
+        clearUserProfile() {
+          this.userFullName = this.userEmail = this.userName = this.userApiToken = '';
+          this.userRoles = [];
         },
 
         signIn() {
@@ -170,6 +213,60 @@ export default (ctx, inject) => {
         signOut() {
           if (this._useFakes) return;
           this._context.logOut();
+        },
+
+        /**
+         * @return {Promise.<String>} A promise that resolves to an ADAL token for API access
+         */
+        acquireApiToken() {
+          this.apiToken = null;
+          this.userRoles = [];
+
+          let vm = this;
+
+          return new Promise((resolve, reject) => {
+            if (vm._useFakes) {
+              console.log('AUTH: Acquire (fake) API Token Succeeded');
+              token =
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
+                'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.' +
+                'SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+              vm.apiToken = token;
+              vm.userRoles = vm.userRolesFromApiToken();
+              return resolve(token);
+            }
+
+            vm._context.acquireToken(vm._config.apiId, (errDescription, token, err) => {
+              if (errDescription || !token) {
+                let msg = `AUTH: Acquire API Token Failed: ${errDescription} [${err}]`;
+                console.log(msg);
+                return reject(msg);
+              } else {
+                console.log('AUTH: Acquire API Token Succeeded');
+                vm.apiToken = token;
+                vm.userRoles = vm.userRolesFromApiToken();
+                return resolve(token);
+              }
+            });
+          });
+        },
+
+        /**
+         * @return {Array} An array with the user's roles found in the apiToken
+         */
+        userRolesFromApiToken() {
+          if (this._useFakes) {
+            return ['FakeRoleA', 'FakeRoleB'];
+          }
+
+          try {
+            let decodedToken = jwt.decode(this.apiToken);
+            let roles = decodedToken.roles || [];
+            console.log(`AUTH: User roles... ${JSON.stringify(roles, null, 2)}`);
+            return roles;
+          } catch (e) {
+            console.log('AUTH: Error reading API Token', e);
+          }
         }
       }
     })
@@ -177,55 +274,3 @@ export default (ctx, inject) => {
 
   console.log('PI: $auth installed');
 };
-
-// #region Helper Functions
-/**
- * @return {Promise.<String>} A promise that resolves to an ADAL token for API access
- */
-function acquireApiToken() {
-  authentication.apiToken = null;
-  authentication.userRoles = [];
-
-  return new Promise((resolve, reject) => {
-    if (this._useFakes) {
-      console.log('AUTH: Acquire (fake) API Token Succeeded');
-      token =
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-      authentication.apiToken = token;
-      authentication.userRoles = userRolesFromApiToken();
-      return resolve(token);
-    }
-
-    authentication._context.acquireToken(authentication._config.apiId, (errDescription, token, err) => {
-      if (errDescription || !token) {
-        var msg = `AUTH: Acquire API Token Failed: ${errDescription} [${err}]`;
-        console.log(msg);
-        return reject(msg);
-      } else {
-        console.log('AUTH: Acquire API Token Succeeded');
-        authentication.apiToken = token;
-        authentication.userRoles = userRolesFromApiToken();
-        return resolve(token);
-      }
-    });
-  });
-}
-
-/**
- * @return {Array} An array with the user's roles found in the apiToken
- */
-function userRolesFromApiToken() {
-  if (this._useFakes) {
-    return ['FakeRoleA', 'FakeRoleB'];
-  }
-
-  try {
-    var decodedToken = jwt.decode(authentication.apiToken);
-    var roles = decodedToken.roles || [];
-    console.log(`AUTH: User roles... ${JSON.stringify(roles, null, 2)}`);
-    return roles;
-  } catch (e) {
-    console.log('AUTH: Error reading API Token', e);
-  }
-}
-// #endregion

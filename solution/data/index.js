@@ -172,6 +172,7 @@ const context = {
     isTemplateDev: !!process.env.TDEV,
     isInfoOnly: !!process.env.INFO_ONLY,
     isVerbose: !!process.env.VERBOSE,
+    isForceRBAC: !!process.env.FORCE_RBAC,
     solutionVersion: require('@vuept_solution/admin').version, // We (arbitrarily) use the admin pkg as version banner carrier for entire solution
     solutionDataFilePath: getters.filePath,
     solutionRole,
