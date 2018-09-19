@@ -26,6 +26,11 @@
       <v-spacer></v-spacer>
       <div class="vp-app-footer-text">{{ taxonomy.suiteName }} | {{ taxonomy.appName }}</div>
     </v-footer>
+
+    <v-snackbar :timeout="0" :top="true" :right="true" v-model="snackbar.show" :color="snackbar.mode === 'success' ? 'green' : 'red'">
+      <v-icon dark>{{ snackbar.mode === 'success' ? 'check' : 'error_outline' }}</v-icon>&nbsp;{{ snackbar.msg }}
+      <!-- <v-btn flat color="pink" @click.native="snackbar.show = false">Close</v-btn> -->
+    </v-snackbar>
   </v-app>
 </template>
 
@@ -91,6 +96,10 @@ export default {
 
     taxonomy() {
       return this.$store.state.ui.taxonomy;
+    },
+
+    snackbar() {
+      return this.$store.state.ui.snackbar;
     }
   }
 };

@@ -24,15 +24,47 @@ export const state = () => ({
   ui: {
     taxonomy,
     applets,
-    appletViews
+    appletViews,
+    snackbar: {
+      show: false,
+      msg: '',
+      mode: 'success' // one of 'success', 'error'
+    },
+    snackbarTimeout: 3000
   }
 });
 
 export const getters = {};
 
-export const mutations = {};
+export const mutations = {
+  showSnackbar(state, payload) {
+    console.log('STORE: In Mutation "showSnackbar"');
+
+    state.ui.snackbar = {
+      show: true,
+      ...payload
+    };
+  },
+
+  hideSnackbar(state) {
+    console.log('STORE: In Mutation "hideSnackbar"');
+
+    state.ui.snackbar = {
+      show: false,
+      msg: '',
+      mode: 'success'
+    };
+  }
+};
 
 // #region Mutation Helpers
 // #endregion
 
-export const actions = {};
+export const actions = {
+  async flashSnackbar({ getters, commit, state }, { msg, mode }) {
+    console.log('STORE: In Action "flashSnackbar"');
+
+    commit('showSnackbar', { msg, mode });
+    setTimeout(_ => commit('hideSnackbar'), state.ui.snackbarTimeout);
+  }
+};
