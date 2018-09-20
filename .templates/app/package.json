@@ -11,7 +11,7 @@
     "vp-app-key": "__app-key__"
   },
   "scripts": {
-    "dev": "nuxt",
+    "dev": "cross-env NODE_ENV=development nuxt",
     "dev-debug": "node --inspect node_modules/nuxt/bin/nuxt",
     "dev:info": "cross-env INFO_ONLY=1 NODE_ENV=development nuxt",
     "dev:info:verbose": "cross-env INFO_ONLY=1 VERBOSE=1 NODE_ENV=development DEBUG=* nuxt",
