@@ -82,17 +82,15 @@ export default (ctx, inject) => {
 
           let vm = this;
 
-          // Handle API authentication errors by (re-) acquiring the pass-thru token and adding it to the default headers
+          // Handle API authentication errors by re-acquiring the pass-thru token and adding it to the default headers
           try {
             ctx.$axios.interceptors.response.use(undefined, err => {
               if (err.response.status === 401 && err.response.config && !err.response.config.__isRetryRequest) {
                 err.response.config.__isRetryRequest = true;
 
                 return new Promise((resolve, reject) => {
-                  vm.acquireApiToken().then(token => {
-                    ctx.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                  vm.acquireApiToken(true).then(token => {
                     err.config.headers.Authorization = `Bearer ${token}`;
-
                     ctx.$axios(err.config).then(resolve, reject);
                   });
                 });
@@ -120,9 +118,11 @@ export default (ctx, inject) => {
 
                 if (user) {
                   // Great, we have a user
+                  console.log('AUTH: >>> found cached user during initialization');
                   resolve();
                 } else {
                   // No user, kick off the sign-in flow
+                  console.log('AUTH: >>> no cached user at initialization, performing sign-in');
                   this.signIn();
                 }
               }
@@ -217,23 +217,62 @@ export default (ctx, inject) => {
         },
 
         /**
-         * @return {Promise.<String>} A promise that resolves to an ADAL token for API access
+         * Perform auth checks and cache user profile info and API token if possible. If auth
+         * checks fail, perform sign-out
          */
-        acquireApiToken() {
-          this.apiToken = null;
-          this.userRoles = [];
+        async check() {
+          let passedAuthChecks = false;
+
+          try {
+            if (this.isAuthenticated()) {
+              this.parseUserProfile(this.getUserProfile());
+
+              if (this.isWithTenant()) {
+                await this.acquireApiToken();
+                passedAuthChecks = true;
+              } else {
+                console.log('AUTH: user not a tenant user, logging out...');
+              }
+            }
+          } catch (e) {
+            console.log('AUTH: error checking auth', e);
+          }
+
+          if (passedAuthChecks) {
+            console.log('AUTH: auth checks passed');
+          } else {
+            this.signOut();
+          }
+        },
+
+        /**
+         * Acquire a token for calling the app's associated REST API and return it, or return the already-cached token
+         * @param {Boolean} force [force=false] When supplied and set to true, (re-)acquire the token even if one is cached
+         * @returns {Promise.<String>} A promise that resolves to an ADAL token for API access
+         */
+        acquireApiToken(force) {
+          force = !!force;
 
           let vm = this;
 
+          if (this.apiToken && !force) {
+            console.log('AUTH: Acquire API Token Succeeded... With Cached Token');
+            return new Promise((resolve, reject) => resolve(vm.apiToken));
+          }
+
+          this.apiToken = null;
+          this.userRoles = [];
+
           return new Promise((resolve, reject) => {
             if (vm._useFakes) {
-              console.log('AUTH: Acquire (fake) API Token Succeeded');
               token =
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
                 'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.' +
                 'SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
+              ctx.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
               vm.apiToken = token;
               vm.userRoles = vm.userRolesFromApiToken();
+              console.log('AUTH: Acquire (fake) API Token Succeeded');
               return resolve(token);
             }
 
@@ -243,9 +282,10 @@ export default (ctx, inject) => {
                 console.log(msg);
                 return reject(msg);
               } else {
-                console.log('AUTH: Acquire API Token Succeeded');
+                ctx.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 vm.apiToken = token;
                 vm.userRoles = vm.userRolesFromApiToken();
+                console.log('AUTH: Acquire (new) API Token Succeeded');
                 return resolve(token);
               }
             });
@@ -263,7 +303,7 @@ export default (ctx, inject) => {
           try {
             let decodedToken = jwt.decode(this.apiToken);
             let roles = decodedToken.roles || [];
-            console.log(`AUTH: User roles... ${JSON.stringify(roles, null, 2)}`);
+            console.log(`AUTH: User roles... ${ctx.app.$helpers.stringifyObj(roles)}`);
             return roles;
           } catch (e) {
             console.log('AUTH: Error reading API Token', e);
