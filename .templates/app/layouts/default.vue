@@ -1,5 +1,5 @@
 <template>
-  <v-app light>
+  <v-app light v-if="$auth.isTenantUser()">
     <suite-bar @waffle-click="drawer = !drawer" />
 
     <v-navigation-drawer temporary fixed light v-model="drawer" width="320">

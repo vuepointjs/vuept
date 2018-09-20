@@ -13,8 +13,8 @@
           </v-list-tile-avatar>
 
           <v-list-tile-content>
-            <v-list-tile-title>{{ this.$auth.userFullName }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ this.$auth.userEmail }}</v-list-tile-sub-title>
+            <v-list-tile-title>{{ $auth.userFullName }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ $auth.userEmail }}</v-list-tile-sub-title>
           </v-list-tile-content>
 
         </v-list-tile>
@@ -31,7 +31,7 @@
           <v-list-tile-content>
             <v-list-tile-title>Roles</v-list-tile-title>
             <v-list-tile-sub-title>
-              <v-chip v-for="role in this.$auth.userRoles" :key="role" :outline="true" :small="true">{{ role }}</v-chip>
+              <v-chip v-for="role in $auth.userRoles" :key="role" :outline="true" :small="true">{{ role }}</v-chip>
             </v-list-tile-sub-title>
           </v-list-tile-content>
 
@@ -63,7 +63,7 @@
       -->
 
       <v-card-actions>
-        <v-btn color="grey" flat v-clipboard:copy="this.$auth.apiToken" v-clipboard:success="onCopyApiTokenSuccess" v-clipboard:error="onCopyApiTokenError">
+        <v-btn color="grey" flat v-clipboard:copy="$auth.apiToken" v-clipboard:success="onCopyApiTokenSuccess" v-clipboard:error="onCopyApiTokenError">
           <v-icon dark>content_paste</v-icon>API Token
         </v-btn>
         <v-spacer></v-spacer>
@@ -100,7 +100,6 @@ export default {
 
     logOut() {
       this.$auth.signOut();
-      this.$auth.clearUserProfile();
     },
 
     ...mapActions(['flashSnackbar'])
@@ -115,8 +114,4 @@ export default {
 </script>
 
 <style scoped>
-/* .vp-user-roles {
-  flex-direction: row;
-  justify-content: flex-start;
-} */
 </style>

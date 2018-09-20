@@ -97,9 +97,9 @@ export default (ctx, inject) => {
               }
               throw err;
             });
-            console.log('AUTH: configured axios interceptor to send API access token');
+            // console.log('AUTH: configured axios interceptor to re-acquire and send API access token on error');
           } catch (e1) {
-            console.log('AUTH: failed to configure axios interceptor to send API access token');
+            console.log('AUTH: failed to configure axios error interceptor');
           }
 
           return new Promise((resolve, reject) => {
@@ -141,7 +141,7 @@ export default (ctx, inject) => {
             return true;
           }
 
-          console.log('AUTH: Calling ADAL "getCachedToken()"...');
+          // console.log('AUTH: Calling ADAL "getCachedToken()"...');
 
           // getCachedToken will only return a valid, non-expired token
           this.appToken = this._context.getCachedToken(this._config.clientId);
@@ -151,6 +151,7 @@ export default (ctx, inject) => {
           }
 
           console.log('AUTH: Acquire App Token Failed');
+          this.clearUserProfile();
           return false;
         },
 
@@ -176,12 +177,12 @@ export default (ctx, inject) => {
           this.userFullName = userProfile.name;
           this.userEmail = userProfile.upn;
           this.userName = userProfile.upn && userProfile.upn.split('@')[0];
-          console.log('AUTH: Parsed user profile', ctx.app.$helpers.stringifyObj(userProfile));
+          // console.log('AUTH: Parsed user profile'); //, ctx.app.$helpers.stringifyObj(userProfile));
         },
 
-        isWithTenant() {
+        isTenantUser() {
           if (this._useFakes) {
-            console.log('AUTH: isWithTenant() faked');
+            console.log('AUTH: isTenantUser() faked');
             return true;
           }
 
@@ -214,6 +215,7 @@ export default (ctx, inject) => {
         signOut() {
           if (this._useFakes) return;
           this._context.logOut();
+          this.clearUserProfile();
         },
 
         /**
@@ -221,13 +223,18 @@ export default (ctx, inject) => {
          * checks fail, perform sign-out
          */
         async check() {
+          if (this._context.loginInProgress()) {
+            console.log('AUTH: auth checks skipped while login in progress');
+            return;
+          }
+
           let passedAuthChecks = false;
 
           try {
             if (this.isAuthenticated()) {
               this.parseUserProfile(this.getUserProfile());
 
-              if (this.isWithTenant()) {
+              if (this.isTenantUser()) {
                 await this.acquireApiToken();
                 passedAuthChecks = true;
               } else {
@@ -241,6 +248,7 @@ export default (ctx, inject) => {
           if (passedAuthChecks) {
             console.log('AUTH: auth checks passed');
           } else {
+            console.log('AUTH: auth checks failed');
             this.signOut();
           }
         },
@@ -269,10 +277,11 @@ export default (ctx, inject) => {
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
                 'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.' +
                 'SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';
-              ctx.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
               vm.apiToken = token;
               vm.userRoles = vm.userRolesFromApiToken();
               console.log('AUTH: Acquire (fake) API Token Succeeded');
+              ctx.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+              // console.log('AUTH: Configured axios default header to send API access token');
               return resolve(token);
             }
 
@@ -282,10 +291,11 @@ export default (ctx, inject) => {
                 console.log(msg);
                 return reject(msg);
               } else {
-                ctx.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
                 vm.apiToken = token;
                 vm.userRoles = vm.userRolesFromApiToken();
-                console.log('AUTH: Acquire (new) API Token Succeeded');
+                console.log('AUTH: Acquire new API Token Succeeded');
+                ctx.$axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+                // console.log('AUTH: Configured axios default header to send API access token');
                 return resolve(token);
               }
             });
@@ -303,7 +313,7 @@ export default (ctx, inject) => {
           try {
             let decodedToken = jwt.decode(this.apiToken);
             let roles = decodedToken.roles || [];
-            console.log(`AUTH: User roles... ${ctx.app.$helpers.stringifyObj(roles)}`);
+            // console.log('AUTH: Read user roles from API token'); //, ctx.app.$helpers.stringifyObj(roles));
             return roles;
           } catch (e) {
             console.log('AUTH: Error reading API Token', e);
