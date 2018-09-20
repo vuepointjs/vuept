@@ -164,10 +164,17 @@ module.exports = {
       if (!ctx.isDev) {
         config.plugins.push(
           new UglifyJsPlugin({
+            // exclude: /?/,
             uglifyOptions: {
               compress: {
+                inline: false,
+                // keep_classnames: true,
+                // keep_fnames: true,
                 drop_console: true
               }
+              // ,mangle: {
+              //   keep_fnames: true
+              // }
             }
           })
         );
