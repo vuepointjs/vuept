@@ -26,6 +26,11 @@ const middleware = {
       params: '$!../client/favicon.ico'
     }
   },
+  // initial: {
+  //   'helmet#frameguard': {
+  //     params: ['sameorigin']
+  //   }
+  // },
   files: {
     'loopback#static': {
       params: clientPath

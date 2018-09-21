@@ -14,9 +14,6 @@
       }
     },
     "helmet#xssFilter": {},
-    "helmet#frameguard": {
-      "params": ["sameorigin"]
-    },
     "helmet#hsts": {
       "params": {
         "maxAge": 0,
