@@ -225,6 +225,15 @@ export default (ctx, inject) => {
          * checks fail, perform sign-out
          */
         async check() {
+          if (this._useFakes) {
+            this.isAuthenticated();
+            this.parseUserProfile(this.getUserProfile());
+            this.isTenantUser();
+            await this.acquireApiToken();
+            console.log('AUTH: auth checks (fake) passed');
+            return;
+          }
+
           if (this._context.loginInProgress()) {
             console.log('AUTH: auth checks skipped while login in progress');
             return;
@@ -275,7 +284,7 @@ export default (ctx, inject) => {
 
           return new Promise((resolve, reject) => {
             if (vm._useFakes) {
-              token =
+              let token =
                 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.' +
                 'eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.' +
                 'SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c';

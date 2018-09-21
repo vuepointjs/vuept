@@ -19,7 +19,7 @@ import ItemsAsGrid from '@vuept/ui/components/applet/list/ItemsAsGrid.vue';
 export default {
   validate({ params, store }) {
     // Valid applet key?
-    let isValidAppletKey = store.state.ui.applets.some(item => item.key.toUpperCase() === params.applet.toUpperCase());
+    let isValidAppletKey = store.state.app.applets.some(item => item.key.toUpperCase() === params.applet.toUpperCase());
 
     console.log(`PAGE: /:applet route validation... ${JSON.stringify(params)} is ${isValidAppletKey ? 'a valid' : 'an invalid'} route`);
     return isValidAppletKey;
@@ -47,9 +47,9 @@ export default {
     },
 
     appletListViewComponent() {
-      let listViewStyle = this.$applet.viewFromName(this.applet, 'List', this.$store).style;
+      let listViewSubType = this.$applet.viewByType(this.applet, 'List', this.$store).subType;
       // Default to list style 'Grid' if not otherwise specified
-      return listViewStyle ? `applet-items-as-${listViewStyle.toLowerCase()}` : 'applet-items-as-grid';
+      return listViewSubType ? `applet-items-as-${listViewSubType.toLowerCase()}` : 'applet-items-as-grid';
     }
   }
 };

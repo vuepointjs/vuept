@@ -75,7 +75,7 @@ export default {
 
   computed: {
     applets() {
-      let items = _(this.$store.state.ui.applets)
+      let items = _(this.$store.state.app.applets)
         // Sort by ordinal (ord) ascending
         .orderBy('ord', 'asc')
         // Add random icon colors and some example open item counts for badges

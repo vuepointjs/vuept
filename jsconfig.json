@@ -3,7 +3,7 @@
     "target": "es6"
   },
   "exclude": [
-    ".nuxt",
+    ".nuxt*",
     "dist",
     "node_modules"
   ]
