@@ -15,6 +15,11 @@ const suiteKey = process.env.npm_package_config_vp_suite_key;
 const appKey = process.env.npm_package_config_vp_app_key || null;
 const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRole, suiteKey, appKey);
 
+if (vpCtx.isDevOpsCommand) {
+  // e.g., > lb export-api-def --output test.json
+  console.log('\x1b[33m%s\x1b[0m', 'Started by a LoopBack CLI command');
+}
+
 const config = {
   restApiRoot: '/api/v1',
   host: process.env.API_HOST,

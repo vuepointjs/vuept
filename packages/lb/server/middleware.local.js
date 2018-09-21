@@ -12,13 +12,15 @@ const suiteKey = process.env.npm_package_config_vp_suite_key;
 const appKey = process.env.npm_package_config_vp_app_key || null;
 const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRole, suiteKey, appKey);
 
-let clientPath = '../client';
-if (!vpCtx.isTemplateDev) {
-  clientPath = vpCtx.sourcePath.replace(`${path.sep}app`, `${path.sep}api`);
-  clientPath = path.join(clientPath, 'client');
-}
+let apiRootPath = vpCtx.isDevOpsCommand ? __dirname : vpCtx.sourcePath.replace(`${path.sep}app`, `${path.sep}api`);
+let clientPath = '$!../client';
+let modelsPath = path.join(apiRootPath, 'common/models');
 
-// console.log(`>>> Client path: ${clientPath}`);
+if (vpCtx.isTemplateDev) {
+  clientPath = path.join(__dirname, '../client');
+} else {
+  clientPath = path.join(apiRootPath, 'client');
+}
 
 const middleware = {
   'initial:before': {
@@ -32,9 +34,18 @@ const middleware = {
   //   }
   // },
   files: {
-    'loopback#static': {
-      params: clientPath
-    }
+    'loopback#static': [
+      {
+        name: 'client',
+        paths: ['/'],
+        params: clientPath
+      },
+      {
+        name: 'models',
+        paths: ['/zz'],
+        params: modelsPath
+      }
+    ]
   },
   final: {
     './middleware/url-not-found-handler': {}

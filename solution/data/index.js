@@ -170,6 +170,7 @@ const context = {
     nodeEnv: process.env.NODE_ENV || 'development',
     isNodeDev: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test',
     isTemplateDev: !!process.env.TDEV,
+    isDevOpsCommand: !!process.env.SLC_COMMAND && process.env.SLC_COMMAND === 'loopback-cli',
     isInfoOnly: !!process.env.INFO_ONLY,
     isVerbose: !!process.env.VERBOSE,
     isForceRBAC: !!process.env.FORCE_RBAC,
