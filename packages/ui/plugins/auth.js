@@ -214,8 +214,10 @@ export default (ctx, inject) => {
 
         signOut() {
           if (this._useFakes) return;
-          this._context.logOut();
+          this._context.clearCacheForResource(this._config.apiId);
+          this._context.clearCacheForResource(this._config.clientId);
           this.clearUserProfile();
+          this._context.logOut();
         },
 
         /**
