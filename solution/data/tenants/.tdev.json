@@ -32,6 +32,7 @@
           "name": "Groupware",
           "key": "__app-key__",
           "longName": "Cloud Groupware",
+          "modelsRef": "@vuept_template/solution-api/common/models",
           "devPorts": {
             "app": "33770",
             "api": "33880"
@@ -42,14 +43,29 @@
               "key": "CO",
               "iconLabel": "Co",
               "ord": 1,
-              "longName": "Shared Contacts"
+              "longName": "Shared Contacts",
+              "defaultModel": "party",
+              "views": [
+                {
+                  "name": "All Items",
+                  "default": true,
+                  "type": "List",
+                  "subType": "Grid",
+                  "properties": [
+                    "FName",
+                    "LName",
+                    "Email"
+                  ]
+                }
+              ]
             },
             {
               "name": "Discuss",
               "key": "DI",
               "iconLabel": "Di",
               "ord": 2,
-              "longName": "Contact Discussions"
+              "longName": "Contact Discussions",
+              "defaultModel": "party-note"
             }
           ]
         }

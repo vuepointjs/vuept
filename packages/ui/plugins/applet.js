@@ -18,7 +18,7 @@ export default (ctx, inject) => {
          * @param {object} store Vuex store reference
          */
         fromKey(key, store) {
-          let applet = store.state.ui.applets.find(item => item.key.toUpperCase() === key.toUpperCase());
+          let applet = store.state.app.applets.find(item => item.key.toUpperCase() === key.toUpperCase());
           return applet ? applet : {};
         },
 
@@ -39,8 +39,19 @@ export default (ctx, inject) => {
          * @param {object} store Vuex store reference
          */
         views(applet, store) {
-          let appletViews = store.state.ui.appletViews.find(item => item.key.toUpperCase() === applet.key.toUpperCase());
+          let appletViews = store.state.app.applets.views;
           return appletViews ? appletViews.views : [];
+        },
+
+        /**
+         * Given an applet object, the type of a view, and a reference to the Vuex store, return the view definition object, if any
+         * @param {object} applet Applet object
+         * @param {string} type Type of view desired
+         * @param {object} store Vuex store reference
+         */
+        viewByType(applet, type, store) {
+          let appletView = this.views(applet, store).find(item => item.type.toUpperCase() === type.toUpperCase());
+          return appletView ? appletView : {};
         },
 
         /**
@@ -50,7 +61,7 @@ export default (ctx, inject) => {
          * @param {object} store Vuex store reference
          */
         viewFromName(applet, name, store) {
-          let appletView = this.views(applet, store).find(item => item.key === name);
+          let appletView = this.views(applet, store).find(item => item.name.toUpperCase() === name.toUpperCase());
           return appletView ? appletView : {};
         },
 
