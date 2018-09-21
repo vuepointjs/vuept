@@ -12,7 +12,7 @@ module.exports = function(server) {
     // Show some basic info and we're finished
     console.log('----------');
     console.dir(vpCtx, { depth: vpCtx.isVerbose ? 2 : 0 });
-    console.log('>>> Shutting down LoopBack API server process due to INFO_ONLY flag.');
+    console.log('>>> Terminating LoopBack API server process due to INFO_ONLY flag.');
     process.exit(0);
   }
 };

@@ -43,8 +43,8 @@ export default (ctx, inject) => {
 
       async created() {
         console.log('PI: $auth vue instance created');
-
         await this.initialize(azureData, useFakeAuth, vpCtx.isVerbose);
+        console.log('PI: $auth initialization completed');
       },
 
       methods: {
@@ -71,6 +71,7 @@ export default (ctx, inject) => {
           console.log('AUTH: Initializing ADAL authentication...');
 
           this._config = config;
+          this._config.navigateToLoginRequestUrl = false; // Also try reverting to v1.0.11
           this._context = new AuthenticationContext(this._config);
 
           if (enableVerboseLogging) {
@@ -119,7 +120,6 @@ export default (ctx, inject) => {
                 if (user) {
                   // Great, we have a user
                   console.log('AUTH: >>> found cached user during initialization');
-                  resolve();
                 } else {
                   // No user, kick off the sign-in flow
                   console.log('AUTH: >>> no cached user at initialization, performing sign-in');
@@ -129,6 +129,8 @@ export default (ctx, inject) => {
             } catch (e2) {
               console.log('AUTH: ADAL initialization error:', e2);
             }
+
+            resolve();
           });
         },
 
