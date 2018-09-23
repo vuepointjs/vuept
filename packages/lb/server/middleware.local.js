@@ -15,18 +15,20 @@ const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRo
 const azureProfileKey = vpCtx.isNodeDev ? 'DEV' : 'PROD';
 const azureData = require('@vuept_solution/data').getters.azureProfileByKey(vpCtx.suiteData, azureProfileKey);
 
-let apiRootPath = vpCtx.isDevOpsCommand ? __dirname : vpCtx.sourcePath.replace(`${path.sep}app`, `${path.sep}api`);
+let apiSourceRootPath = vpCtx.isDevOpsCommand ? __dirname : vpCtx.sourcePath.replace(`${path.sep}app`, `${path.sep}api`);
 let clientPath = '$!../client';
-let modelsPath = path.join(apiRootPath, 'common/models');
-let modelsUrlPath = '';
+let modelsPath = path.join(apiSourceRootPath, 'common/models');
+let azureApiIdPiece = azureData.apiId.split('-', 1);
+
+// Static json data APIs don't do jwt token checks, but we slightly obscure the URL w/ the first 8 hex of the ApiId.
+// Obviously, sensitive data should not be exposed and served in this way
+let modelsUrlPath = `/api/static/${azureApiIdPiece ? azureApiIdPiece[0] : 'eeeeeeee'}/models`;
+// console.log(`API static endpoints... models url path: ${modelsUrlPath}`);
 
 if (vpCtx.isTemplateDev) {
   clientPath = path.join(__dirname, '../client');
-  modelsUrlPath = '/explorer/_models';
 } else {
-  clientPath = path.join(apiRootPath, 'client');
-  let azureApiIdPiece = azureData.apiId.split('-', 1);
-  modelsUrlPath = `/${azureApiIdPiece ? azureApiIdPiece[0] : 'explorer'}/_models`;
+  clientPath = path.join(apiSourceRootPath, 'client');
 }
 
 const middleware = {
