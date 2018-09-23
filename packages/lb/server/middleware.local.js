@@ -12,14 +12,21 @@ const suiteKey = process.env.npm_package_config_vp_suite_key;
 const appKey = process.env.npm_package_config_vp_app_key || null;
 const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRole, suiteKey, appKey);
 
+const azureProfileKey = vpCtx.isNodeDev ? 'DEV' : 'PROD';
+const azureData = require('@vuept_solution/data').getters.azureProfileByKey(vpCtx.suiteData, azureProfileKey);
+
 let apiRootPath = vpCtx.isDevOpsCommand ? __dirname : vpCtx.sourcePath.replace(`${path.sep}app`, `${path.sep}api`);
 let clientPath = '$!../client';
 let modelsPath = path.join(apiRootPath, 'common/models');
+let modelsUrlPath = '';
 
 if (vpCtx.isTemplateDev) {
   clientPath = path.join(__dirname, '../client');
+  modelsUrlPath = '/explorer/_models';
 } else {
   clientPath = path.join(apiRootPath, 'client');
+  let azureApiIdPiece = azureData.apiId.split('-', 1);
+  modelsUrlPath = `/${azureApiIdPiece ? azureApiIdPiece[0] : 'explorer'}/_models`;
 }
 
 const middleware = {
@@ -42,7 +49,7 @@ const middleware = {
       },
       {
         name: 'models',
-        paths: ['/zz'],
+        paths: [modelsUrlPath],
         params: modelsPath
       }
     ]
