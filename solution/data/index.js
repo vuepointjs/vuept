@@ -36,6 +36,13 @@ const getters = {
 
   suitePathByKey: key => path.resolve(__dirname, key === '__suite-key__' ? '../../.templates/suite/' : `../suite/${key.toLowerCase()}/`),
 
+  shallowSuiteData: suiteData =>
+    suiteData
+      ? _(suiteData)
+          .omit('apps')
+          .value()
+      : {},
+
   appByKey: (suiteData, key) =>
     suiteData && suiteData.apps && key
       ? _(suiteData.apps)
@@ -165,6 +172,7 @@ const mutations = {
 };
 
 const configErrMsg = 'ERROR: Missing Suite Configuration Data';
+
 const context = {
   _fromRoleAndKeysRaw: (solutionRole, suiteKey, appKey) => ({
     nodeEnv: process.env.NODE_ENV || 'development',
@@ -179,7 +187,7 @@ const context = {
     solutionRole,
     suiteKey,
     appKey,
-    suiteData: getters.suiteByKey(suiteKey) || configErrMsg,
+    suiteData: getters.shallowSuiteData(getters.suiteByKey(suiteKey)) || configErrMsg,
     appData: getters.appByKeys(suiteKey, appKey),
     sourcePath: getters.sourcePathByRoleAndKeys(solutionRole, suiteKey, appKey),
     buildDir: getters.buildDirByRoleAndKeys(solutionRole, suiteKey, appKey),
