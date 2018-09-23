@@ -30,6 +30,8 @@ if (vpCtx.isTemplateDev) {
 } else {
   clientPath = path.join(apiSourceRootPath, 'client');
 }
+// console.log(`API source root path: ${apiSourceRootPath}`);
+// console.log(`API client path: ${clientPath}`);
 
 const middleware = {
   'initial:before': {
