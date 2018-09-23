@@ -36,9 +36,7 @@
     }
   },
   "files": {
-    "loopback#static": {
-      "params": "$!../client"
-    }
+    "loopback#static": {}
   },
   "final": {
     "./middleware/url-not-found-handler": {}
