@@ -1,6 +1,6 @@
 {
   "name": "@vuept/lb",
-  "version": "1.0.0-alpha.4",
+  "version": "1.0.0-alpha.5",
   "description": "VuePoint.js LoopBack Library",
   "author": "Copyright (c) 2018 Steve Lathrop",
   "license": "MIT",
