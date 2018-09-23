@@ -71,7 +71,7 @@ export default (ctx, inject) => {
           console.log('AUTH: Initializing ADAL authentication...');
 
           this._config = config;
-          this._config.navigateToLoginRequestUrl = false; // Also try reverting to v1.0.11
+          this._config.navigateToLoginRequestUrl = false; // Experimental... also try reverting to v1.0.11
           this._context = new AuthenticationContext(this._config);
 
           if (enableVerboseLogging) {
