@@ -174,27 +174,43 @@ const mutations = {
 const configErrMsg = 'ERROR: Missing Suite Configuration Data';
 
 const context = {
-  _fromRoleAndKeysRaw: (solutionRole, suiteKey, appKey) => ({
-    nodeEnv: process.env.NODE_ENV || 'development',
-    isNodeDev: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test',
-    isTemplateDev: !!process.env.TDEV,
-    isDevOpsCommand: !!process.env.SLC_COMMAND && process.env.SLC_COMMAND === 'loopback-cli',
-    isInfoOnly: !!process.env.INFO_ONLY,
-    isVerbose: !!process.env.VERBOSE,
-    isForceRBAC: !!process.env.FORCE_RBAC,
-    solutionVersion: require('@vuept_solution/admin').version, // We (arbitrarily) use the admin pkg as version banner carrier for entire solution
-    solutionDataFilePath: getters.filePath,
-    solutionRole,
-    suiteKey,
-    appKey,
-    suiteData: getters.shallowSuiteData(getters.suiteByKey(suiteKey)) || configErrMsg,
-    appData: getters.appByKeys(suiteKey, appKey),
-    sourcePath: getters.sourcePathByRoleAndKeys(solutionRole, suiteKey, appKey),
-    buildDir: getters.buildDirByRoleAndKeys(solutionRole, suiteKey, appKey),
-    port: process.env.TDEV ? getters.portByRoleAndKeys(solutionRole, suiteKey, appKey) : process.env.PORT || process.env.NUXT_PORT,
-    title: getters.titleByRoleAndKeys(solutionRole, suiteKey, appKey),
-    description: getters.descriptionByRoleAndKeys(solutionRole, suiteKey, appKey)
-  }),
+  _fromRoleAndKeysRaw: (solutionRole, suiteKey, appKey) => {
+    const isDevOpsCommand = !!process.env.SLC_COMMAND && process.env.SLC_COMMAND === 'loopback-cli';
+    const sourcePath = getters.sourcePathByRoleAndKeys(solutionRole, suiteKey, appKey);
+    const apiSourcePath = isDevOpsCommand ? __dirname : sourcePath.replace(`${path.sep}app`, `${path.sep}api`);
+
+    let dotenvLoaded = !!process.env.API_HOST;
+    if (!dotenvLoaded) {
+      require('dotenv').config({ path: path.join(apiSourcePath, '.env') });
+    }
+
+    let apiHost = process.env.API_HOST;
+    if (apiHost === '0.0.0.0') apiHost = 'localhost';
+
+    return {
+      nodeEnv: process.env.NODE_ENV || 'development',
+      isNodeDev: process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test',
+      isTemplateDev: !!process.env.TDEV,
+      isDevOpsCommand,
+      isInfoOnly: !!process.env.INFO_ONLY,
+      isVerbose: !!process.env.VERBOSE,
+      isForceRBAC: !!process.env.FORCE_RBAC,
+      solutionVersion: require('@vuept_solution/admin').version, // We (arbitrarily) use the admin pkg as version banner carrier for entire solution
+      solutionDataFilePath: getters.filePath,
+      solutionRole,
+      suiteKey,
+      appKey,
+      suiteData: getters.shallowSuiteData(getters.suiteByKey(suiteKey)) || configErrMsg,
+      appData: getters.appByKeys(suiteKey, appKey),
+      sourcePath,
+      apiSourcePath,
+      buildDir: getters.buildDirByRoleAndKeys(solutionRole, suiteKey, appKey),
+      port: process.env.TDEV ? getters.portByRoleAndKeys(solutionRole, suiteKey, appKey) : process.env.PORT || process.env.NUXT_PORT,
+      apiHost,
+      title: getters.titleByRoleAndKeys(solutionRole, suiteKey, appKey),
+      description: getters.descriptionByRoleAndKeys(solutionRole, suiteKey, appKey)
+    };
+  },
   fromRoleAndKeys: null
 };
 

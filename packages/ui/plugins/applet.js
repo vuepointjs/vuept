@@ -79,7 +79,7 @@ export default (ctx, inject) => {
 
         /**
          * Given an applet key (case-insensitive) return the corresponding Mousetrap keybinding
-         * for navigating to thr applet's home page
+         * for navigating to the applet's home page
          * @param {string} key Applet "key" (unique 2 character ID string)
          */
         keybindingFromKey(key) {
@@ -98,6 +98,16 @@ export default (ctx, inject) => {
         keyFromKeybinding(combo) {
           let key = combo.replace(' ', '').toUpperCase();
           return key;
+        },
+
+        /**
+         * Given an applet key (case-insensitive) return the corresponding API URL
+         * for getting data
+         * @param {string} key Applet "key" (unique 2 character ID string)
+         */
+        dataUrlFromKey(key) {
+          let apiHost = ctx.$helpers.apiHost;
+          let basePath = ctx.$helpers.baseApiDataPath;
         }
       }
     })

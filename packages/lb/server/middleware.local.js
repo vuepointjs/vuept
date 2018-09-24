@@ -15,9 +15,8 @@ const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRo
 const azureProfileKey = vpCtx.isNodeDev ? 'DEV' : 'PROD';
 const azureData = require('@vuept_solution/data').getters.azureProfileByKey(vpCtx.suiteData, azureProfileKey);
 
-let apiSourceRootPath = vpCtx.isDevOpsCommand ? __dirname : vpCtx.sourcePath.replace(`${path.sep}app`, `${path.sep}api`);
 let clientPath = '$!../client';
-let modelsPath = path.join(apiSourceRootPath, 'common/models');
+let modelsPath = path.join(vpCtx.apiSourcePath, 'common/models');
 let azureApiIdPiece = azureData.apiId.split('-', 1);
 
 // Static json data APIs don't do jwt token checks, but we slightly obscure the URL w/ the first 8 hex of the ApiId.
@@ -28,9 +27,9 @@ let modelsUrlPath = `/api/static/${azureApiIdPiece ? azureApiIdPiece[0] : 'eeeee
 if (vpCtx.isTemplateDev) {
   clientPath = path.join(__dirname, '../client');
 } else {
-  clientPath = path.join(apiSourceRootPath, 'client');
+  clientPath = path.join(vpCtx.apiSourcePath, 'client');
 }
-// console.log(`API source root path: ${apiSourceRootPath}`);
+// console.log(`API source root path: ${vpCtx.apiSourcePath}`);
 // console.log(`API client path: ${clientPath}`);
 
 const middleware = {

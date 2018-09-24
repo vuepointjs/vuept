@@ -14,8 +14,15 @@ export default (ctx, inject) => {
       data: () => ({
         regex: {
           htmlTagsAndSpaces: /&nbsp;|<\/?[\w\s="/.':;#-\/\?]+>/gi
-        }
+        },
+        apiHost: ctx.env.vpCtx.apiHost,
+        baseApiDataPath: '/api/v1'
       }),
+
+      created() {
+        console.log('PI: $helpers vue instance created');
+        console.log(`PI: $helpers apiHost = ${this.apiHost}, baseApiDataPath = ${this.baseApiDataPath}`);
+      },
 
       methods: {
         stringifyObj(obj) {
