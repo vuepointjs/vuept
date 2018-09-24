@@ -13,7 +13,7 @@ const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRo
 
 // Tweak Nuxt runtime config during template development
 if (vpCtx.isTemplateDev) {
-  process.env.PORT = vpCtx.port;
+  process.env.PORT = vpCtx.appPort;
 }
 
 // Optionally (based on env var) end the nuxt build process after simply displaying some basic information
@@ -31,7 +31,7 @@ const vpPlugins = path.join(vpUiPkgPath, '/plugins');
 module.exports = {
   mode: 'spa',
   rootDir: vpCtx.isTemplateDev ? '../../' : '../../../',
-  srcDir: vpCtx.sourcePath,
+  srcDir: vpCtx.appSourcePath,
   buildDir: vpCtx.buildDir,
 
   env: { vpCtx },

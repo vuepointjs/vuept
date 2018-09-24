@@ -2,27 +2,19 @@
  * auth.js: Authentication plugin using JWT and ADAL
  */
 import Vue from 'vue';
-import _ from 'lodash';
 import AuthenticationContext from 'adal-angular/lib/adal.js';
 import jwt from 'jsonwebtoken';
 
 const vpCtx = process.env.vpCtx;
 const useFakeAuth = vpCtx.isTemplateDev && !vpCtx.isForceRBAC;
-const azureProfileKey = vpCtx.isNodeDev ? 'DEV' : 'PROD';
-const azureData = _(vpCtx.suiteData.azure)
-  .filter({ key: azureProfileKey })
-  .first();
-
-let msTenantDomain = azureData.tenant;
-let tenantPrimaryDomain = vpCtx.suiteData.tenantPrimaryDomain;
-
-// console.log('In $auth plugin...');
-// console.log(`vpCtx: ${JSON.stringify(vpCtx, null, 2)}`);
-// console.log(`suiteData: ${JSON.stringify(suiteData, null, 2)}`);
-// console.log(`azureData: ${JSON.stringify(azureData, null, 2)}`);
 
 // Nuxt plugin bootup - main entry point
 export default (ctx, inject) => {
+  const azureProfile = ctx.app.$helpers.azureProfile;
+
+  let msTenantDomain = azureProfile.tenant;
+  let tenantPrimaryDomain = vpCtx.suiteData.tenantPrimaryDomain;
+
   // Install "$auth" as a Vue + Nuxt plugin (e.g., ctx.app.$auth, this.$auth in components and store)
   inject(
     'auth',
@@ -43,7 +35,7 @@ export default (ctx, inject) => {
 
       async created() {
         console.log('PI: $auth vue instance created');
-        await this.initialize(azureData, useFakeAuth, vpCtx.isVerbose);
+        await this.initialize(azureProfile, useFakeAuth, vpCtx.isVerbose);
         console.log('PI: $auth initialization completed');
       },
 

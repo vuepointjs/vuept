@@ -23,7 +23,7 @@ if (vpCtx.isDevOpsCommand) {
 const config = {
   restApiRoot: '/api/v1',
   host: process.env.API_HOST,
-  port: vpCtx.isNodeDev || httpOnly ? vpCtx.port : 443,
+  port: vpCtx.isNodeDev || httpOnly ? vpCtx.apiPort : 443,
   isNodeDev: vpCtx.isNodeDev
 };
 
