@@ -13,7 +13,7 @@
   <v-container fluid grid-list-md>
     <v-layout>
       <v-flex>
-        <h2>{{ $applet.fromRoute(this.$route, this.$store).name }} - All Items</h2>
+        <h2>{{ $applet.fromRoute(this.$route).name }} - All Items</h2>
         <div style="width: 100%; height: 40px; background-color: #efefef; margin: 5px"></div>
 
         <v-data-table :loading="false" :must-sort="true" :headers="[]" :items="[]" :total-items="0" rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">

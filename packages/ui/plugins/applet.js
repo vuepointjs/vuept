@@ -13,60 +13,55 @@ export default (ctx, inject) => {
 
       methods: {
         /**
-         * Given an applet key (case-insensitive) and reference to the Vuex store, return the matching applet object, if any
+         * Given an applet key (case-insensitive) return the matching applet object, if any
          * @param {string} key Applet "key" (unique 2 character ID string)
-         * @param {object} store Vuex store reference
          */
-        fromKey(key, store) {
-          let applet = store.state.app.applets.find(item => item.key.toUpperCase() === key.toUpperCase());
+        fromKey(key) {
+          let applet = ctx.store.state.app.applets.find(item => item.key.toUpperCase() === key.toUpperCase());
           return applet ? applet : {};
         },
 
         /**
-         * Given the active route and a reference to the Vuex store, return the corresponding applet object for the route, if any
+         * Given the active route return the corresponding applet object for the route, if any
          * @param {object} route Route object for current, active route
-         * @param {object} store Vuex store reference
          */
-        fromRoute(route, store) {
+        fromRoute(route) {
           let key = route.params.applet;
           if (!key) return {};
-          return this.fromKey(key, store);
+          return this.fromKey(key);
         },
 
         /**
-         * Given an applet object and a reference to the Vuex store, return the array of views defined for the applet, if any
+         * Given an applet object return the array of views defined for the applet, if any
          * @param {object} applet Applet object
-         * @param {object} store Vuex store reference
          */
-        views(applet, store) {
-          let appletViews = store.state.app.applets.views;
+        views(applet) {
+          let appletViews = ctx.store.state.app.applets.views;
           return appletViews ? appletViews.views : [];
         },
 
         /**
-         * Given an applet object, the type of a view, and a reference to the Vuex store, return the view definition object, if any
+         * Given an applet object and the type of a view, return the view definition object, if any
          * @param {object} applet Applet object
          * @param {string} type Type of view desired
-         * @param {object} store Vuex store reference
          */
-        viewByType(applet, type, store) {
-          let appletView = this.views(applet, store).find(item => item.type.toUpperCase() === type.toUpperCase());
+        viewByType(applet, type) {
+          let appletView = this.views(applet).find(item => item.type.toUpperCase() === type.toUpperCase());
           return appletView ? appletView : {};
         },
 
         /**
-         * Given an applet object, the name of a view, and a reference to the Vuex store, return the view definition object, if any
+         * Given an applet object and the name of a view, return the view definition object, if any
          * @param {object} applet Applet object
          * @param {string} name Name of the view
-         * @param {object} store Vuex store reference
          */
-        viewFromName(applet, name, store) {
-          let appletView = this.views(applet, store).find(item => item.name.toUpperCase() === name.toUpperCase());
+        viewFromName(applet, name) {
+          let appletView = this.views(applet).find(item => item.name.toUpperCase() === name.toUpperCase());
           return appletView ? appletView : {};
         },
 
         /**
-         * Given an applet key (case-insensitive), return the base route for the applet
+         * Given an applet key (case-insensitive) return the base route for the applet
          * @param {string} key Applet "key" (unique 2 character ID string)
          */
         baseRouteFromKey(key) {
@@ -83,7 +78,7 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given an applet key (case-insensitive), return the corresponding Mousetrap keybinding
+         * Given an applet key (case-insensitive) return the corresponding Mousetrap keybinding
          * for navigating to thr applet's home page
          * @param {string} key Applet "key" (unique 2 character ID string)
          */
@@ -95,7 +90,7 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given the Mousetrap keybinding for an applet, return the applet's key (ID) in uppercase.
+         * Given the Mousetrap keybinding for an applet return the applet's key (ID) in uppercase.
          * When the actual, case-sensitive applet key value is required, this uppercase applet key must
          * be used to lookup the applet info in the Vuex store
          * @param {string} combo Mousetrap keyboard combination, in this case a 2 char sequence
