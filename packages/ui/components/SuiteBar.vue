@@ -68,7 +68,7 @@ export default {
     },
 
     activeApplet() {
-      return this.$applet.fromRoute(this.$route, this.$store);
+      return this.$applet.fromRoute(this.$route);
     },
 
     taxonomy() {

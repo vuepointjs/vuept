@@ -43,11 +43,11 @@ export default {
 
   computed: {
     applet() {
-      return this.$applet.fromRoute(this.$route, this.$store);
+      return this.$applet.fromRoute(this.$route);
     },
 
     appletListViewComponent() {
-      let listViewSubType = this.$applet.viewByType(this.applet, 'List', this.$store).subType;
+      let listViewSubType = this.$applet.viewByType(this.applet, 'List').subType;
       // Default to list style 'Grid' if not otherwise specified
       return listViewSubType ? `applet-items-as-${listViewSubType.toLowerCase()}` : 'applet-items-as-grid';
     }
