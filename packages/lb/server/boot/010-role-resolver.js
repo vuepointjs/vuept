@@ -25,7 +25,7 @@ const appKey = process.env.npm_package_config_vp_app_key || null;
 const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRole, suiteKey, appKey);
 
 const azureProfileKey = vpCtx.isNodeDev ? 'DEV' : 'PROD';
-const azureData = require('@vuept_solution/data').getters.azureProfileByKey(vpCtx.suiteData, azureProfileKey);
+const azureProfile = require('@vuept_solution/data').getters.azureProfileByKey(vpCtx.suiteData, azureProfileKey);
 
 module.exports = function(app) {
   let Role = app.models.Role;
@@ -40,7 +40,7 @@ module.exports = function(app) {
       let decodedToken = {};
       let tokenVerifyOptions = {
         algorithms: ['RS256'],
-        audience: azureData.apiId
+        audience: azureProfile.apiId
       };
       let verifiedToken = {};
 
@@ -89,7 +89,7 @@ module.exports = function(app) {
 
         // See: https://support.office.com/en-us/article/domains-faq-1272bad0-4bd4-4796-8005-67d6fb3afc5a#bkmk_whydoihaveanonmicrosoft.comdomain
         // and: https://blog.lawrencecawood.com/heres-what-happens-when-you-pick-the-wrong-office-365-tenant-name-27b657e8acbd
-        let msTenantDomain = azureData.tenant;
+        let msTenantDomain = azureProfile.tenant;
         if (!msTenantDomain) return cb(null, false);
         msTenantDomain = msTenantDomain.toLowerCase();
         if (!msTenantDomain.includes('.onmicrosoft.com')) return cb(null, false);

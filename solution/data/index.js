@@ -66,13 +66,16 @@ const getters = {
     return role === 'suite' ? this.suitePathByKey(key) : this.appPathByKey(key);
   },
 
+  apiPathByKey: key => path.resolve(__dirname, key === '__app-key__' ? '../../.templates/api/' : `../api/${key.toLowerCase()}/`),
+
   sourcePathByRoleAndKeys(role, suiteKey, appKey) {
     switch (role) {
       case 'suite':
         return this.suitePathByKey(suiteKey);
       case 'app':
-      case 'api':
         return this.appPathByKey(appKey);
+      case 'api':
+        return this.apiPathByKey(appKey);
       default:
         return null;
     }
@@ -176,8 +179,8 @@ const configErrMsg = 'ERROR: Missing Suite Configuration Data';
 const context = {
   _fromRoleAndKeysRaw: (solutionRole, suiteKey, appKey) => {
     const isDevOpsCommand = !!process.env.SLC_COMMAND && process.env.SLC_COMMAND === 'loopback-cli';
-    const sourcePath = getters.sourcePathByRoleAndKeys(solutionRole, suiteKey, appKey);
-    const apiSourcePath = isDevOpsCommand ? __dirname : sourcePath.replace(`${path.sep}app`, `${path.sep}api`);
+    const appSourcePath = getters.sourcePathByRoleAndKeys('app', suiteKey, appKey);
+    const apiSourcePath = getters.sourcePathByRoleAndKeys('api', suiteKey, appKey);
 
     let dotenvLoaded = !!process.env.API_HOST;
     if (!dotenvLoaded) {
@@ -202,10 +205,11 @@ const context = {
       appKey,
       suiteData: getters.shallowSuiteData(getters.suiteByKey(suiteKey)) || configErrMsg,
       appData: getters.appByKeys(suiteKey, appKey),
-      sourcePath,
+      appSourcePath,
       apiSourcePath,
       buildDir: getters.buildDirByRoleAndKeys(solutionRole, suiteKey, appKey),
-      port: process.env.TDEV ? getters.portByRoleAndKeys(solutionRole, suiteKey, appKey) : process.env.PORT || process.env.NUXT_PORT,
+      appPort: process.env.TDEV ? getters.portByRoleAndKeys('app', suiteKey, appKey) : process.env.PORT || process.env.NUXT_PORT,
+      apiPort: process.env.TDEV ? getters.portByRoleAndKeys('api', suiteKey, appKey) : process.env.PORT || process.env.NUXT_PORT,
       apiHost,
       title: getters.titleByRoleAndKeys(solutionRole, suiteKey, appKey),
       description: getters.descriptionByRoleAndKeys(solutionRole, suiteKey, appKey)

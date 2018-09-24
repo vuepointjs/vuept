@@ -2,8 +2,15 @@
  * helpers.js: General helper methods and data for the app
  */
 import Vue from 'vue';
+import _ from 'lodash';
 import numeral from 'numeral';
 import colors from 'vuetify/es5/util/colors';
+
+const vpCtx = process.env.vpCtx;
+const azureProfileKey = vpCtx.isNodeDev ? 'DEV' : 'PROD';
+const azureProfile = _(vpCtx.suiteData.azure)
+  .filter({ key: azureProfileKey })
+  .first();
 
 // Nuxt plugin bootup - main entry point
 export default (ctx, inject) => {
@@ -15,13 +22,16 @@ export default (ctx, inject) => {
         regex: {
           htmlTagsAndSpaces: /&nbsp;|<\/?[\w\s="/.':;#-\/\?]+>/gi
         },
+        azureProfile,
         apiHost: ctx.env.vpCtx.apiHost,
+        apiPort: ctx.env.vpCtx.apiPort,
         baseApiDataPath: '/api/v1'
       }),
 
       created() {
         console.log('PI: $helpers vue instance created');
-        console.log(`PI: $helpers apiHost = ${this.apiHost}, baseApiDataPath = ${this.baseApiDataPath}`);
+        // console.log(`PI: $helpers apiHost = ${this.apiHost}, apiPort = ${this.apiPort}`);
+        // console.log(`PI: $helpers baseApiModelPath = ${this.baseApiModelPath}`);
       },
 
       methods: {
@@ -86,6 +96,13 @@ export default (ctx, inject) => {
           ];
 
           return colorTable[index % 2][index % colorTable[0].length];
+        }
+      },
+
+      computed: {
+        baseApiModelPath() {
+          let azureApiIdPiece = azureProfile.apiId.split('-', 1);
+          return `/api/static/${azureApiIdPiece ? azureApiIdPiece[0] : 'eeeeeeee'}/models`;
         }
       }
     })

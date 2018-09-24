@@ -11,6 +11,11 @@ export default (ctx, inject) => {
     new Vue({
       data: () => ({}),
 
+      created() {
+        console.log('PI: $applet vue instance created');
+        // console.log(`PI: $applet modelUrlFromKey = ${'?'}, dataUrlFromKey = ${'?'}`);
+      },
+
       methods: {
         /**
          * Given an applet key (case-insensitive) return the matching applet object, if any
@@ -101,13 +106,23 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given an applet key (case-insensitive) return the corresponding API URL
-         * for getting data
+         * Given an applet key (case-insensitive) return the corresponding API URL for getting the data model
+         * @param {string} key Applet "key" (unique 2 character ID string)
+         */
+        modelUrlFromKey(key) {
+          // e.g., https://zz.domain.com/api/static/dddddddd/models/party.json
+          let apiHost = ctx.app.$helpers.apiHost;
+          let basePath = ctx.app.$helpers.baseApiDataPath;
+        },
+
+        /**
+         * Given an applet key (case-insensitive) return the corresponding API URL for getting data
          * @param {string} key Applet "key" (unique 2 character ID string)
          */
         dataUrlFromKey(key) {
-          let apiHost = ctx.$helpers.apiHost;
-          let basePath = ctx.$helpers.baseApiDataPath;
+          // e.g., https://zz.domain.com/api/v1/Parties/count?...
+          let apiHost = ctx.app.$helpers.apiHost;
+          let basePath = ctx.app.$helpers.baseApiDataPath;
         }
       }
     })
