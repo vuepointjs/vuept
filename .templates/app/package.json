@@ -42,7 +42,7 @@
     "vue-clipboard2": "^0.2.1",
     "vue-markdown": "^2.2.4",
     "vue-mousetrap": "^1.0.1",
-    "vuetify": "^1.2.3"
+    "vuetify": "^1.2.4"
   },
   "devDependencies": {
     "babel-eslint": "^9.0.0",

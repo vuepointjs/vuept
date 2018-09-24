@@ -1,34 +1,34 @@
 <template>
-
-  <!--
-  <div style="margin-left: 30px; width: 300px; height: 110px;" class="blue lighten-2 pa-2">
-    <h2>{{ $route.params.applet }} Applet Items</h2>
-    <b>TODO:</b>&nbsp;
-    <i>Grid</i> View Component
-    <br>
-    <v-icon large color="red darken-3">list</v-icon>
-  </div>
-  -->
-
-  <v-container fluid grid-list-md>
+  <v-container fluid class="pa-0" v-show="dataLoaded">
     <v-layout>
       <v-flex>
         <h2>{{ $applet.fromRoute(this.$route).name }} - All Items</h2>
-        <div style="width: 100%; height: 40px; background-color: #efefef; margin: 5px"></div>
 
-        <v-data-table :loading="false" :must-sort="true" :headers="[]" :items="[]" :total-items="0" rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">
-          <template slot="items" slot-scope="propsExample">
-            <td>
-              <v-menu bottom left>
-                <v-btn icon slot="activator">
-                  <v-icon>more_vert</v-icon>
-                </v-btn>
-              </v-menu>
-            </td>
-            <td>Coming</td>
-            <td>Soon</td>
-            <td>Item</td>
-            <td>Details</td>
+        <v-toolbar dense class="elevation-0 vp-items-toolbar" height="40">
+          <v-text-field hide-details prepend-icon="search" class="vp-items-search-input" single-line v-model="search"></v-text-field>
+
+          <!--
+          <v-btn icon>
+            <v-icon>my_location</v-icon>
+          </v-btn>
+
+          <v-btn icon>
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+          -->
+        </v-toolbar>
+
+        <v-data-table v-model="selected" :must-sort="mustSort" :headers="headers" :items="rows" :pagination.sync="pagination" :total-items="totalItems"
+          rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">
+
+          <template slot="items" slot-scope="row">
+            <!-- Allow clicking anywhere on a row to select it for actions -->
+            <tr :class="rowCssClasses(row)" :active="row.selected" @click="rowClick(row)">
+              <!-- Render a cell for each property in the view -->
+              <td v-for="(col, i) in viewProperties" :key="`col${i}`">
+                <span>{{ row.item[col] }}</span>
+              </td>
+            </tr>
           </template>
         </v-data-table>
 
@@ -42,14 +42,24 @@
 export default {
   props: {},
 
-  data() {
-    return {
-      rowsOptions: [5, 10, 25, 100, 500]
-    };
-  },
+  data: () => ({
+    rows: [],
+    columns: [],
+    headers: [],
+    selected: [],
+    search: '',
+    totalItems: 0,
+    rowsOptions: [5, 10, 25, 100, 500],
+    pagination: {
+      sortBy: 'LName',
+      rowsPerPage: 10
+    },
+    mustSort: true
+  }),
 
   created() {
     console.log('COMP: Created /applet/list <items-as-grid>');
+    this.getTabularData();
   },
 
   mounted() {
@@ -60,9 +70,73 @@ export default {
 
   destroyed() {
     console.log('COMP: Destroyed /applet/list <items-as-grid>');
+  },
+
+  computed: {
+    // True when the data has been loaded via API, false otherwise
+    dataLoaded() {
+      return true;
+      // return this.$store.state...rows.length > 0;
+    }
+  },
+
+  methods: {
+    async getTabularData() {
+      try {
+        console.log('COMP: Getting tabular data for ZZ...');
+        // await this.loadDataByZzz();
+        console.log('COMP: Got tabular data');
+
+        // this.columns = this.$store.state.ZzzData.columns;
+        this.headers = [];
+        this.rows = [];
+        this.measureKeys = [];
+        // this.getHeadersAndKeysFromRawData();
+        // this.rows = this.$store.state.Data.rows;
+      } catch (e) {
+        this.headers = [];
+        this.rows = [];
+        console.log('COMP: Error getting rows and columns:', e);
+      }
+    },
+
+    getHeadersAndKeysFromRawData() {
+      let renderedCols = [];
+
+      this.headers = [];
+      this.measureKeys = [];
+      this.headers.push({ text: '', value: 'Column Label', align: 'left', sortable: false });
+
+      // renderedCols = this.columns...
+    },
+
+    rowCssClasses(row) {
+      return {
+        // 'class-name': condition,
+        // 'class-name-2': condition-2
+      };
+    },
+
+    rowClick(row) {
+      let rowKey = row.item.key;
+      row.selected = !row.selected;
+    }
+
+    // ...mapActions(['loadDataByZzz'])
   }
 };
 </script>
 
 <style scoped>
+/*
+.vp-items-toolbar,
+.vp-items-toolbar .v-toolbar__content {
+}
+*/
+
+.vp-items-search-input {
+  padding-top: 4px;
+  max-width: 300px;
+  min-width: 150px;
+}
 </style>
