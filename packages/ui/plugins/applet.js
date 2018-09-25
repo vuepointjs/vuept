@@ -105,34 +105,42 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given an applet key (case-insensitive) return the corresponding (primary) model key, or falsy if no model key is associated with the applet
-         * @param {string} key Applet "key" (unique 2 character ID string)
+         * Given an applet object return the corresponding (primary) model key, or falsy if no model key is associated with the applet
+         * @param {object} applet Applet object
          */
-        modelKeyFromKey(key) {
-          const applet = this.fromKey(key);
+        modelKey(applet) {
           return applet && applet.primaryModel;
         },
 
-        /**
-         * Given an applet key (case-insensitive) return the corresponding API URL for getting the data model
-         * @param {string} key Applet "key" (unique 2 character ID string)
-         */
-        modelUrlFromKey(key) {
-          const applet = this.fromKey(key);
-          const modelKey = applet && applet.primaryModel;
-          return modelKey ? ctx.app.$model.urlFromKey(modelKey) : '';
-        },
+        // /**
+        //  * Given an applet key (case-insensitive) return the corresponding API URL for getting the model, or an empty string on failure
+        //  * @param {string} key Applet "key" (unique 2 character ID string)
+        //  */
+        // modelUrlFromKey(key) {
+        //   const applet = this.fromKey(key);
+        //   const modelKey = applet && applet.primaryModel;
+        //   return modelKey ? ctx.app.$model.urlFromKey(modelKey) : '';
+        // },
 
         /**
-         * Given an applet key (case-insensitive) return the corresponding API URL for getting data
-         * @param {string} key Applet "key" (unique 2 character ID string)
+         * Given an applet object return the corresponding API URL for getting data
+         * @param {object} applet Applet object
          */
-        dataUrlFromKey(key) {
-          // e.g., https://zz.domain.com/api/v1/Parties/count?...
+        baseDataUrl(applet) {
+          // e.g., https://zz.domain.com/api/v1/Customers
           let apiHost = ctx.app.$helpers.apiHost;
           let apiPort = ctx.app.$helpers.apiPort;
+          let apiProtocol = 'http://';
           let basePath = ctx.app.$helpers.baseApiDataPath;
-          return `${apiHost}${apiPort ? `:${apiPort}` : ''}${basePath}/${key}s`;
+
+          if (['443', '80'].includes(apiPort)) {
+            apiProtocol = apiPort === '443' ? 'https://' : 'http://';
+            apiPort = ''; // no need to specify port in final URL in this case
+          }
+
+          let pluralModelName = ctx.app.$model.pluralName(ctx.app.$model.byKey(this.modelKey(applet)));
+
+          return `${apiProtocol}${apiHost}${apiPort ? `:${apiPort}` : ''}${basePath}/${pluralModelName}`;
         }
       }
     })

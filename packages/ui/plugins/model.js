@@ -5,6 +5,7 @@
  * The LoopBack model json file is named with this key, and the Vuex store also indexes the map of models using this key
  */
 import Vue from 'vue';
+import _ from 'lodash';
 
 // Nuxt plugin bootup - main entry point
 export default (ctx, inject) => {
@@ -38,20 +39,41 @@ export default (ctx, inject) => {
           return `${apiProtocol}${apiHost}${apiPort ? `:${apiPort}` : ''}${basePath}/${key}.json`;
         },
 
-        fromAppletKey(appletKey) {},
-
-        singularNameFromAppletKey(appletKey) {},
-
-        pluralNameFromAppletKey(appletKey) {}
-      },
-
-      computed: {
         /**
          * Given a model key return the corresponding model (if any) from the store
          * @param {string} key Model key
          */
         byKey(key) {
           return ctx.store.state.models[key];
+        },
+
+        /**
+         * Given a model object return the singular form of the model name
+         * @param {*} model Model object
+         */
+        singularName(model) {
+          return model ? model.name : '';
+        },
+
+        /**
+         * Given a model object return the plural form of the model name
+         * @param {*} model Model object
+         */
+        pluralName(model) {
+          return model ? model.plural || `${model.name}s` : '';
+        },
+
+        /**
+         * Given a model object return an array of the model's properties which are marked as required, or an empty array on failure
+         * @param {*} model Model object
+         */
+        requiredProperties(model) {
+          return model
+            ? _(model.properties)
+                .map((val, key) => ({ key, ...val }))
+                .filter(val => val.required && val.required === true)
+                .value()
+            : [];
         }
       }
     })
