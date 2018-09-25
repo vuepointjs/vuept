@@ -105,12 +105,12 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given an applet key (case-insensitive) return the corresponding default model name (kebab-case) or falsy if no default is set
+         * Given an applet key (case-insensitive) return the corresponding (primary) model key, or falsy if no model key is associated with the applet
          * @param {string} key Applet "key" (unique 2 character ID string)
          */
-        modelNameFromKey(key) {
+        modelKeyFromKey(key) {
           const applet = this.fromKey(key);
-          return applet && applet.defaultModel;
+          return applet && applet.primaryModel;
         },
 
         /**
@@ -119,8 +119,8 @@ export default (ctx, inject) => {
          */
         modelUrlFromKey(key) {
           const applet = this.fromKey(key);
-          const modelName = applet && applet.defaultModel;
-          return modelName ? ctx.app.$model.urlFromName(modelName) : '';
+          const modelKey = applet && applet.primaryModel;
+          return modelKey ? ctx.app.$model.urlFromKey(modelKey) : '';
         },
 
         /**

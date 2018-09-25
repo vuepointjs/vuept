@@ -47,10 +47,13 @@ const server = {
       }
 
       // Start the LoopBack web server
-      lbServer.listen(app.get('port'), function() {
+      const lbPort = app.get('port');
+      lbServer.listen(lbPort, function() {
         let host = app.get('host');
         if (host === '0.0.0.0') host = 'localhost';
-        let baseUrl = (httpOnly ? 'http://' : 'https://') + host + ':' + app.get('port');
+        let urlPort = ':' + lbPort;
+        if (lbPort === '80' || lbPort === '443') urlPort = '';
+        let baseUrl = (httpOnly ? 'http://' : 'https://') + host + urlPort;
         app.emit('started', baseUrl);
         console.log('Web server listening at: %s%s', baseUrl, '/');
 
