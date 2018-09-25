@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   props: {},
 
@@ -57,9 +59,9 @@ export default {
     mustSort: true
   }),
 
-  created() {
+  async created() {
     console.log('COMP: Created /applet/list <items-as-grid>');
-    this.getTabularData();
+    await this.getTabularData();
   },
 
   mounted() {
@@ -73,6 +75,18 @@ export default {
   },
 
   computed: {
+    applet() {
+      return this.$applet.fromRoute(this.$route);
+    },
+
+    modelName() {
+      return this.$applet.modelNameFromKey(this.applet.key);
+    },
+
+    model() {
+      return this.$store.state.models[this.modelName];
+    },
+
     // True when the data has been loaded via API, false otherwise
     dataLoaded() {
       return true;
@@ -83,7 +97,12 @@ export default {
   methods: {
     async getTabularData() {
       try {
-        console.log('COMP: Getting tabular data for ZZ...');
+        console.log('COMP: Getting tabular data...');
+
+        if (this.modelName) {
+          await this.loadModelByName({ name: this.modelName });
+        }
+
         // await this.loadDataByZzz();
         console.log('COMP: Got tabular data');
 
@@ -120,9 +139,9 @@ export default {
     rowClick(row) {
       let rowKey = row.item.key;
       row.selected = !row.selected;
-    }
+    },
 
-    // ...mapActions(['loadDataByZzz'])
+    ...mapActions(['loadModelByName'])
   }
 };
 </script>
