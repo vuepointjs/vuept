@@ -8,6 +8,10 @@ module.exports = function() {
   // See: https://expressjs.com/en/api.html#res.redirect
   // and: https://www.netlify.com/docs/redirects/#history-pushstate-and-single-page-apps
   return function customRaiseUrlNotFoundError(req, res, next) {
-    res.redirect(302, '/index.html');
+    if (req.url.includes('/api/static')) {
+      res.status(404).send('Model not found');
+    } else {
+      res.redirect(302, '/index.html');
+    }
   };
 };

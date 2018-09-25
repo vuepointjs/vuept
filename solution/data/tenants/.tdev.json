@@ -32,7 +32,6 @@
           "name": "Groupware",
           "key": "__app-key__",
           "longName": "Cloud Groupware",
-          "modelsRef": "@vuept_template/solution-api/common/models",
           "devPorts": {
             "app": "33770",
             "api": "33880"

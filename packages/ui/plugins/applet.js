@@ -13,7 +13,6 @@ export default (ctx, inject) => {
 
       created() {
         console.log('PI: $applet vue instance created');
-        // console.log(`PI: $applet modelUrlFromKey = ${'?'}, dataUrlFromKey = ${'?'}`);
       },
 
       methods: {
@@ -106,13 +105,22 @@ export default (ctx, inject) => {
         },
 
         /**
+         * Given an applet key (case-insensitive) return the corresponding default model name (kebab-case) or falsy if no default is set
+         * @param {string} key Applet "key" (unique 2 character ID string)
+         */
+        modelNameFromKey(key) {
+          const applet = this.fromKey(key);
+          return applet && applet.defaultModel;
+        },
+
+        /**
          * Given an applet key (case-insensitive) return the corresponding API URL for getting the data model
          * @param {string} key Applet "key" (unique 2 character ID string)
          */
         modelUrlFromKey(key) {
-          // e.g., https://zz.domain.com/api/static/dddddddd/models/party.json
-          let apiHost = ctx.app.$helpers.apiHost;
-          let basePath = ctx.app.$helpers.baseApiDataPath;
+          const applet = this.fromKey(key);
+          const modelName = applet && applet.defaultModel;
+          return modelName ? ctx.app.$model.urlFromName(modelName) : '';
         },
 
         /**
@@ -122,7 +130,9 @@ export default (ctx, inject) => {
         dataUrlFromKey(key) {
           // e.g., https://zz.domain.com/api/v1/Parties/count?...
           let apiHost = ctx.app.$helpers.apiHost;
+          let apiPort = ctx.app.$helpers.apiPort;
           let basePath = ctx.app.$helpers.baseApiDataPath;
+          return `${apiHost}${apiPort ? `:${apiPort}` : ''}${basePath}/${key}s`;
         }
       }
     })
