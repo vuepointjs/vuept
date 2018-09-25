@@ -105,8 +105,8 @@ module.exports = {
     { src: '@/plugins/vue-chartjs', ssr: false },
     { src: '@/plugins/vue-clipboard', ssr: false },
     { src: path.join(vpPlugins, '/helpers'), ssr: false },
-    { src: path.join(vpPlugins, '/applet'), ssr: false },
     { src: path.join(vpPlugins, '/model'), ssr: false },
+    { src: path.join(vpPlugins, '/applet'), ssr: false },
     { src: path.join(vpPlugins, '/auth'), ssr: false }
   ],
 
