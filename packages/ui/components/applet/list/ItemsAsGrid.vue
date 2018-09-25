@@ -79,12 +79,12 @@ export default {
       return this.$applet.fromRoute(this.$route);
     },
 
-    modelName() {
-      return this.$applet.modelNameFromKey(this.applet.key);
+    modelKey() {
+      return this.$applet.modelKeyFromKey(this.applet.key);
     },
 
     model() {
-      return this.$store.state.models[this.modelName];
+      return this.$store.state.models[this.modelKey];
     },
 
     // True when the data has been loaded via API, false otherwise
@@ -99,8 +99,8 @@ export default {
       try {
         console.log('COMP: Getting tabular data...');
 
-        if (this.modelName) {
-          await this.loadModelByName({ name: this.modelName });
+        if (this.modelKey) {
+          await this.loadModelByKey({ key: this.modelKey });
         }
 
         // await this.loadDataByZzz();
@@ -141,7 +141,7 @@ export default {
       row.selected = !row.selected;
     },
 
-    ...mapActions(['loadModelByName'])
+    ...mapActions(['loadModelByKey'])
   }
 };
 </script>

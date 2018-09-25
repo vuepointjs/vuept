@@ -43,7 +43,7 @@
               "iconLabel": "Co",
               "ord": 1,
               "longName": "Shared Contacts",
-              "defaultModel": "party",
+              "primaryModel": "party",
               "views": [
                 {
                   "name": "All Items",
@@ -64,7 +64,7 @@
               "iconLabel": "Di",
               "ord": 2,
               "longName": "Contact Discussions",
-              "defaultModel": "party-note"
+              "primaryModel": "party-note"
             }
           ]
         }

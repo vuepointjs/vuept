@@ -208,8 +208,8 @@ const context = {
       appSourcePath,
       apiSourcePath,
       buildDir: getters.buildDirByRoleAndKeys(solutionRole, suiteKey, appKey),
-      appPort: process.env.TDEV ? getters.portByRoleAndKeys('app', suiteKey, appKey) : process.env.PORT || process.env.NUXT_PORT,
-      apiPort: process.env.TDEV ? getters.portByRoleAndKeys('api', suiteKey, appKey) : process.env.PORT || process.env.NUXT_PORT,
+      appPort: process.env.TDEV ? getters.portByRoleAndKeys('app', suiteKey, appKey) : process.env.PORT || process.env.NUXT_PORT || '443',
+      apiPort: process.env.TDEV ? getters.portByRoleAndKeys('api', suiteKey, appKey) : process.env.PORT || process.env.NUXT_PORT || '443',
       apiHost,
       title: getters.titleByRoleAndKeys(solutionRole, suiteKey, appKey),
       description: getters.descriptionByRoleAndKeys(solutionRole, suiteKey, appKey)
