@@ -114,6 +114,12 @@ export default {
       return this.$model.requiredProperties(this.model, exclude);
     },
 
+    // Just the key (aka "value") of the columns considered searchable
+    searchableColumns() {
+      let exclude = ['Archived', 'FName'];
+      return this.$model.requiredStringPropertyKeys(this.model, exclude);
+    },
+
     // True when the data has been loaded via API, false otherwise
     dataLoaded() {
       return true;
@@ -139,19 +145,21 @@ export default {
         console.log(`COMP: Pagination params >>> sortBy: ${sortBy}, descending: ${descending}, page: ${page}, rowsPerPage: ${rowsPerPage}`);
 
         console.log(`COMP: ...Base Data URL: ${this.$applet.baseDataUrl(this.applet)}`);
-        // await this.loadDataByZzz();
-
-        // http://localhost:3000/api/Customers?filter[where][LName][like]=%25Ab%25&filter[order]=LName&filter[order]=ID&filter[limit]=5&filter[skip]=0
+        // http://localhost/api/Customers?filter[where][LName][like]=%25Ab%25&filter[order]=LName&filter[order]=ID&filter[limit]=5&filter[skip]=0
         // NOTE: It's actually a good idea to include ID as last sort order column to make the ordering predictable when, for example, customers have the same last name
         const dataSortQryStr = `filter[order]=${sortBy}${descending ? '%20DESC' : '%20ASC'}&filter[order]=ID`;
         const dataLimitQryStr = `filter[limit]=${rowsPerPage}&filter[skip]=${(page - 1) * rowsPerPage}`;
         const dataSortLimitQryStr = `${dataSortQryStr}&${dataLimitQryStr}`;
 
+        // TODO: Determine method for handling "Archived" piece of qry strings
         let dataSearchQryStr = 'filter[where][Archived]=0&';
         let countSearchQryStr = '?[where][Archived]=0';
+        let searchColKey = (this.searchableColumns && this.searchableColumns[0]) || this.columns[0].value;
+
         if (this.search) {
-          dataSearchQryStr = `filter[where][Archived]=0&filter[where][LName][like]=%25${this.search}%25&`;
-          countSearchQryStr = `?[where][and][0][Archived]=0&[where][and][1][LName][like]=%25${this.search}%25`;
+          console.log(`COMP: Searching in column "${searchColKey}"`);
+          dataSearchQryStr = `filter[where][Archived]=0&filter[where][${searchColKey}][like]=%25${this.search}%25&`;
+          countSearchQryStr = `?[where][and][0][Archived]=0&[where][and][1][${searchColKey}][like]=%25${this.search}%25`;
         }
 
         const baseDataUrl = this.$applet.baseDataUrl(this.applet);
