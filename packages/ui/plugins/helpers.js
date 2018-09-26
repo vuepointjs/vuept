@@ -48,6 +48,10 @@ export default (ctx, inject) => {
           return value === null ? '-' : value === '' ? '' : numeral(value).format('0,0[.]0');
         },
 
+        toTitleCase(str) {
+          return _.startCase(str);
+        },
+
         /**
          * Given any non-negative integer index arg, return a color from lookup tables containing
          * assortments of light and dark colors. The color is returned as an RGB hex value string

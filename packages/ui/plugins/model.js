@@ -65,13 +65,14 @@ export default (ctx, inject) => {
 
         /**
          * Given a model object return an array of the model's properties which are marked as required, or an empty array on failure
-         * @param {*} model Model object
+         * @param {object} model Model object
+         * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result
          */
-        requiredProperties(model) {
+        requiredProperties(model, exclude = []) {
           return model
             ? _(model.properties)
                 .map((val, key) => ({ key, ...val }))
-                .filter(val => val.required && val.required === true)
+                .filter(val => !!val.required && !exclude.includes(val.key))
                 .value()
             : [];
         }

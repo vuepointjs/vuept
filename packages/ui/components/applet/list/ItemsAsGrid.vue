@@ -18,15 +18,15 @@
           -->
         </v-toolbar>
 
-        <v-data-table v-model="selected" :must-sort="mustSort" :headers="headers" :items="rows" :pagination.sync="pagination" :total-items="totalItems"
-          rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">
+        <v-data-table v-model="selected" :loading="loading" :must-sort="mustSort" :items="rows" :headers="columns"
+          :pagination.sync="pagination" :total-items="totalItems" rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">
 
           <template slot="items" slot-scope="row">
             <!-- Allow clicking anywhere on a row to select it for actions -->
             <tr :class="rowCssClasses(row)" :active="row.selected" @click="rowClick(row)">
               <!-- Render a cell for each property in the view -->
-              <td v-for="(col, i) in viewProperties" :key="`col${i}`">
-                <span>{{ row.item[col] }}</span>
+              <td v-for="(col, i) in modelProperties" :key="`col${col.key}`">
+                <span>{{ row.item[col.key] }}</span>
               </td>
             </tr>
           </template>
@@ -45,15 +45,15 @@ export default {
   props: {},
 
   data: () => ({
+    loading: true,
     rows: [],
     columns: [],
-    headers: [],
     selected: [],
     search: '',
     totalItems: 0,
     rowsOptions: [5, 10, 25, 100, 500],
     pagination: {
-      sortBy: 'LName',
+      sortBy: 'X',
       rowsPerPage: 10
     },
     mustSort: true
@@ -61,7 +61,7 @@ export default {
 
   async created() {
     console.log('COMP: Created /applet/list <items-as-grid>');
-    await this.getMetadata();
+    await this.getColumns();
   },
 
   mounted() {
@@ -78,7 +78,7 @@ export default {
     pagination: {
       handler() {
         console.log('COMP: Pagination handler invoked');
-        this.getData();
+        this.getRows();
       },
       deep: true
     },
@@ -108,9 +108,10 @@ export default {
     },
 
     // The subset of model properties to display in this view.
-    // TODO: Default to the properties marked required, but look at view spec
+    // TODO: Default to the properties marked required (excluding the internal "Archived" prop), but look at view spec if it exists
     modelProperties() {
-      return this.$model.requiredProperties(this.model);
+      let exclude = ['Archived'];
+      return this.$model.requiredProperties(this.model, exclude);
     },
 
     // True when the data has been loaded via API, false otherwise
@@ -121,37 +122,12 @@ export default {
   },
 
   methods: {
-    async getMetadata() {
+    getRows() {
       try {
-        console.log('COMP: Getting metadata...');
+        console.log('COMP: Getting data rows...');
 
-        // Fail without a model key
-        if (!this.modelKey) return false;
-
-        await this.loadModelByKey({ key: this.modelKey });
-
-        // Fail without a model
-        if (!this.model) return false;
-
-        // this.columns = this.$store.state.ZzzData.columns;
-        this.headers = [];
-        this.rows = [];
-
-        this.getHeaders();
-        // this.rows = this.$store.state.Data.rows;
-      } catch (e) {
-        this.headers = [];
-        this.rows = [];
-        console.log('COMP: Error getting metadata:', e);
-        return false;
-      }
-
-      return true;
-    },
-
-    getData() {
-      try {
-        console.log('COMP: Getting data...');
+        // this.rows = [];
+        this.loading = true;
 
         // Nothing to do without a model
         if (!this.model) {
@@ -178,28 +154,26 @@ export default {
           countSearchQryStr = `?[where][and][0][Archived]=0&[where][and][1][LName][like]=%25${this.search}%25`;
         }
 
-        const dataUrl = `${this.dataBaseUrl}?${dataSearchQryStr}${dataSortLimitQryStr}`;
-        const countUrl = `${this.countBaseUrl}${countSearchQryStr}`;
+        const baseDataUrl = this.$applet.baseDataUrl(this.applet);
+        const baseCountUrl = `${baseDataUrl}/count`;
+        const dataUrl = `${baseDataUrl}?${dataSearchQryStr}${dataSortLimitQryStr}`;
+        const countUrl = `${baseCountUrl}${countSearchQryStr}`;
 
         console.log(`COMP: Getting ${this.modelPluralName}...`);
-        axios.get(dataUrl).then(response => {
-          // Kind of a hack to set these here... but at the moment we don't get the token and roles until
-          // an API is called and the Axios handler kicks-in
-          this.userRoles = authentication.userRoles;
-          this.userApiToken = authentication.apiToken;
-
+        this.$axios.get(dataUrl).then(response => {
           console.log(`Got ${this.modelPluralName}`);
           this.rows = response.data;
-          axios.get(countUrl).then(response => {
+          this.$axios.get(countUrl).then(response => {
             this.totalItems = response.data.count;
             console.log(`${this.modelPluralName} count`, this.totalItems);
-            // this.loading = false;
+            this.loading = false;
           });
         });
 
         console.log('COMP: Got data');
       } catch (e) {
         console.log('COMP: Error getting data:', e);
+        // this.rows = [];
         return false;
       }
 
@@ -208,19 +182,39 @@ export default {
 
     debounceSearch: _.debounce(function() {
       console.log('Search input changed >>>', this.search);
-      this.getData();
+      this.getRows();
       this.pagination.page = 1;
     }, 500),
 
-    getHeaders() {
-      console.log(`COMP: model properties: ${this.$helpers.stringifyObj(this.modelProperties)}`);
+    async getColumns() {
+      try {
+        console.log('COMP: Getting columns metadata...');
 
-      let renderedCols = [];
+        // Fail without a model key
+        if (!this.modelKey) return false;
 
-      this.headers = [];
-      // this.headers.push({ text: 'Last Name', value: 'LName', align: 'left' });
+        await this.loadModelByKey({ key: this.modelKey });
 
-      // renderedCols = this.columns...
+        // Fail without a model
+        if (!this.model) return false;
+
+        // console.log(`COMP: model properties: ${this.$helpers.stringifyObj(this.modelProperties)}`);
+        this.columns = [];
+
+        _(this.modelProperties).forEach(val => {
+          this.columns.push({ text: this.$helpers.toTitleCase(val.key), value: val.key, align: 'left' });
+        });
+
+        // Must set default sort column
+        this.pagination.sortBy = this.columns && this.columns[0].value;
+      } catch (e) {
+        this.columns = [];
+        console.log('COMP: Error getting metadata:', e);
+        return false;
+      }
+
+      console.log('COMP: Got metadata');
+      return true;
     },
 
     rowCssClasses(row) {
