@@ -75,6 +75,21 @@ export default (ctx, inject) => {
                 .filter(val => !!val.required && !exclude.includes(val.key))
                 .value()
             : [];
+        },
+
+        /**
+         * Given a model object return an array of the model's property keys for properties of type "string" which are marked as required, or an empty array on failure
+         * @param {object} model Model object
+         * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result
+         */
+        requiredStringPropertyKeys(model, exclude = []) {
+          const allRequiredProps = this.requiredProperties(model, exclude);
+          return allRequiredProps
+            ? _(allRequiredProps)
+                .filter(val => val.type && val.type === 'string')
+                .map(val => val.key)
+                .value()
+            : [];
         }
       }
     })
