@@ -1,0 +1,79 @@
+{
+  "name": "Note",
+  "description": "Note regarding a Party",
+  "base": "PersistedModel",
+  "options": {
+    "validateUpsert": true
+  },
+  "_vp": {
+    "foreignKeys": {
+      "PartyID": {
+        "constraint": "FK_Note_Party",
+        "referencesTable": "Party",
+        "referencesColumn": "ID"
+      }
+    },
+    "dataAuditing": {
+      "options": {
+        "enabled": true
+      }
+    }
+  },
+  "forceId": true,
+  "properties": {
+    "ID": {
+      "type": "string",
+      "id": true,
+      "description": "Note primary key"
+    },
+    "PartyID": {
+      "type": "string",
+      "required": true,
+      "description": "Foreign key reference to exactly 1 Party (a Note can't exist w/o a Party)",
+      "mssql": {
+        "dataType": "uniqueidentifier"
+      }
+    },
+    "Text": {
+      "type": "string",
+      "required": true,
+      "description": "Text of the note",
+      "mssql": {
+        "dataType": "nvarchar",
+        "dataLength": 1000
+      }
+    },
+    "User": {
+      "type": "string",
+      "description": "User who created or last modified the record"
+    },
+    "Archived": {
+      "type": "boolean",
+      "required": true,
+      "description": "True if the record is considered to be in the recycle bin",
+      "default": false
+    }
+  },
+  "validations": [],
+  "relations": {
+    "Party": {
+      "type": "belongsTo",
+      "model": "Party",
+      "foreignKey": "PartyID"
+    }
+  },
+  "acls": [{
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "$everyone",
+      "permission": "DENY"
+    },
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "tenantUser",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}

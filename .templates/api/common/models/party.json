@@ -319,6 +319,11 @@
       "foreignKey": "PartyID",
       "through": "PartyLabelAssignment",
       "keyThrough": "PartyLabelID"
+    },
+    "Notes": {
+      "type": "hasMany",
+      "model": "Note",
+      "foreignKey": "PartyID"
     }
   },
   "acls": [{

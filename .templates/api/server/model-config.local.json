@@ -3,6 +3,10 @@
     "dataSource": "transient",
     "public": false
   },
+  "Note": {
+    "dataSource": "db",
+    "public": true
+  },
   "PartyLabelAssignment": {
     "dataSource": "db",
     "public": true
