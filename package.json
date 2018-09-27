@@ -60,6 +60,8 @@
     "tdev:db:install:schema": "cd .templates/api && cross-env SCHEMA_ONLY=1 SCHEMA_STRATEGY=force HTTP_ONLY=1 NODE_ENV=development DEBUG= node .",
     "tdev:db:install": "run-s -s tdev:db:install:*",
     "tdev:db:uninstall": "cross-env-shell \"docker container rm $npm_package_config_tdev_db_container -f\"",
+    "tdev:db:schema:update": "cross-env-shell SCHEMA_STRATEGY=preserve_data yarn tdev:info:all:verbose",
+    "tdev:db:schema:reset": "cross-env-shell SCHEMA_STRATEGY=force yarn tdev:info:all:verbose",
     "l:clean": "lerna clean --yes",
     "l:bump:version:solution": "lerna run bump:version --scope @vuept_solution/*",
     "l:bump:version:vuept:templates": "lerna run bump:version --scope @vuept_template/*",
