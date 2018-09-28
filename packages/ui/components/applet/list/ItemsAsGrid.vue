@@ -4,18 +4,30 @@
       <v-flex>
         <h2>{{ applet.name }} - All Items</h2>
 
-        <v-toolbar dense class="elevation-0 vp-items-toolbar" height="40">
-          <v-text-field hide-details prepend-icon="search" class="vp-items-search-input" single-line v-model="search"></v-text-field>
-
-          <!--
-          <v-btn icon>
-            <v-icon>my_location</v-icon>
+        <v-toolbar dense class="pr-5 elevation-0 vp-items-toolbar" height="40">
+          <v-btn icon @click="focusRef('searchInput')">
+            <v-tooltip bottom>
+              <v-icon color="primary" slot="activator">search</v-icon>
+              <span>Search</span>
+            </v-tooltip>
           </v-btn>
 
-          <v-btn icon>
-            <v-icon>more_vert</v-icon>
+          <v-text-field single-line hide-details clearable class="vp-items-search-input" v-model="search" label="Search"
+            ref="searchInput"></v-text-field>
+
+          <v-btn icon @click="flashSnackbar({ msg: 'New item feature coming soon!' })">
+            <v-tooltip bottom>
+              <v-icon color="primary" slot="activator">add</v-icon>
+              <span>New</span>
+            </v-tooltip>
           </v-btn>
-          -->
+
+          <v-btn icon disabled>
+            <v-tooltip bottom>
+              <v-icon color="primary" slot="activator">edit</v-icon>
+              <span>Edit</span>
+            </v-tooltip>
+          </v-btn>
         </v-toolbar>
 
         <v-data-table v-model="selected" :loading="loading" :must-sort="mustSort" :items="rows" :item-key="rowKey"
@@ -136,12 +148,23 @@ export default {
         // presses shift+enter and then presses ctrl+alt+s to search, and we must *close* the
         // AppletNavPanel and set focus to the search box!
 
-        // vm.ref...
+        vm.focusRef('searchInput');
       });
     },
 
     unmountKeybindings() {
       this.$mousetrap.unbind(['ctrl+alt+s']);
+    },
+
+    focusRef(refStr, useSubElt = false) {
+      try {
+        useSubElt = !!useSubElt;
+        let elt = this.$refs[refStr];
+        if (useSubElt) elt = elt.$el;
+        elt.focus();
+      } catch (e) {
+        console.log('COMP: Error setting focus', e);
+      }
     },
 
     async getRows() {
@@ -256,7 +279,7 @@ export default {
       this.pagination.page = 1;
     }, 500),
 
-    ...mapActions(['loadModelByKey'])
+    ...mapActions(['loadModelByKey', 'flashSnackbar'])
   }
 };
 </script>
@@ -268,9 +291,17 @@ export default {
 }
 */
 
+/* Search input is hidden at first */
 .vp-items-search-input {
   padding-top: 4px;
-  max-width: 200px;
-  min-width: 100px;
+  min-width: 0;
+  max-width: 0;
+}
+
+/* Search input expands when focused or "dirty" (has content) */
+.vp-items-search-input.v-input--is-focused,
+.vp-items-search-input.v-input--is-dirty {
+  min-width: 150px;
+  max-width: 180px;
 }
 </style>

@@ -52,6 +52,28 @@ export default (ctx, inject) => {
           return _.startCase(str);
         },
 
+        snackbarColorFromMode(mode) {
+          switch (mode) {
+            case 'success':
+              return 'green';
+            case 'error':
+              return 'red';
+            default:
+              return 'yellow darken-3';
+          }
+        },
+
+        snackbarIconFromMode(mode) {
+          switch (mode) {
+            case 'success':
+              return 'check';
+            case 'error':
+              return 'error_outline';
+            default:
+              return 'info';
+          }
+        },
+
         /**
          * Given any non-negative integer index arg, return a color from lookup tables containing
          * assortments of light and dark colors. The color is returned as an RGB hex value string
