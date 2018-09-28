@@ -27,8 +27,8 @@
       <div class="vp-app-footer-text">{{ taxonomy.suiteName }} | {{ taxonomy.appName }}</div>
     </v-footer>
 
-    <v-snackbar :timeout="0" :top="true" :right="true" v-model="snackbar.show" :color="snackbar.mode === 'success' ? 'green' : 'red'">
-      <v-icon dark>{{ snackbar.mode === 'success' ? 'check' : 'error_outline' }}</v-icon>&nbsp;{{ snackbar.msg }}
+    <v-snackbar :timeout="0" :top="true" :right="true" v-model="snackbar.show" :color="$helpers.snackbarColorFromMode(snackbar.mode)">
+      <v-icon dark>{{ $helpers.snackbarIconFromMode(snackbar.mode) }}</v-icon>&nbsp;{{ snackbar.msg }}
       <!-- <v-btn flat color="pink" @click.native="snackbar.show = false">Close</v-btn> -->
     </v-snackbar>
   </v-app>
