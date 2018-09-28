@@ -50,10 +50,25 @@
                   "default": true,
                   "type": "List",
                   "subType": "Grid",
+                  "filterExpression": null,
+                  "includeExpression": null,
                   "properties": [
-                    "FName",
-                    "LName",
-                    "Email"
+                    {
+                      "key": "FName",
+                      "label": "First Name"
+                    },
+                    {
+                      "key": "LName",
+                      "label": "Last Name",
+                      "sort": "ASC",
+                      "search": true
+                    },
+                    {
+                      "key": "Email"
+                    },
+                    {
+                      "key": "DayPhone"
+                    }
                   ]
                 }
               ]
@@ -64,7 +79,34 @@
               "iconLabel": "Di",
               "ord": 2,
               "longName": "Contact Discussions",
-              "primaryModel": "party-note"
+              "primaryModel": "note",
+              "views": [
+                {
+                  "name": "All Items",
+                  "default": true,
+                  "type": "List",
+                  "subType": "Grid",
+                  "filterExpression": null,
+                  "includeExpression": null,
+                  "properties": [
+                    {
+                      "key": "Party.FName",
+                      "label": "First Name"
+                    },
+                    {
+                      "key": "Party.LName",
+                      "label": "Last Name",
+                      "sort": "ASC",
+                      "search": true
+                    },
+                    {
+                      "key": "Text",
+                      "label": "Discussion Point",
+                      "type": "TruncatedString"
+                    }
+                  ]
+                }
+              ]
             }
           ]
         }
