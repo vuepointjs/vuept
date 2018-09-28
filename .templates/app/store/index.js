@@ -89,14 +89,15 @@ export const actions = {
 
     try {
       let modelUrl = this.$model.urlFromKey(key);
-      console.log(`STORE: ...Model URL: ${modelUrl}`);
+      console.log('AXIOS: Getting Model', modelUrl);
 
+      console.log('AXIOS: Got Model');
       const value = await this.$axios.$get(modelUrl);
       commit('storeModel', { key, value });
 
-      console.log(`STORE: Got and stored model for "${key}"`);
+      console.log(`STORE: Stored model for "${key}"`);
     } catch (e) {
-      console.log('STORE: Error getting model:', e);
+      console.log('STORE: Error getting or storing model:', e);
     }
   }
 };
