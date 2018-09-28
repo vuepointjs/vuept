@@ -1,8 +1,8 @@
 <template>
-  <v-container fluid class="pa-0" v-show="dataLoaded">
+  <v-container fluid class="pa-0">
     <v-layout>
       <v-flex>
-        <h2>{{ $applet.fromRoute(this.$route).name }} - All Items</h2>
+        <h2>{{ applet.name }} - All Items</h2>
 
         <v-toolbar dense class="elevation-0 vp-items-toolbar" height="40">
           <v-text-field hide-details prepend-icon="search" class="vp-items-search-input" single-line v-model="search"></v-text-field>
@@ -18,20 +18,20 @@
           -->
         </v-toolbar>
 
-        <v-data-table v-model="selected" :loading="loading" :must-sort="mustSort" :items="rows" :headers="columns"
-          :pagination.sync="pagination" :total-items="totalItems" rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">
+        <v-data-table v-model="selected" :loading="loading" :must-sort="mustSort" :items="rows" :item-key="rowKey"
+          :headers="columns" :pagination.sync="pagination" :total-items="totalItems" rows-per-page-text="Rows:"
+          :rows-per-page-items="rowsOptions">
 
           <template slot="items" slot-scope="row">
             <!-- Allow clicking anywhere on a row to select it for actions -->
             <tr :class="rowCssClasses(row)" :active="row.selected" @click="rowClick(row)">
               <!-- Render a cell for each property in the view -->
-              <td v-for="(col, i) in modelProperties" :key="`col${col.key}`">
+              <td v-for="(col, i) in modelProperties" :key="`col-${col.key}`">
                 <span>{{ row.item[col.key] }}</span>
               </td>
             </tr>
           </template>
         </v-data-table>
-
       </v-flex>
     </v-layout>
   </v-container>
@@ -47,13 +47,14 @@ export default {
   data: () => ({
     loading: true,
     rows: [],
+    rowKey: 'ID',
     columns: [],
     selected: [],
     search: '',
     totalItems: 0,
     rowsOptions: [5, 10, 25, 100, 500],
     pagination: {
-      sortBy: 'X',
+      sortBy: 'ID',
       rowsPerPage: 10
     },
     mustSort: true
@@ -65,10 +66,13 @@ export default {
   },
 
   mounted() {
+    this.mountKeybindings();
     console.log('COMP: Mounted /applet/list <items-as-grid>');
   },
 
-  beforeDestroy() {},
+  beforeDestroy() {
+    this.unmountKeybindings();
+  },
 
   destroyed() {
     console.log('COMP: Destroyed /applet/list <items-as-grid>');
@@ -77,8 +81,7 @@ export default {
   watch: {
     pagination: {
       handler() {
-        console.log('COMP: Pagination handler invoked');
-        this.getRows();
+        this.debouncePagination();
       },
       deep: true
     },
@@ -107,32 +110,44 @@ export default {
       return this.$model.pluralName(this.model);
     },
 
-    // The subset of model properties to display in this view.
+    // The subset of model properties to display in this view
     // TODO: Default to the properties marked required (excluding the internal "Archived" prop), but look at view spec if it exists
     modelProperties() {
       let exclude = ['Archived'];
       return this.$model.requiredProperties(this.model, exclude);
     },
 
-    // Just the key (aka "value") of the columns considered searchable
+    // The columns included in the search, identified by key
     searchableColumns() {
       let exclude = ['Archived', 'FName'];
       return this.$model.requiredStringPropertyKeys(this.model, exclude);
-    },
-
-    // True when the data has been loaded via API, false otherwise
-    dataLoaded() {
-      return true;
-      // return this.$store.state...rows.length > 0;
     }
   },
 
   methods: {
-    getRows() {
+    mountKeybindings() {
+      let vm = this;
+
+      // TODO: Rename plugin from "$mousetrap" to "$keyboard"
+      this.$mousetrap.bind('ctrl+alt+s', (evt, combo) => {
+        console.log(`KBD: "${combo}" triggered`);
+        // TODO: We *must* handle global menu state (SuiteBar AppletNavPanel, UserMenu, etc.)
+        // when dealing with kbd shortcuts like this... for example, user clicks waffle menu or
+        // presses shift+enter and then presses ctrl+alt+s to search, and we must *close* the
+        // AppletNavPanel and set focus to the search box!
+
+        // vm.ref...
+      });
+    },
+
+    unmountKeybindings() {
+      this.$mousetrap.unbind(['ctrl+alt+s']);
+    },
+
+    async getRows() {
       try {
         console.log('COMP: Getting data rows...');
 
-        // this.rows = [];
         this.loading = true;
 
         // Nothing to do without a model
@@ -167,32 +182,25 @@ export default {
         const dataUrl = `${baseDataUrl}?${dataSearchQryStr}${dataSortLimitQryStr}`;
         const countUrl = `${baseCountUrl}${countSearchQryStr}`;
 
-        console.log(`COMP: Getting ${this.modelPluralName}...`);
-        this.$axios.get(dataUrl).then(response => {
-          console.log(`Got ${this.modelPluralName}`);
-          this.rows = response.data;
-          this.$axios.get(countUrl).then(response => {
-            this.totalItems = response.data.count;
-            console.log(`${this.modelPluralName} count`, this.totalItems);
-            this.loading = false;
-          });
-        });
+        console.log(`AXIOS: Getting ${this.modelPluralName}...`);
+        let dataResponse = await this.$axios.get(dataUrl);
 
-        console.log('COMP: Got data');
+        console.log(`AXIOS: Got ${this.modelPluralName}`);
+        this.rows = dataResponse.data;
+
+        console.log(`AXIOS: Getting ${this.modelPluralName} count...`);
+        let countResponse = await this.$axios.get(countUrl);
+
+        this.totalItems = countResponse.data.count;
+        console.log(`AXIOS: Got ${this.modelPluralName} count`, this.totalItems);
+        this.loading = false;
       } catch (e) {
         console.log('COMP: Error getting data:', e);
-        // this.rows = [];
         return false;
       }
 
       return true;
     },
-
-    debounceSearch: _.debounce(function() {
-      console.log('Search input changed >>>', this.search);
-      this.getRows();
-      this.pagination.page = 1;
-    }, 500),
 
     async getColumns() {
       try {
@@ -237,6 +245,17 @@ export default {
       row.selected = !row.selected;
     },
 
+    debouncePagination: _.debounce(async function() {
+      console.log('COMP: Pagination handler invoked');
+      await this.getRows();
+    }, 100),
+
+    debounceSearch: _.debounce(async function() {
+      console.log('COMP: Search input changed >>>', this.search);
+      await this.getRows();
+      this.pagination.page = 1;
+    }, 500),
+
     ...mapActions(['loadModelByKey'])
   }
 };
@@ -251,7 +270,7 @@ export default {
 
 .vp-items-search-input {
   padding-top: 4px;
-  max-width: 300px;
-  min-width: 150px;
+  max-width: 200px;
+  min-width: 100px;
 }
 </style>
