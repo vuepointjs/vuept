@@ -2,9 +2,9 @@
   <v-container fluid class="pa-0">
     <v-layout>
       <v-flex>
-        <h2>{{ applet.name }} - All Items</h2>
+        <h2>{{ applet.name }}</h2>
 
-        <v-toolbar dense class="pr-5 elevation-0 vp-items-toolbar" height="40">
+        <v-toolbar dense class="pr-1 elevation-0 vp-items-toolbar" height="36" color="grey lighten-3">
           <v-btn icon @click="focusRef('searchInput')">
             <v-tooltip bottom>
               <v-icon color="primary" slot="activator">search</v-icon>
@@ -28,6 +28,25 @@
               <span>Edit</span>
             </v-tooltip>
           </v-btn>
+
+          <v-spacer></v-spacer>
+
+          <v-menu left offset-y open-on-hover :nudge-width="100" transition="slide-y-transition" v-model="viewsMenu">
+            <v-toolbar-title slot="activator">
+              <v-hover close-delay="0">
+                <div slot-scope="{ hover }" :class="hover ? 'grey lighten-2': ''" style="border-radius: 20px; padding: 0 5px">
+                  <v-icon color="primary">notes</v-icon>
+                  <span class="subheading font-weight-light pl-2 pr-1">All Items</span>
+                  <v-icon color="primary">keyboard_arrow_down</v-icon>
+                </div>
+              </v-hover>
+            </v-toolbar-title>
+            <v-list>
+              <v-list-tile v-for="item in ['A', 'B', 'C']" :key="item" @click="">
+                <v-list-tile-title v-text="item"></v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
         </v-toolbar>
 
         <v-data-table v-model="selected" :loading="loading" :must-sort="mustSort" :items="rows" :item-key="rowKey"
@@ -69,7 +88,8 @@ export default {
       sortBy: 'ID',
       rowsPerPage: 10
     },
-    mustSort: true
+    mustSort: true,
+    viewsMenu: false
   }),
 
   async created() {
@@ -293,7 +313,7 @@ export default {
 
 /* Search input is hidden at first */
 .vp-items-search-input {
-  padding-top: 4px;
+  margin-top: -14px;
   min-width: 0;
   max-width: 0;
 }
