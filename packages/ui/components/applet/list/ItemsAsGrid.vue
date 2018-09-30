@@ -22,10 +22,18 @@
             </v-tooltip>
           </v-btn>
 
-          <v-btn icon disabled>
+          <v-btn icon :disabled="selected.length < 1" @click="flashSnackbar({ msg: 'Edit item feature coming soon!' })"
+            ref="editItemBtn">
             <v-tooltip bottom>
               <v-icon color="primary" slot="activator">edit</v-icon>
               <span>Edit</span>
+            </v-tooltip>
+          </v-btn>
+
+          <v-btn icon :disabled="selected.length < 1" @click="flashSnackbar({ msg: 'Delete (recycle) item feature coming soon!' })">
+            <v-tooltip bottom>
+              <v-icon color="primary" slot="activator">delete</v-icon>
+              <span>Delete</span>
             </v-tooltip>
           </v-btn>
 
@@ -49,14 +57,29 @@
           </v-menu>
         </v-toolbar>
 
-        <v-data-table v-model="selected" :loading="loading" :must-sort="mustSort" :items="rows" :item-key="rowKey"
-          :headers="columns" :pagination.sync="pagination" :total-items="totalItems" rows-per-page-text="Rows:"
-          :rows-per-page-items="rowsOptions">
+        <v-data-table class="vp-items-table" v-model="selected" :loading="loading" :must-sort="mustSort" :items="rows"
+          :item-key="rowKey" :headers="columns" :pagination.sync="pagination" :total-items="totalItems"
+          rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">
+
+          <!--
+          <template slot="headers" slot-scope="cols">
+            <tr class="vp-items-col-row">
+              <th v-for="col in cols.headers" :class="`column text-xs-${col.align} vp-items-col${col.value === 'rowSelectionIndicator' ? ' vp-items-col-selection' : ''}`"
+                :key="col.value">
+                <span>{{ col.text }}</span>
+              </th>
+            </tr>
+          </template>
+          -->
 
           <template slot="items" slot-scope="row">
             <!-- Allow clicking anywhere on a row to select it for actions -->
-            <tr :class="rowCssClasses(row)" :active="row.selected" @click="rowClick(row)">
-              <!-- Render a cell for each property in the view -->
+            <tr :class="rowCssClasses(row)" :active="row.selected" @click="rowClick(row)" @dblclick="rowDblClick(row)">
+              <!-- First render the row selection indicator cell -->
+              <td class="vp-items-selection-cell">
+                <v-icon class="vp-items-selection-icon" color="primary" v-show="row.selected">check_circle</v-icon>
+              </td>
+              <!-- Then render a cell for each property in the view -->
               <td v-for="(col, i) in modelProperties" :key="`col-${col.key}`">
                 <span>{{ row.item[col.key] }}</span>
               </td>
@@ -69,6 +92,7 @@
 </template>
 
 <script>
+import Vue from 'vue';
 import { mapActions } from 'vuex';
 import _ from 'lodash';
 
@@ -89,7 +113,8 @@ export default {
       rowsPerPage: 10
     },
     mustSort: true,
-    viewsMenu: false
+    viewsMenu: false,
+    inRowDblClick: false
   }),
 
   async created() {
@@ -212,7 +237,7 @@ export default {
         // TODO: Determine method for handling "Archived" piece of qry strings
         let dataSearchQryStr = 'filter[where][Archived]=0&';
         let countSearchQryStr = '?[where][Archived]=0';
-        let searchColKey = (this.searchableColumns && this.searchableColumns[0]) || this.columns[0].value;
+        let searchColKey = (this.searchableColumns && this.searchableColumns[0]) || this.columns[1].value; // columns[0] is rowSelectionIndicator
 
         if (this.search) {
           console.log(`COMP: Searching in column "${searchColKey}"`);
@@ -259,13 +284,14 @@ export default {
 
         // console.log(`COMP: model properties: ${this.$helpers.stringifyObj(this.modelProperties)}`);
         this.columns = [];
+        this.columns.push({ text: '', value: 'rowSelectionIndicator', align: 'left', sortable: false });
 
         _(this.modelProperties).forEach(val => {
           this.columns.push({ text: this.$helpers.toTitleCase(val.key), value: val.key, align: 'left' });
         });
 
         // Must set default sort column
-        this.pagination.sortBy = this.columns && this.columns[0].value;
+        this.pagination.sortBy = this.columns && this.columns[1].value; // columns[0] is rowSelectionIndicator
       } catch (e) {
         this.columns = [];
         console.log('COMP: Error getting metadata:', e);
@@ -283,9 +309,82 @@ export default {
       };
     },
 
+    // rowClick: _.throttle(function(row) {
+    //   let vm = this;
+    //   _.delay(
+    //     row => {
+    //       console.log('COMP: Clicked on an item');
+    //       if (vm.inRowDblClick) {
+    //         console.log('COMP: ...item single-click canceled while in double-click handler');
+    //         return;
+    //       }
+
+    //       // let rowKey = row.item.key;
+    //       if (!row.selected) vm.selected.splice(0); // Remove all elements... we only allow single selection (for now)
+    //       row.selected = !row.selected;
+    //     },
+    //     200,
+    //     row
+    //   );
+    // }, 200),
+
+    // rowClick: _.throttle(function(row) {
+    //   console.log('Clicked on a row');
+    //   if (this.inRowDblClick) {
+    //     console.log('...and found that Dbl click is being handled. Exiting click handler!');
+    //     return;
+    //   }
+
+    //   // let rowKey = row.item.key;
+    //   if (!row.selected) this.selected.splice(0); // Remove all elements... we only allow single selection (for now)
+    //   row.selected = !row.selected;
+    // }, 100),
+
     rowClick(row) {
-      let rowKey = row.item.key;
-      row.selected = !row.selected;
+      _.delay(
+        (row, vm) => {
+          console.log('Clicked on a row');
+          if (vm.inRowDblClick) {
+            console.log('...and found that Dbl click is being handled. Exiting click handler!');
+            return;
+          }
+
+          // let rowKey = row.item.key;
+          if (!row.selected) vm.selected.splice(0); // Remove all elements... we only allow single selection (for now)
+          row.selected = !row.selected;
+        },
+        150,
+        row,
+        this
+      );
+    },
+
+    rowDblClick(row) {
+      let vm = this;
+      try {
+        this.inRowDblClick = true;
+        console.log('COMP: Double-clicked on an item');
+
+        // Ensure that "in-row-double-click" flag will be cleared
+        setTimeout(_ => {
+          vm.inRowDblClick = false;
+          console.log('COMP: >>> Cleared "in double-click" flag');
+        }, 500);
+
+        // Handle various conditions, such as dbl-click on an item when another item is already selected
+        if (!row.selected) this.selected.splice(0); // Remove all elements... we only allow single selection (for now)
+        row.selected = true; // Select the row, or if the row was already selected don't allow any initial single-click to de-select it
+
+        // Give Vue a chance to update the enabled state of the button we're about to click...
+        Vue.nextTick(_ => {
+          let btn = vm.$refs.editItemBtn.$el;
+          btn.focus();
+          btn.click();
+        });
+      } catch (e) {
+        console.log('COMP: Error handling double-click on item', e);
+        vm.inRowDblClick = false;
+      }
     },
 
     debouncePagination: _.debounce(async function() {
@@ -323,5 +422,31 @@ export default {
 .vp-items-search-input.v-input--is-dirty {
   min-width: 150px;
   max-width: 180px;
+}
+
+.vp-items-selection-icon {
+  font-size: 22px;
+  float: left;
+  margin: 0 -18px 0 9px;
+}
+</style>
+
+<style>
+/* Table header */
+.vp-items-table table.v-table thead tr {
+  height: 42px;
+}
+
+/* Table rows */
+.vp-items-table table.v-table tbody td,
+.vp-items-table table.v-table tbody th {
+  height: 40px;
+}
+
+/* First column in header and body */
+.vp-items-table table.v-table thead th:first-child,
+.vp-items-table table.v-table tbody td:first-child {
+  padding: 0;
+  width: 22px;
 }
 </style>
