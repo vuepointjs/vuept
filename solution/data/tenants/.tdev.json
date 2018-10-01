@@ -47,7 +47,8 @@
               "views": [
                 {
                   "name": "All Items",
-                  "default": true,
+                  "key": "ALL",
+                  "ord": 1,
                   "type": "List",
                   "subType": "Grid",
                   "filterExpression": null,
@@ -70,6 +71,20 @@
                       "key": "DayPhone"
                     }
                   ]
+                },
+                {
+                  "name": "Needs Attention",
+                  "key": "INA",
+                  "ord": 2,
+                  "inheritsFrom": "ALL",
+                  "filterExpression": null
+                },
+                {
+                  "name": "Recycle Bin",
+                  "key": "RB",
+                  "ord": 3,
+                  "inheritsFrom": "ALL",
+                  "filterExpression": null
                 }
               ]
             },
