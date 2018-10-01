@@ -49,7 +49,7 @@ export default (ctx, inject) => {
         },
 
         toTitleCase(str) {
-          return _.startCase(str);
+          return _.startCase(_.replace(str, '.', ''));
         },
 
         snackbarColorFromMode(mode) {

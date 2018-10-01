@@ -328,7 +328,7 @@ export default {
         this.columns.push({ text: '', value: 'rowSelectionIndicator', align: 'left', sortable: false });
 
         _(this.appletView.properties).forEach(val => {
-          this.columns.push({ text: val.label || val.key, value: val.key, align: 'left', sortable: this.$applet.viewPropIsSortable(val) });
+          this.columns.push({ text: val.label || this.$helpers.toTitleCase(val.key), value: val.key, align: 'left', sortable: this.$applet.viewPropIsSortable(val) });
         });
 
         // Must set default sort column and order
