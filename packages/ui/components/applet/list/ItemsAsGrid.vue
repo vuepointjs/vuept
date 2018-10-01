@@ -57,8 +57,8 @@
           </v-menu>
         </v-toolbar>
 
-        <v-data-table disable-initial-sort class="vp-items-table" v-model="selected" :loading="loading" :must-sort="mustSort" :items="rows"
-          :item-key="rowKey" :headers="columns" :pagination.sync="pagination" :total-items="totalItems"
+        <v-data-table disable-initial-sort class="vp-items-table" v-model="selected" :loading="loading" :must-sort="mustSort"
+          :items="rows" :item-key="rowKey" :headers="columns" :pagination.sync="pagination" :total-items="totalItems"
           rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">
 
           <template slot="items" slot-scope="row">
@@ -70,7 +70,7 @@
               </td>
               <!-- Then render a cell for each property in the view -->
               <td v-for="(col, i) in appletView.properties" :key="`col-${col.key}`">
-                <span>{{ row.item[col.key] }}</span>
+                <span>{{ cellValue(row, col) }}</span>
               </td>
             </tr>
           </template>
@@ -92,6 +92,7 @@ export default {
     loading: true,
     rows: [],
     rowKey: 'ID',
+    rowRecycledKey: 'Archived',
     columns: [],
     selected: [],
     search: '',
@@ -137,6 +138,12 @@ export default {
       handler() {
         this.debounceSearch();
       }
+    },
+
+    selectedViewIndex: {
+      async handler() {
+        await this.getRows();
+      }
     }
   },
 
@@ -177,15 +184,14 @@ export default {
     },
 
     // The subset of model properties to display in this view
-    // TODO: Default to the properties marked required (excluding the internal "Archived" prop), but look at view spec if it exists
     modelProperties() {
-      let exclude = ['Archived'];
+      let exclude = [this.rowRecycledKey];
       return this.$model.requiredProperties(this.model, exclude);
     },
 
     // The model properties considered searchable, identified by key
     searchableModelPropKeys() {
-      let exclude = ['Archived', 'FName'];
+      let exclude = [this.rowRecycledKey, 'FName'];
       return this.$model.requiredStringPropertyKeys(this.model, exclude);
     },
 
@@ -194,7 +200,7 @@ export default {
       let view = {
         name: 'All Items',
         key: 'ALL',
-        filterExpression: null,
+        filterExpression: `[${this.rowRecycledKey}]=0`,
         includeExpression: null,
         properties: []
       };
@@ -268,15 +274,15 @@ export default {
         const dataLimitQryStr = `filter[limit]=${rowsPerPage}&filter[skip]=${(page - 1) * rowsPerPage}`;
         const dataSortLimitQryStr = `${dataSortQryStr}&${dataLimitQryStr}`;
 
-        // TODO: Determine method for handling "Archived" piece of qry strings
-        let dataSearchQryStr = 'filter[where][Archived]=0&';
-        let countSearchQryStr = '?[where][Archived]=0';
+        let filterExpression = this.appletView.filterExpression;
+        let dataSearchQryStr = `filter[where]${filterExpression}&`;
+        let countSearchQryStr = `?[where]${filterExpression}`;
         let searchColKey = this.appletViewSearchKeys[0];
 
         if (this.search) {
           console.log(`COMP: Searching in column "${searchColKey}"`);
-          dataSearchQryStr = `filter[where][Archived]=0&filter[where][${searchColKey}][like]=%25${this.search}%25&`;
-          countSearchQryStr = `?[where][and][0][Archived]=0&[where][and][1][${searchColKey}][like]=%25${this.search}%25`;
+          dataSearchQryStr = `filter[where]${filterExpression}&filter[where][${searchColKey}][like]=%25${this.search}%25&`;
+          countSearchQryStr = `?[where][and][0]${filterExpression}&[where][and][1][${searchColKey}][like]=%25${this.search}%25`;
         }
 
         const baseDataUrl = this.$applet.baseDataUrl(this.applet);
@@ -337,6 +343,14 @@ export default {
       return true;
     },
 
+    cellValue(row, col) {
+      return _.get(row.item, col.key, '');
+    },
+
+    clearAllSelections() {
+      this.selected.splice(0);
+    },
+
     rowClick(row) {
       _.delay(
         (row, vm) => {
@@ -347,7 +361,7 @@ export default {
           }
 
           // let rowKey = row.item.key;
-          if (!row.selected) vm.selected.splice(0); // Remove all elements... we only allow single selection (for now)
+          if (!row.selected) vm.clearAllSelections(); // We only allow single selection (for now)
           row.selected = !row.selected;
         },
         150,
@@ -398,16 +412,18 @@ export default {
     async onDelete(row) {
       try {
         const patchUrl = this.$applet.baseDataUrl(this.applet);
-        let patchObj = { User: this.$auth.userName, Archived: 1 };
+        let patchObj = { User: this.$auth.userName, [this.rowRecycledKey]: 1 };
         patchObj[this.rowKey] = row[this.rowKey];
 
         console.log(`AXIOS: Patching ${this.modelPluralName}...`);
         let patchResponse = await this.$axios.patch(patchUrl, patchObj);
         console.log(`AXIOS: ${this.modelPluralName} patch successful`);
 
-        this.flashSnackbar({ msg: `Deleted item from ${this.modelPluralName}` });
+        this.clearAllSelections();
 
-        this.getRows();
+        this.flashSnackbar({ msg: 'Item Recycled!', mode: 'success' });
+
+        await this.getRows();
       } catch (e) {
         console.log(`AXIOS: ${this.modelPluralName} patch error`, e);
 

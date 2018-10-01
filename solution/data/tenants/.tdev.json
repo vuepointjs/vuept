@@ -51,7 +51,7 @@
                   "ord": 1,
                   "type": "List",
                   "subType": "Grid",
-                  "filterExpression": null,
+                  "filterExpression": "[Archived]=0",
                   "includeExpression": null,
                   "properties": [
                     {
@@ -73,18 +73,11 @@
                   ]
                 },
                 {
-                  "name": "Needs Attention",
-                  "key": "INA",
-                  "ord": 2,
-                  "inheritsFrom": "ALL",
-                  "filterExpression": null
-                },
-                {
                   "name": "Recycle Bin",
                   "key": "RB",
-                  "ord": 3,
+                  "ord": 2,
                   "inheritsFrom": "ALL",
-                  "filterExpression": null
+                  "filterExpression": "[Archived]=1"
                 }
               ]
             },
@@ -102,7 +95,7 @@
                   "ord": 1,
                   "type": "List",
                   "subType": "Grid",
-                  "filterExpression": null,
+                  "filterExpression": "[Archived]=0",
                   "includeExpression": "filter[include]=Party",
                   "properties": [
                     {
@@ -111,16 +104,30 @@
                     },
                     {
                       "key": "Party.LName",
-                      "label": "Last Name",
-                      "sort": "ASC",
-                      "search": true
+                      "label": "Last Name"
                     },
                     {
                       "key": "Text",
                       "label": "Discussion Point",
-                      "type": "TruncatedString"
+                      "type": "TruncatedString",
+                      "sort": "ASC",
+                      "search": true
                     }
                   ]
+                },
+                {
+                  "name": "Needs Attention",
+                  "key": "INA",
+                  "ord": 2,
+                  "inheritsFrom": "ALL",
+                  "filterExpression": null
+                },
+                {
+                  "name": "Recycle Bin",
+                  "key": "RB",
+                  "ord": 3,
+                  "inheritsFrom": "ALL",
+                  "filterExpression": "[Archived]=1"
                 }
               ]
             }
