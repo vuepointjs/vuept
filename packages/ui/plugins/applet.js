@@ -36,12 +36,38 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given an applet object return the array of views defined for the applet, if any
+         * Given an applet object return the raw array of views defined for the applet, if any
+         * @param {object} applet Applet object
+         */
+        rawViews(applet) {
+          return (applet && applet.views) || [];
+        },
+
+        /**
+         * Given an applet and a view key (case-insensitive) return the raw view definition object, if any
+         * @param {object} applet Applet object
+         * @param {string} key View key
+         */
+        rawViewFromKey(applet, key) {
+          let rawViews = this.rawViews(applet);
+          return (rawViews && rawViews.find(view => view.key.toUpperCase() === key.toUpperCase())) || {};
+        },
+
+        /**
+         * Given an applet object return the array of views defined for the applet, if any, ready for rendering
          * @param {object} applet Applet object
          */
         views(applet) {
-          let appletViews = ctx.store.state.app.applets.views;
-          return appletViews ? appletViews.views : [];
+          let appletViews = applet && applet.views;
+          return appletViews
+            ? _(appletViews)
+                .map(val => {
+                  let inheritsFromVal = val.inheritsFrom && this.rawViewFromKey(applet, val.inheritsFrom);
+                  return inheritsFromVal ? _.assign({}, inheritsFromVal, val) : val;
+                })
+                .sortBy('ord')
+                .value()
+            : [];
         },
 
         /**
@@ -62,6 +88,33 @@ export default (ctx, inject) => {
         viewFromName(applet, name) {
           let appletView = this.views(applet).find(item => item.name.toUpperCase() === name.toUpperCase());
           return appletView ? appletView : {};
+        },
+
+        /**
+         * Given the array of view properties (if any) in an applet view, return the array of properties marked searchable, identified by property key
+         * @param {array} props Applet view properties
+         */
+        searchableViewPropKeys(props) {
+          return props && props.length > 0
+            ? _(props)
+                .filter({ search: true })
+                .map(val => val.key)
+                .value()
+            : [];
+        },
+
+        /**
+         * Given the array of view properties (if any) in an applet view, return a sort spec object "{sortBy, descending}"
+         * from the first property marked for sorting, or a default sort spec object on failure
+         * @param {array} props Applet view properties
+         */
+        viewSortSpecFromProps(props) {
+          return props && props.length > 0
+            ? _(props)
+                .filter('sort')
+                .map(val => ({ sortBy: val.key, descending: val.sort.toUpperCase() === 'DESC' }))
+                .first()
+            : { sortBy: 'ID', descending: false };
         },
 
         /**

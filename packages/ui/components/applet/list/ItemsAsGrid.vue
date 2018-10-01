@@ -30,7 +30,7 @@
             </v-tooltip>
           </v-btn>
 
-          <v-btn icon :disabled="selected.length < 1" @click="flashSnackbar({ msg: 'Delete (recycle) item feature coming soon!' })">
+          <v-btn icon :disabled="selected.length < 1" @click="onDelete(selected[0])">
             <v-tooltip bottom>
               <v-icon color="primary" slot="activator">delete</v-icon>
               <span>Delete</span>
@@ -44,14 +44,14 @@
               <v-hover close-delay="0">
                 <div slot-scope="{ hover }" :class="hover ? 'grey lighten-2': ''" style="border-radius: 20px; padding: 0 5px">
                   <v-icon color="primary">notes</v-icon>
-                  <span class="subheading font-weight-light pl-2 pr-1">All Items</span>
+                  <span class="subheading font-weight-light pl-2 pr-1">{{ appletView.name }}</span>
                   <v-icon color="primary">keyboard_arrow_down</v-icon>
                 </div>
               </v-hover>
             </v-toolbar-title>
             <v-list>
-              <v-list-tile v-for="item in ['A', 'B', 'C']" :key="item" @click="">
-                <v-list-tile-title v-text="item"></v-list-tile-title>
+              <v-list-tile v-for="view, index in appletViews" :key="view.key" @click="selectedViewIndex = index" v-show="index != selectedViewIndex">
+                <v-list-tile-title v-text="view.name"></v-list-tile-title>
               </v-list-tile>
             </v-list>
           </v-menu>
@@ -69,7 +69,7 @@
                 <v-icon class="vp-items-selection-icon" color="primary" v-show="row.selected">check_circle</v-icon>
               </td>
               <!-- Then render a cell for each property in the view -->
-              <td v-for="(col, i) in modelProperties" :key="`col-${col.key}`">
+              <td v-for="(col, i) in appletView.properties" :key="`col-${col.key}`">
                 <span>{{ row.item[col.key] }}</span>
               </td>
             </tr>
@@ -103,6 +103,7 @@ export default {
     },
     mustSort: true,
     viewsMenu: false,
+    selectedViewIndex: 0,
     inRowDblClick: false
   }),
 
@@ -144,8 +145,23 @@ export default {
       return this.$applet.fromRoute(this.$route);
     },
 
+    // All available applet views
     appletViews() {
-      return [];
+      let views = this.$applet.views(this.applet);
+      return views.length > 0 ? views : [this.defaultAppletView];
+    },
+
+    // The selected applet view
+    appletView() {
+      return this.appletViews[this.selectedViewIndex] || {};
+    },
+
+    appletViewSearchKeys() {
+      return this.$applet.searchableViewPropKeys(this.appletView.properties);
+    },
+
+    appletViewSortSpec() {
+      return this.$applet.viewSortSpecFromProps(this.appletView.properties);
     },
 
     modelKey() {
@@ -167,10 +183,34 @@ export default {
       return this.$model.requiredProperties(this.model, exclude);
     },
 
-    // The columns included in the search, identified by key
-    searchableColumns() {
+    // The model properties considered searchable, identified by key
+    searchableModelPropKeys() {
       let exclude = ['Archived', 'FName'];
       return this.$model.requiredStringPropertyKeys(this.model, exclude);
+    },
+
+    // Compose a default applet view from model properties as a fallback
+    defaultAppletView() {
+      let view = {
+        name: 'All Items',
+        key: 'ALL',
+        filterExpression: null,
+        includeExpression: null,
+        properties: []
+      };
+
+      let sortKey = '';
+      _(this.modelProperties).forEach((val, index) => {
+        let viewProp = { key: val.key, label: this.$helpers.toTitleCase(val.key) };
+        if (!sortKey && val.required && val.type === 'string') {
+          sortKey = val.key;
+          viewProp.sort = 'ASC';
+        }
+        if (this.searchableModelPropKeys.includes(val.key)) viewProp.search = true;
+        view.properties.push(viewProp);
+      });
+
+      return view;
     }
   },
 
@@ -231,7 +271,7 @@ export default {
         // TODO: Determine method for handling "Archived" piece of qry strings
         let dataSearchQryStr = 'filter[where][Archived]=0&';
         let countSearchQryStr = '?[where][Archived]=0';
-        let searchColKey = (this.searchableColumns && this.searchableColumns[0]) || this.columns[1].value; // columns[0] is rowSelectionIndicator
+        let searchColKey = this.appletViewSearchKeys[0];
 
         if (this.search) {
           console.log(`COMP: Searching in column "${searchColKey}"`);
@@ -280,12 +320,12 @@ export default {
         this.columns = [];
         this.columns.push({ text: '', value: 'rowSelectionIndicator', align: 'left', sortable: false });
 
-        _(this.modelProperties).forEach(val => {
-          this.columns.push({ text: this.$helpers.toTitleCase(val.key), value: val.key, align: 'left' });
+        _(this.appletView.properties).forEach(val => {
+          this.columns.push({ text: val.label || val.key, value: val.key, align: 'left' });
         });
 
-        // Must set default sort column
-        this.pagination.sortBy = this.columns && this.columns[1].value; // columns[0] is rowSelectionIndicator
+        // Must set default sort column and order
+        _.assign(this.pagination, this.appletViewSortSpec);
       } catch (e) {
         this.columns = [];
         console.log('COMP: Error getting metadata:', e);
@@ -353,6 +393,26 @@ export default {
       await this.getRows();
       this.pagination.page = 1;
     }, 500),
+
+    async onDelete(row) {
+      try {
+        const patchUrl = this.$applet.baseDataUrl(this.applet);
+        let patchObj = { User: this.$auth.userName, Archived: 1 };
+        patchObj[this.rowKey] = row[this.rowKey];
+
+        console.log(`AXIOS: Patching ${this.modelPluralName}...`);
+        let patchResponse = await this.$axios.patch(patchUrl, patchObj);
+        console.log(`AXIOS: ${this.modelPluralName} patch successful`);
+
+        this.flashSnackbar({ msg: `Deleted item from ${this.modelPluralName}` });
+
+        this.getRows();
+      } catch (e) {
+        console.log(`AXIOS: ${this.modelPluralName} patch error`, e);
+
+        this.flashSnackbar({ msg: `Error deleting item from ${this.modelPluralName}`, mode: 'error' });
+      }
+    },
 
     ...mapActions(['loadModelByKey', 'flashSnackbar'])
   }
