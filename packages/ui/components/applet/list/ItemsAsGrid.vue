@@ -57,7 +57,7 @@
           </v-menu>
         </v-toolbar>
 
-        <v-data-table class="vp-items-table" v-model="selected" :loading="loading" :must-sort="mustSort" :items="rows"
+        <v-data-table disable-initial-sort class="vp-items-table" v-model="selected" :loading="loading" :must-sort="mustSort" :items="rows"
           :item-key="rowKey" :headers="columns" :pagination.sync="pagination" :total-items="totalItems"
           rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">
 
@@ -281,7 +281,8 @@ export default {
 
         const baseDataUrl = this.$applet.baseDataUrl(this.applet);
         const baseCountUrl = `${baseDataUrl}/count`;
-        const dataUrl = `${baseDataUrl}?${dataSearchQryStr}${dataSortLimitQryStr}`;
+        const includeQryStr = (this.appletView.includeExpression && `&${this.appletView.includeExpression}`) || '';
+        const dataUrl = `${baseDataUrl}?${dataSearchQryStr}${dataSortLimitQryStr}${includeQryStr}`;
         const countUrl = `${baseCountUrl}${countSearchQryStr}`;
 
         console.log(`AXIOS: Getting ${this.modelPluralName}...`);
@@ -321,7 +322,7 @@ export default {
         this.columns.push({ text: '', value: 'rowSelectionIndicator', align: 'left', sortable: false });
 
         _(this.appletView.properties).forEach(val => {
-          this.columns.push({ text: val.label || val.key, value: val.key, align: 'left' });
+          this.columns.push({ text: val.label || val.key, value: val.key, align: 'left', sortable: this.$applet.viewPropIsSortable(val) });
         });
 
         // Must set default sort column and order
@@ -332,7 +333,7 @@ export default {
         return false;
       }
 
-      console.log('COMP: Got metadata');
+      console.log('COMP: Got columns metadata');
       return true;
     },
 

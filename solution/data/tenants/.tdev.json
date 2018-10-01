@@ -98,11 +98,12 @@
               "views": [
                 {
                   "name": "All Items",
-                  "default": true,
+                  "key": "ALL",
+                  "ord": 1,
                   "type": "List",
                   "subType": "Grid",
                   "filterExpression": null,
-                  "includeExpression": null,
+                  "includeExpression": "filter[include]=Party",
                   "properties": [
                     {
                       "key": "Party.FName",

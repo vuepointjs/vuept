@@ -118,6 +118,14 @@ export default (ctx, inject) => {
         },
 
         /**
+         * Given an applet view property return true if it is considered sortable, false otherwise
+         * @param {object} prop Applet view property
+         */
+        viewPropIsSortable(prop) {
+          return prop && prop.key && !prop.key.includes('.'); // For now, props are only non-sortable when they are in a sub-object (e.g., Customer.LName)
+        },
+
+        /**
          * Given an applet key (case-insensitive) return the base route for the applet
          * @param {string} key Applet "key" (unique 2 character ID string)
          */
