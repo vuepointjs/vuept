@@ -61,20 +61,9 @@
           :item-key="rowKey" :headers="columns" :pagination.sync="pagination" :total-items="totalItems"
           rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">
 
-          <!--
-          <template slot="headers" slot-scope="cols">
-            <tr class="vp-items-col-row">
-              <th v-for="col in cols.headers" :class="`column text-xs-${col.align} vp-items-col${col.value === 'rowSelectionIndicator' ? ' vp-items-col-selection' : ''}`"
-                :key="col.value">
-                <span>{{ col.text }}</span>
-              </th>
-            </tr>
-          </template>
-          -->
-
           <template slot="items" slot-scope="row">
             <!-- Allow clicking anywhere on a row to select it for actions -->
-            <tr :class="rowCssClasses(row)" :active="row.selected" @click="rowClick(row)" @dblclick="rowDblClick(row)">
+            <tr :active="row.selected" @click="rowClick(row)" @dblclick="rowDblClick(row)">
               <!-- First render the row selection indicator cell -->
               <td class="vp-items-selection-cell">
                 <v-icon class="vp-items-selection-icon" color="primary" v-show="row.selected">check_circle</v-icon>
@@ -155,6 +144,10 @@ export default {
       return this.$applet.fromRoute(this.$route);
     },
 
+    appletViews() {
+      return [];
+    },
+
     modelKey() {
       return this.$applet.modelKey(this.applet);
     },
@@ -185,7 +178,8 @@ export default {
     mountKeybindings() {
       let vm = this;
 
-      // TODO: Rename plugin from "$mousetrap" to "$keyboard"
+      // TODO: Rename plugin from "$mousetrap" to "$keyboard" or wrap mousetrap
+      // in $keyboard plugin, install and use bindGlobal extension
       this.$mousetrap.bind('ctrl+alt+s', (evt, combo) => {
         console.log(`KBD: "${combo}" triggered`);
         // TODO: We *must* handle global menu state (SuiteBar AppletNavPanel, UserMenu, etc.)
@@ -302,50 +296,12 @@ export default {
       return true;
     },
 
-    rowCssClasses(row) {
-      return {
-        // 'class-name': condition,
-        // 'class-name-2': condition-2
-      };
-    },
-
-    // rowClick: _.throttle(function(row) {
-    //   let vm = this;
-    //   _.delay(
-    //     row => {
-    //       console.log('COMP: Clicked on an item');
-    //       if (vm.inRowDblClick) {
-    //         console.log('COMP: ...item single-click canceled while in double-click handler');
-    //         return;
-    //       }
-
-    //       // let rowKey = row.item.key;
-    //       if (!row.selected) vm.selected.splice(0); // Remove all elements... we only allow single selection (for now)
-    //       row.selected = !row.selected;
-    //     },
-    //     200,
-    //     row
-    //   );
-    // }, 200),
-
-    // rowClick: _.throttle(function(row) {
-    //   console.log('Clicked on a row');
-    //   if (this.inRowDblClick) {
-    //     console.log('...and found that Dbl click is being handled. Exiting click handler!');
-    //     return;
-    //   }
-
-    //   // let rowKey = row.item.key;
-    //   if (!row.selected) this.selected.splice(0); // Remove all elements... we only allow single selection (for now)
-    //   row.selected = !row.selected;
-    // }, 100),
-
     rowClick(row) {
       _.delay(
         (row, vm) => {
-          console.log('Clicked on a row');
+          console.log('COMP: Clicked on an item');
           if (vm.inRowDblClick) {
-            console.log('...and found that Dbl click is being handled. Exiting click handler!');
+            console.log('COMP: ...item single-click skipped while double-click in progress');
             return;
           }
 
@@ -365,7 +321,7 @@ export default {
         this.inRowDblClick = true;
         console.log('COMP: Double-clicked on an item');
 
-        // Ensure that "in-row-double-click" flag will be cleared
+        // Ensure that "in-row-double-click" flag will soon be cleared
         setTimeout(_ => {
           vm.inRowDblClick = false;
           console.log('COMP: >>> Cleared "in double-click" flag');
@@ -375,7 +331,7 @@ export default {
         if (!row.selected) this.selected.splice(0); // Remove all elements... we only allow single selection (for now)
         row.selected = true; // Select the row, or if the row was already selected don't allow any initial single-click to de-select it
 
-        // Give Vue a chance to update the enabled state of the button we're about to click...
+        // Give Vue a chance to update the enabled state of the Edit button we're about to click on the toolbar...
         Vue.nextTick(_ => {
           let btn = vm.$refs.editItemBtn.$el;
           btn.focus();
@@ -383,7 +339,7 @@ export default {
         });
       } catch (e) {
         console.log('COMP: Error handling double-click on item', e);
-        vm.inRowDblClick = false;
+        this.inRowDblClick = false;
       }
     },
 
@@ -404,12 +360,6 @@ export default {
 </script>
 
 <style scoped>
-/*
-.vp-items-toolbar,
-.vp-items-toolbar .v-toolbar__content {
-}
-*/
-
 /* Search input is hidden at first */
 .vp-items-search-input {
   margin-top: -14px;
@@ -417,13 +367,14 @@ export default {
   max-width: 0;
 }
 
-/* Search input expands when focused or "dirty" (has content) */
+/* Search input expands when focused and stays expanded while "dirty" (has content) */
 .vp-items-search-input.v-input--is-focused,
 .vp-items-search-input.v-input--is-dirty {
   min-width: 150px;
   max-width: 180px;
 }
 
+/* The icon in the first column of the grid, displayed when an item is selected */
 .vp-items-selection-icon {
   font-size: 22px;
   float: left;
@@ -443,7 +394,7 @@ export default {
   height: 40px;
 }
 
-/* First column in header and body */
+/* First column (for item selection indicator) in table header and body */
 .vp-items-table table.v-table thead th:first-child,
 .vp-items-table table.v-table tbody td:first-child {
   padding: 0;
