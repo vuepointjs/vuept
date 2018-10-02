@@ -2,7 +2,8 @@
   <v-container fluid class="pa-0">
     <v-layout>
       <v-flex>
-        <v-toolbar dense class="pr-2 elevation-0 vp-items-toolbar" height="46" color="grey lighten-3">
+        <v-toolbar dense class="pr-2 elevation-0 vp-items-toolbar" :class="{'vp-items-toolbar-extra-dense': $vuetify.breakpoint.smAndDown }"
+          height="46" color="grey lighten-3">
           <v-btn icon @click="toggleSearchInput">
             <v-tooltip bottom>
               <v-icon color="primary" slot="activator">search</v-icon>
@@ -32,6 +33,13 @@
             <v-tooltip bottom>
               <v-icon color="primary" slot="activator">delete</v-icon>
               <span>Delete</span>
+            </v-tooltip>
+          </v-btn>
+
+          <v-btn icon :disabled="selected.length < 1" @click="onTogglePin(selected[0])">
+            <v-tooltip bottom>
+              <v-icon :color="pinnedItem.key ? 'accent' : 'primary'" slot="activator">person_pin_circle</v-icon>
+              <span>{{ pinnedItem.key ? 'Unpin' : 'Pin' }}</span>
             </v-tooltip>
           </v-btn>
 
@@ -127,6 +135,10 @@ export default {
   },
 
   watch: {
+    breakpoint() {
+      console.log(`VUETIFY: Breakpoint changed ${this.$helpers.stringifyObj(this.breakpoint)}`);
+    },
+
     pagination: {
       handler() {
         this.debouncePagination();
@@ -147,6 +159,10 @@ export default {
   },
 
   computed: {
+    breakpoint() {
+      return this.$vuetify.breakpoint;
+    },
+
     applet() {
       return this.$applet.fromRoute(this.$route);
     },
@@ -216,6 +232,10 @@ export default {
       });
 
       return view;
+    },
+
+    pinnedItem() {
+      return this.$store.state.ui.pinnedItem;
     }
   },
 
@@ -440,12 +460,22 @@ export default {
       }
     },
 
+    onTogglePin(row) {
+      // this.pinnedItem.key = this.pinnedItem.key ? '' : 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
+      this.flashSnackbar({ msg: 'Item pinning feature coming soon!' });
+    },
+
     ...mapActions(['loadModelByKey', 'flashSnackbar'])
   }
 };
 </script>
 
 <style scoped>
+/* Toolbar icon btns need to be slightly more dense for mobile */
+/* .vp-items-toolbar-extra-dense .v-btn--icon {
+  margin: 3px;
+} */
+
 /* Search input is hidden at first */
 .vp-items-search-input {
   margin-top: -14px;
