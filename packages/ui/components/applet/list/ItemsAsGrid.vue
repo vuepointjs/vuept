@@ -2,9 +2,9 @@
   <v-container fluid class="pa-0">
     <v-layout>
       <v-flex>
-        <v-toolbar dense class="pr-2 elevation-0 vp-items-toolbar" :class="{'vp-items-toolbar-extra-dense': $vuetify.breakpoint.smAndDown }"
+        <v-toolbar dense class="pr-2 elevation-0 vp-items-toolbar" :class="{'vp-items-toolbar-extra-dense': $vuetify.breakpoint.xs }"
           height="46" color="grey lighten-3">
-          <v-btn icon @click="toggleSearchInput">
+          <v-btn icon class="vp-items-search-btn" @click="toggleSearchInput">
             <v-tooltip bottom>
               <v-icon color="primary" slot="activator">search</v-icon>
               <span>Search</span>
@@ -32,13 +32,14 @@
           <v-btn icon :disabled="selected.length < 1" @click="onDelete(selected[0])">
             <v-tooltip bottom>
               <v-icon color="primary" slot="activator">delete</v-icon>
-              <span>Delete</span>
+              <span>Recycle</span>
             </v-tooltip>
           </v-btn>
 
-          <v-btn icon :disabled="selected.length < 1" @click="onTogglePin(selected[0])">
+          <v-btn v-show="applet.hasPinnableModel" icon :disabled="selected.length < 1 && !pinnedItem.key" @click="onTogglePin(selected[0])"
+            :class="{'grey lighten-2': pinnedItem.key }">
             <v-tooltip bottom>
-              <v-icon :color="pinnedItem.key ? 'accent' : 'primary'" slot="activator">person_pin_circle</v-icon>
+              <v-icon color="secondary" slot="activator">person_pin_circle</v-icon>
               <span>{{ pinnedItem.key ? 'Unpin' : 'Pin' }}</span>
             </v-tooltip>
           </v-btn>
@@ -89,7 +90,7 @@
 
 <script>
 import Vue from 'vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapMutations } from 'vuex';
 import _ from 'lodash';
 
 export default {
@@ -135,10 +136,6 @@ export default {
   },
 
   watch: {
-    breakpoint() {
-      console.log(`VUETIFY: Breakpoint changed ${this.$helpers.stringifyObj(this.breakpoint)}`);
-    },
-
     pagination: {
       handler() {
         this.debouncePagination();
@@ -159,10 +156,6 @@ export default {
   },
 
   computed: {
-    breakpoint() {
-      return this.$vuetify.breakpoint;
-    },
-
     applet() {
       return this.$applet.fromRoute(this.$route);
     },
@@ -183,7 +176,7 @@ export default {
     },
 
     appletViewSortSpec() {
-      return this.$applet.viewSortSpecFromProps(this.appletView.properties);
+      return this.$applet.viewSortSpecFromProps(this.appletView.properties, this.rowKey);
     },
 
     modelKey() {
@@ -441,17 +434,16 @@ export default {
     async onDelete(row) {
       try {
         const patchUrl = this.$applet.baseDataUrl(this.applet);
-        let patchObj = { User: this.$auth.userName, [this.rowRecycledKey]: 1 };
-        patchObj[this.rowKey] = row[this.rowKey];
+        let patchObj = { [this.rowKey]: row[this.rowKey], User: this.$auth.userName, [this.rowRecycledKey]: 1 };
 
         console.log(`AXIOS: Patching ${this.modelPluralName}...`);
         let patchResponse = await this.$axios.patch(patchUrl, patchObj);
         console.log(`AXIOS: ${this.modelPluralName} patch successful`);
-
-        this.clearAllSelections();
-
         this.flashSnackbar({ msg: 'Item Recycled!', mode: 'success' });
 
+        // Housekeeping: Make sure recycled item isn't selected or pinned, and refresh grid data
+        this.clearAllSelections();
+        if (row[this.rowKey] === this.pinnedItem.key) this.onTogglePin(row);
         await this.getRows();
       } catch (e) {
         console.log(`AXIOS: ${this.modelPluralName} patch error`, e);
@@ -461,10 +453,14 @@ export default {
     },
 
     onTogglePin(row) {
-      // this.pinnedItem.key = this.pinnedItem.key ? '' : 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee';
-      this.flashSnackbar({ msg: 'Item pinning feature coming soon!' });
+      let newPinnedItem = { key: '', model: { key: '' } };
+      if (!this.pinnedItem.key) newPinnedItem = { key: row[this.rowKey], model: { key: this.modelKey } };
+      this.setPinnedItem(newPinnedItem);
+
+      this.flashSnackbar({ msg: 'Item pinning feature under development!' });
     },
 
+    ...mapMutations(['setPinnedItem']),
     ...mapActions(['loadModelByKey', 'flashSnackbar'])
   }
 };
@@ -472,19 +468,24 @@ export default {
 
 <style scoped>
 /* Toolbar icon btns need to be slightly more dense for mobile */
-/* .vp-items-toolbar-extra-dense .v-btn--icon {
-  margin: 3px;
-} */
+.vp-items-toolbar-extra-dense .v-btn--icon {
+  margin: 2px;
+}
+
+.vp-items-search-btn {
+  margin: 0 2px 0 0;
+}
 
 /* Search input is hidden at first */
 .vp-items-search-input {
-  margin-top: -14px;
+  margin: -14px -4px 0 2px;
   min-width: 0;
   max-width: 0;
 }
 
 /* Search input expands when "-open" class is applied */
 .vp-items-search-input.vp-items-search-input-open {
+  margin: -14px 0 0 2px;
   min-width: 140px;
   max-width: 160px;
 }

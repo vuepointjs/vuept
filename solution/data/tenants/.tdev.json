@@ -44,7 +44,7 @@
               "ord": 1,
               "longName": "Shared Contacts",
               "primaryModel": "party",
-              "pinnable": true,
+              "hasPinnableModel": true,
               "views": [
                 {
                   "name": "All Items",
