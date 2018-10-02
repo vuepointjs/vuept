@@ -35,8 +35,10 @@ export const state = () => ({
     },
     snackbarTimeout: 3000,
     pinnedItem: {
-      modelKey: '',
-      itemKey: ''
+      key: '',
+      model: {
+        key: ''
+      }
     }
   },
   models: {} // Models are added here of the form: "model-key": {/* model object */}
