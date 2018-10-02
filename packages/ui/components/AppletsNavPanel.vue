@@ -10,7 +10,8 @@
         <v-layout row wrap justify-start>
 
           <div v-for="applet in applets" class="vp-applet-nav-item" :class="{'vp-applet-nav-item-dense': dense}" :key="applet.key">
-            <v-tooltip max-width="80" open-delay="50" close-delay="50" v-bind="tooltipAttrsFromIndex(applet.ord)" v-model="appletTooltipShow[applet.ord - 1]">
+            <v-tooltip max-width="80" open-delay="50" close-delay="50" v-bind="tooltipAttrsFromIndex(applet.ord)"
+              v-model="appletTooltipShow[applet.ord - 1]">
               <v-badge overlap slot="activator">
                 <span v-if="applet.openItemCount > 0" slot="badge">{{ applet.openItemCount }}</span>
                 <nuxt-link :to="$applet.baseRouteFromKey(applet.key)">
@@ -49,11 +50,9 @@ export default {
     }
   },
 
-  data() {
-    return {
-      appletTooltipShow: [] // Array of bools, one for each applet
-    };
-  },
+  data: () => ({
+    appletTooltipShow: [] // Array of bools, one for each applet
+  }),
 
   created() {
     console.log('COMP: Created <applets-nav-panel>');

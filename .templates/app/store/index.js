@@ -33,7 +33,11 @@ export const state = () => ({
       msg: '',
       mode: 'success' // one of 'success', 'error'
     },
-    snackbarTimeout: 3000
+    snackbarTimeout: 3000,
+    pinnedItem: {
+      modelKey: '',
+      itemKey: ''
+    }
   },
   models: {} // Models are added here of the form: "model-key": {/* model object */}
 });

@@ -18,8 +18,8 @@
         <div style="width: 100%; height: 40px; background-color: #efefef; margin: 5px"></div>
       </v-flex>
 
-      <v-data-iterator :items="items" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" content-tag="v-layout" hide-actions
-        row wrap align-start>
+      <v-data-iterator :items="items" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" content-tag="v-layout"
+        hide-actions row wrap align-start>
 
         <!--
       <v-toolbar slot="header" class="mb-2" color="indigo darken-5" dark flat>
@@ -63,31 +63,13 @@ export default {
 
   props: {},
 
-  data() {
-    return {
-      rowsPerPageItems: [100],
-      pagination: {
-        rowsPerPage: 100
-      },
-      items: [
-        {
-          name: 'Smith, John'
-        },
-        {
-          name: 'Doe, Jane'
-        },
-        {
-          name: 'Jones, Mark'
-        },
-        {
-          name: 'Abbott, Jim'
-        },
-        {
-          name: 'Baker, Joyce'
-        }
-      ]
-    };
-  },
+  data: () => ({
+    rowsPerPageItems: [100],
+    pagination: {
+      rowsPerPage: 100
+    },
+    items: [{ name: 'Smith, John' }, { name: 'Doe, Jane' }, { name: 'Jones, Mark' }, { name: 'Abbott, Jim' }, { name: 'Baker, Joyce' }]
+  }),
 
   created() {
     console.log('COMP: Created /applet/list <items-as-cards>');
