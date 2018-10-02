@@ -1,5 +1,6 @@
 <template>
-  <v-menu dark offset-y :close-on-content-click="false" :nudge-width="300" v-model="userMenu">
+  <v-menu dark left offset-y :nudge-width="300" :nudge-bottom="5" :nudge-left="5" transition="slide-y-transition"
+    :close-on-content-click="false" v-model="userMenu">
     <v-btn icon slot="activator">
       <v-icon>account_circle</v-icon>
     </v-btn>
@@ -63,7 +64,8 @@
       -->
 
       <v-card-actions>
-        <v-btn color="grey" flat v-clipboard:copy="$auth.apiToken" v-clipboard:success="onCopyApiTokenSuccess" v-clipboard:error="onCopyApiTokenError">
+        <v-btn color="grey" flat v-clipboard:copy="$auth.apiToken" v-clipboard:success="onCopyApiTokenSuccess"
+          v-clipboard:error="onCopyApiTokenError">
           <v-icon dark>content_paste</v-icon>API Token
         </v-btn>
         <v-spacer></v-spacer>

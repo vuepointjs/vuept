@@ -22,10 +22,12 @@
       </v-container> -->
     </v-content>
 
+    <!--
     <v-footer :fixed="fixedFooter" app class="pa-3 shaded">
       <v-spacer></v-spacer>
       <div class="vp-app-footer-text">{{ taxonomy.suiteName }} | {{ taxonomy.appName }}</div>
     </v-footer>
+    -->
 
     <v-snackbar :timeout="0" :top="true" :right="true" v-model="snackbar.show" :color="$helpers.snackbarColorFromMode(snackbar.mode)">
       <v-icon dark>{{ $helpers.snackbarIconFromMode(snackbar.mode) }}</v-icon>&nbsp;{{ snackbar.msg }}

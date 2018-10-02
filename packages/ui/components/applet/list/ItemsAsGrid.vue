@@ -2,9 +2,7 @@
   <v-container fluid class="pa-0">
     <v-layout>
       <v-flex>
-        <h2>{{ applet.name }}</h2>
-
-        <v-toolbar dense class="pr-1 elevation-0 vp-items-toolbar" height="36" color="grey lighten-3">
+        <v-toolbar dense class="pr-2 elevation-0 vp-items-toolbar" height="46" color="grey lighten-3">
           <v-btn icon @click="focusRef('searchInput')">
             <v-tooltip bottom>
               <v-icon color="primary" slot="activator">search</v-icon>
@@ -39,10 +37,11 @@
 
           <v-spacer></v-spacer>
 
-          <v-menu left offset-y open-on-hover :nudge-width="100" transition="slide-y-transition" v-model="viewsMenu">
+          <v-menu left offset-y class="vp-items-views-menu" :nudge-width="100" :nudge-bottom="5" transition="slide-y-transition"
+            v-model="viewsMenu">
             <v-toolbar-title slot="activator">
               <v-hover close-delay="0">
-                <div slot-scope="{ hover }" :class="hover ? 'grey lighten-2': ''" style="border-radius: 20px; padding: 0 5px">
+                <div slot-scope="{ hover }" class="vp-items-views-menu-hover" :class="hover ? 'grey lighten-2': ''">
                   <v-icon color="primary">notes</v-icon>
                   <span class="subheading font-weight-light pl-2 pr-1">{{ appletView.name }}</span>
                   <v-icon color="primary">keyboard_arrow_down</v-icon>
@@ -451,6 +450,17 @@ export default {
   max-width: 180px;
 }
 
+/* Tweak size and position of "Views" menu on right of toolbar */
+.vp-items-views-menu {
+  height: 36px;
+}
+
+/* The hover area around the "Views" menu needs styling */
+.vp-items-views-menu-hover {
+  border-radius: 20px;
+  padding: 2px 5px 4px 5px;
+}
+
 /* The icon in the first column of the grid, displayed when an item is selected */
 .vp-items-selection-icon {
   font-size: 22px;
@@ -475,6 +485,7 @@ export default {
 .vp-items-table table.v-table thead th:first-child,
 .vp-items-table table.v-table tbody td:first-child {
   padding: 0;
-  width: 22px;
+  min-width: 23px;
+  width: 23px;
 }
 </style>
