@@ -47,13 +47,11 @@ export default {
     AppletsNavPanel
   },
 
-  data() {
-    return {
-      drawer: false,
-      fixedFooter: true
-      // appletsNavPanelDocs: AppletsNavPanel.__docs
-    };
-  },
+  data: () => ({
+    drawer: false,
+    fixedFooter: true
+    // appletsNavPanelDocs: AppletsNavPanel.__docs
+  }),
 
   created() {
     console.log('LAYOUT: Created "default" layout');

@@ -12,9 +12,7 @@
 export default {
   props: {},
 
-  data() {
-    return {};
-  },
+  data: () => ({}),
 
   created() {
     console.log('COMP: Created /applet/page <body-as-markdown>');
