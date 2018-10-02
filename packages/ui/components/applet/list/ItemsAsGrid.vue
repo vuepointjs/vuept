@@ -3,15 +3,15 @@
     <v-layout>
       <v-flex>
         <v-toolbar dense class="pr-2 elevation-0 vp-items-toolbar" height="46" color="grey lighten-3">
-          <v-btn icon @click="focusRef('searchInput')">
+          <v-btn icon @click="toggleSearchInput">
             <v-tooltip bottom>
               <v-icon color="primary" slot="activator">search</v-icon>
               <span>Search</span>
             </v-tooltip>
           </v-btn>
 
-          <v-text-field single-line hide-details clearable class="vp-items-search-input" v-model="search" label="Search"
-            ref="searchInput"></v-text-field>
+          <v-text-field :class="['vp-items-search-input', {'vp-items-search-input-open': searchInputOpen}]" single-line
+            hide-details clearable v-model="search" label="Search" ref="searchInput"></v-text-field>
 
           <v-btn icon @click="flashSnackbar({ msg: 'New item feature coming soon!' })">
             <v-tooltip bottom>
@@ -95,6 +95,7 @@ export default {
     columns: [],
     selected: [],
     search: '',
+    searchInputOpen: false,
     totalItems: 0,
     rowsOptions: [5, 10, 25, 100, 500],
     pagination: {
@@ -133,14 +134,13 @@ export default {
       deep: true
     },
 
-    search: {
-      handler() {
-        this.debounceSearch();
-      }
+    search() {
+      this.debounceSearch();
     },
 
     selectedViewIndex: {
       async handler() {
+        this.clearAllSelections();
         await this.getRows();
       }
     }
@@ -232,12 +232,22 @@ export default {
         // presses shift+enter and then presses ctrl+alt+s to search, and we must *close* the
         // AppletNavPanel and set focus to the search box!
 
-        vm.focusRef('searchInput');
+        vm.toggleSearchInput();
       });
     },
 
     unmountKeybindings() {
       this.$mousetrap.unbind(['ctrl+alt+s']);
+    },
+
+    toggleSearchInput() {
+      this.searchInputOpen = !this.searchInputOpen;
+
+      if (!this.searchInputOpen) {
+        this.search = '';
+      } else {
+        this.focusRef('searchInput');
+      }
     },
 
     focusRef(refStr, useSubElt = false) {
@@ -443,11 +453,10 @@ export default {
   max-width: 0;
 }
 
-/* Search input expands when focused and stays expanded while "dirty" (has content) */
-.vp-items-search-input.v-input--is-focused,
-.vp-items-search-input.v-input--is-dirty {
-  min-width: 150px;
-  max-width: 180px;
+/* Search input expands when "-open" class is applied */
+.vp-items-search-input.vp-items-search-input-open {
+  min-width: 140px;
+  max-width: 160px;
 }
 
 /* Tweak size and position of "Views" menu on right of toolbar */
