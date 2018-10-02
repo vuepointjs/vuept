@@ -63,7 +63,7 @@ export default (ctx, inject) => {
             ? _(appletViews)
                 .map(val => {
                   let inheritsFromVal = val.inheritsFrom && this.rawViewFromKey(applet, val.inheritsFrom);
-                  return inheritsFromVal ? _.assign({}, inheritsFromVal, val) : val;
+                  return inheritsFromVal ? _.merge({}, inheritsFromVal, val) : val;
                 })
                 .sortBy('ord')
                 .value()
@@ -107,14 +107,15 @@ export default (ctx, inject) => {
          * Given the array of view properties (if any) in an applet view, return a sort spec object "{sortBy, descending}"
          * from the first property marked for sorting, or a default sort spec object on failure
          * @param {array} props Applet view properties
+         * @param {string} defaultSortKey Property key for the fallback default view property to use for sortBy if no property is explicitly marked for sorting
          */
-        viewSortSpecFromProps(props) {
+        viewSortSpecFromProps(props, defaultSortKey) {
           return props && props.length > 0
             ? _(props)
                 .filter('sort')
                 .map(val => ({ sortBy: val.key, descending: val.sort.toUpperCase() === 'DESC' }))
                 .first()
-            : { sortBy: 'ID', descending: false };
+            : { sortBy: defaultSortKey, descending: false };
         },
 
         /**

@@ -41,6 +41,9 @@ export const state = () => ({
       }
     }
   },
+  stats: {
+    needsAttnCount: {} // TODO: Add values here of the form: "applet-key": /* count of items needing attention */
+  },
   models: {} // Models are added here of the form: "model-key": {/* model object */}
 });
 
@@ -70,6 +73,12 @@ export const mutations = {
     console.log(`STORE: In Mutation "storeModel" for "${payload.key}"`);
 
     state.models = { ...state.models, [payload.key]: payload.value };
+  },
+
+  setPinnedItem(state, payload) {
+    console.log(`STORE: In Mutation "setPinnedItem" for "${payload.model.key}"`);
+
+    _.merge(state.ui.pinnedItem, payload);
   }
 };
 
