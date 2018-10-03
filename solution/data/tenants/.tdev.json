@@ -36,6 +36,7 @@
             "app": "33770",
             "api": "33880"
           },
+          "nonEditableModelProperties": ["User", "Archived"],
           "applets": [
             {
               "name": "Contacts",
