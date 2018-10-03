@@ -75,6 +75,8 @@ export const mutations = {
     state.models = { ...state.models, [payload.key]: payload.value };
   },
 
+  // TODO: Add "clearPinnedItem" to wrap what it means to reset pinnedItem to default/empty
+  // TODO: Change payload of "setPinnedItem" to accept pinnedItem key and model key individually
   setPinnedItem(state, payload) {
     console.log(`STORE: In Mutation "setPinnedItem" for "${payload.model.key}"`);
 
