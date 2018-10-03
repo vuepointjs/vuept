@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="pa-0">
-    <v-layout>
+    <v-layout class="vp-items-as-grid">
       <v-flex>
         <v-toolbar dense class="pr-2 elevation-0 vp-items-toolbar" :class="{'vp-items-toolbar-extra-dense': $vuetify.breakpoint.xs }"
           height="46" color="grey lighten-3">
@@ -14,35 +14,36 @@
           <v-text-field :class="['vp-items-search-input', {'vp-items-search-input-open': searchInputOpen}]" single-line
             hide-details clearable v-model="search" label="Search" ref="searchInput"></v-text-field>
 
-          <v-btn icon @click="flashSnackbar({ msg: 'New item feature coming soon!' })">
-            <v-tooltip bottom>
-              <v-icon color="primary" slot="activator">add</v-icon>
-              <span>New</span>
-            </v-tooltip>
-          </v-btn>
+          <template v-if="appletView.key != recycleBinViewKey">
+            <v-btn icon @click="onNew">
+              <v-tooltip bottom>
+                <v-icon color="primary" slot="activator">add</v-icon>
+                <span>New</span>
+              </v-tooltip>
+            </v-btn>
 
-          <v-btn icon :disabled="selected.length < 1" @click="flashSnackbar({ msg: 'Edit item feature coming soon!' })"
-            ref="editItemBtn">
-            <v-tooltip bottom>
-              <v-icon color="primary" slot="activator">edit</v-icon>
-              <span>Edit</span>
-            </v-tooltip>
-          </v-btn>
+            <v-btn icon :disabled="selected.length < 1" @click="onEdit(selected[0])" ref="editItemBtn">
+              <v-tooltip bottom>
+                <v-icon color="primary" slot="activator">edit</v-icon>
+                <span>Edit</span>
+              </v-tooltip>
+            </v-btn>
 
-          <v-btn icon :disabled="selected.length < 1" @click="onDelete(selected[0])">
-            <v-tooltip bottom>
-              <v-icon color="primary" slot="activator">delete</v-icon>
-              <span>Recycle</span>
-            </v-tooltip>
-          </v-btn>
+            <v-btn icon :disabled="selected.length < 1" @click="onDelete(selected[0])">
+              <v-tooltip bottom>
+                <v-icon color="primary" slot="activator">delete</v-icon>
+                <span>Recycle</span>
+              </v-tooltip>
+            </v-btn>
 
-          <v-btn v-show="applet.hasPinnableModel" icon :disabled="selected.length < 1 && !pinnedItem.key" @click="onTogglePin(selected[0])"
-            :class="{'grey lighten-2': pinnedItem.key }">
-            <v-tooltip bottom>
-              <v-icon color="secondary" slot="activator">person_pin_circle</v-icon>
-              <span>{{ pinnedItem.key ? 'Unpin' : 'Pin' }}</span>
-            </v-tooltip>
-          </v-btn>
+            <v-btn v-show="applet.hasPinnableModel" icon :disabled="selected.length < 1 && !pinnedItem.key" @click="onTogglePin(selected[0])"
+              :class="{'grey lighten-2': pinnedItem.key }">
+              <v-tooltip bottom>
+                <v-icon color="secondary" slot="activator">person_pin_circle</v-icon>
+                <span>{{ pinnedItem.key ? 'Unpin' : 'Pin' }}</span>
+              </v-tooltip>
+            </v-btn>
+          </template>
 
           <v-spacer></v-spacer>
 
@@ -85,6 +86,33 @@
         </v-data-table>
       </v-flex>
     </v-layout>
+
+    <v-layout row justify-center class="vp-items-as-grid-detail">
+      <v-dialog persistent no-click-animation scrollable v-model="detail.dialog" class="vp-items-detail-dialog">
+        <v-card class="vp-items-detail-dialog-wrapper" :width="$vuetify.breakpoint.xs ? '320px' : '500px'">
+          <v-card-title>
+            <v-btn small flat round color="primary" @click.native="detail.dialog = false">
+              <v-icon left color="primary">save</v-icon>
+              <span class="text-capitalize subheading">Save</span>
+            </v-btn>
+            <v-btn small flat round color="primary" @click.native="detail.dialog = false">
+              <v-icon left color="primary">clear</v-icon>
+              <span class="text-capitalize subheading">Cancel</span>
+            </v-btn>
+          </v-card-title>
+          <v-divider></v-divider>
+
+          <v-card-text class="vp-items-detail-dialog-body">
+            <v-radio-group v-model="detail.radio" column>
+              <template v-for="item in 25">
+                <v-radio :label="`Test Item ${item}`" :value="`item${item}`"></v-radio>
+                <br>
+              </template>
+            </v-radio-group>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+    </v-layout>
   </v-container>
 </template>
 
@@ -114,7 +142,13 @@ export default {
     mustSort: true,
     viewsMenu: false,
     selectedViewIndex: 0,
-    inRowDblClick: false
+    recycleBinViewKey: 'RB',
+    inRowDblClick: false,
+
+    detail: {
+      dialog: false,
+      radio: ''
+    }
   }),
 
   async created() {
@@ -431,6 +465,16 @@ export default {
       this.pagination.page = 1;
     }, 500),
 
+    onNew() {
+      this.flashSnackbar({ msg: 'New item feature coming soon!' });
+    },
+
+    onEdit(row) {
+      // this.flashSnackbar({ msg: 'Edit item feature coming soon!' });
+
+      this.detail.dialog = !this.detail.dialog;
+    },
+
     async onDelete(row) {
       try {
         const patchUrl = this.$applet.baseDataUrl(this.applet);
@@ -453,6 +497,7 @@ export default {
     },
 
     onTogglePin(row) {
+      // TODO: Hide details of pinnedItem object structure inside mutation and add "clearPinnedItem" mutation
       let newPinnedItem = { key: '', model: { key: '' } };
       if (!this.pinnedItem.key) newPinnedItem = { key: row[this.rowKey], model: { key: this.modelKey } };
       this.setPinnedItem(newPinnedItem);
@@ -466,47 +511,60 @@ export default {
 };
 </script>
 
-<style scoped>
-/* Toolbar icon btns need to be slightly more dense for mobile */
-.vp-items-toolbar-extra-dense .v-btn--icon {
-  margin: 2px;
-}
+<style lang="stylus" scoped>
+@require '~@vuept/ui/stylus/variables'
+@require '~vuetify/src/stylus/settings/_colors'
 
-.vp-items-search-btn {
-  margin: 0 2px 0 0;
-}
+/* Toolbar icon btns need to be slightly more dense for mobile */
+.vp-items-toolbar-extra-dense .v-btn--icon
+  margin: 2px
+
+.vp-items-search-btn
+  margin: 0 2px 0 0
 
 /* Search input is hidden at first */
-.vp-items-search-input {
-  margin: -14px -4px 0 2px;
-  min-width: 0;
-  max-width: 0;
-}
+.vp-items-search-input
+  margin: -14px -4px 0 2px
+  min-width: 0
+  max-width: 0
 
 /* Search input expands when "-open" class is applied */
-.vp-items-search-input.vp-items-search-input-open {
-  margin: -14px 0 0 2px;
-  min-width: 140px;
-  max-width: 160px;
-}
+.vp-items-search-input.vp-items-search-input-open
+  margin: -14px 0 0 2px
+  min-width: 140px
+  max-width: 160px
 
 /* Tweak size and position of "Views" menu on right of toolbar */
-.vp-items-views-menu {
-  height: 36px;
-}
+.vp-items-views-menu
+  height: 36px
 
 /* The hover area around the "Views" menu needs styling */
-.vp-items-views-menu-hover {
-  border-radius: 20px;
-  padding: 2px 5px 4px 5px;
-}
+.vp-items-views-menu-hover
+  padding: 2px 5px 4px 5px
+  border-radius: 20px
 
 /* The icon in the first column of the grid, displayed when an item is selected */
-.vp-items-selection-icon {
-  font-size: 22px;
-  float: left;
-  margin: 0 -18px 0 9px;
-}
+.vp-items-selection-icon
+  float: left
+  margin: 0 -18px 0 9px
+  font-size: 22px
+
+.vp-items-detail-dialog-wrapper
+  position: absolute
+  top: $vp-toolbar-height
+  right: 0
+  margin: 0 !important
+  height: 100vh
+  border-radius: 0%
+
+  & .v-card__title,
+  & .v-card__actions
+    flex: none
+    height: $vp-items-toolbar-height
+    background-color: $grey.lighten-3
+
+.vp-items-detail-dialog-body
+  background-color: white
 </style>
 
 <style>
