@@ -105,11 +105,11 @@
           <v-card-text class="vp-items-detail-dialog-body" ref="detailDialogBody">
             <template v-for="prop in editableModelProps">
               <template v-if="prop.type === 'boolean'">
-                <v-switch color="primary" :label="prop.description || $helpers.toTitleCase(prop.key)" v-model="detail.values[prop.key]"></v-switch>
+                <v-switch color="primary" :label="$model.propertyLabel(prop)" v-model="detail.values[prop.key]"></v-switch>
               </template>
               <template v-else>
-                <v-text-field :label="prop.description || $helpers.toTitleCase(prop.key)" v-model="detail.values[prop.key]"
-                  :type="textInputType(prop)" :mask="textInputMask(prop)"></v-text-field>
+                <v-text-field :label="$model.propertyLabel(prop)" v-model="detail.values[prop.key]" :type="textInputType(prop)"
+                  :mask="textInputMask(prop)" :rules="detail.validate[prop.key] || []"></v-text-field>
               </template>
             </template>
             <div style="height: 60px"></div>
@@ -151,7 +151,8 @@ export default {
 
     detail: {
       dialog: false,
-      values: {}
+      values: {},
+      validate: {}
     }
   }),
 
@@ -174,6 +175,11 @@ export default {
   },
 
   watch: {
+    model() {
+      // When we get the model, use it to formulate and cache the property validators for the details view
+      this.detail.validate = this.$model.propertyValidators(this.editableModelProps);
+    },
+
     pagination: {
       handler() {
         this.debouncePagination();
