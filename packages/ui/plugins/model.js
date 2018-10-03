@@ -90,6 +90,33 @@ export default (ctx, inject) => {
                 .map(val => val.key)
                 .value()
             : [];
+        },
+
+        /**
+         * Given a model object return an array of the model's properties which are considered user-editable, or an empty array on failure
+         * @param {object} model Model object
+         * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result
+         */
+        editableProperties(model, exclude = []) {
+          // We support several layers of default non-editable props configuration
+          const appDefaultNonEditableProperties = ctx.store.state.app.data.nonEditableModelProperties;
+          if (appDefaultNonEditableProperties && appDefaultNonEditableProperties.length > 0) exclude = _.union(appDefaultNonEditableProperties, exclude);
+
+          return model
+            ? _(model.properties)
+                .map((val, key) => ({
+                  key,
+                  ...val
+                }))
+                .filter(
+                  val =>
+                    !val.id &&
+                    !(val.mssql && val.mssql.dataType && val.mssql.dataType === 'uniqueidentifier') &&
+                    !(model.hidden && model.hidden.includes(val.key)) &&
+                    !exclude.includes(val.key)
+                )
+                .value()
+            : [];
         }
       }
     })

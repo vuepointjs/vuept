@@ -89,9 +89,9 @@
 
     <v-layout row justify-center class="vp-items-as-grid-detail">
       <v-dialog persistent no-click-animation scrollable v-model="detail.dialog" class="vp-items-detail-dialog">
-        <v-card class="vp-items-detail-dialog-wrapper" :width="$vuetify.breakpoint.xs ? '320px' : '500px'">
+        <v-card class="vp-items-detail-dialog-wrapper" :width="$vuetify.breakpoint.xs ? $vuetify.breakpoint.width : '500px'">
           <v-card-title>
-            <v-btn small flat round color="primary" @click.native="detail.dialog = false">
+            <v-btn small flat round color="primary" @click.native="flashSnackbar({ msg: 'Save feature coming soon!' })">
               <v-icon left color="primary">save</v-icon>
               <span class="text-capitalize subheading">Save</span>
             </v-btn>
@@ -102,13 +102,17 @@
           </v-card-title>
           <v-divider></v-divider>
 
-          <v-card-text class="vp-items-detail-dialog-body">
-            <v-radio-group v-model="detail.radio" column>
-              <template v-for="item in 25">
-                <v-radio :label="`Test Item ${item}`" :value="`item${item}`"></v-radio>
-                <br>
+          <v-card-text class="vp-items-detail-dialog-body" ref="detailDialogBody">
+            <template v-for="prop in editableModelProps">
+              <template v-if="prop.type === 'boolean'">
+                <v-switch color="primary" :label="prop.description || $helpers.toTitleCase(prop.key)" v-model="detail.values[prop.key]"></v-switch>
               </template>
-            </v-radio-group>
+              <template v-else>
+                <v-text-field :label="prop.description || $helpers.toTitleCase(prop.key)" v-model="detail.values[prop.key]"
+                  :type="textInputType(prop)" :mask="textInputMask(prop)"></v-text-field>
+              </template>
+            </template>
+            <div style="height: 60px"></div>
           </v-card-text>
         </v-card>
       </v-dialog>
@@ -147,7 +151,7 @@ export default {
 
     detail: {
       dialog: false,
-      radio: ''
+      values: {}
     }
   }),
 
@@ -225,16 +229,21 @@ export default {
       return this.$model.pluralName(this.model);
     },
 
-    // The subset of model properties to display in this view
+    // The subset of model properties to display in the grid view
     modelProperties() {
       let exclude = [this.rowRecycledKey];
       return this.$model.requiredProperties(this.model, exclude);
     },
 
-    // The model properties considered searchable, identified by key
+    // The model properties considered searchable in the grid view, identified by key
     searchableModelPropKeys() {
       let exclude = [this.rowRecycledKey, 'FName'];
       return this.$model.requiredStringPropertyKeys(this.model, exclude);
+    },
+
+    // The subset of model properties considered editable in the details view
+    editableModelProps() {
+      return this.$model.editableProperties(this.model);
     },
 
     // Compose a default applet view from model properties as a fallback
@@ -420,7 +429,7 @@ export default {
           if (!row.selected) vm.clearAllSelections(); // We only allow single selection (for now)
           row.selected = !row.selected;
         },
-        150,
+        200,
         row,
         this
       );
@@ -465,14 +474,34 @@ export default {
       this.pagination.page = 1;
     }, 500),
 
+    textInputType(prop) {
+      let typeHints = `${prop.key} ${prop.type} ${prop.description}`.toLowerCase();
+      if (typeHints.includes('email')) return 'email';
+      else if (typeHints.includes('phone')) return 'phone';
+      else if (typeHints.includes('date')) return 'date';
+      else return 'text';
+    },
+
+    textInputMask(prop) {
+      let maskHints = `${prop.key} ${prop.type} ${prop.description}`.toLowerCase();
+      if (maskHints.includes('phone')) return 'phone';
+      else return undefined;
+    },
+
     onNew() {
       this.flashSnackbar({ msg: 'New item feature coming soon!' });
     },
 
     onEdit(row) {
-      // this.flashSnackbar({ msg: 'Edit item feature coming soon!' });
+      _.assign(this.detail.values, row);
+      this.detail.dialog = true;
 
-      this.detail.dialog = !this.detail.dialog;
+      // Force details view to scroll back to the top... in case it was scrolled-down last time it was visible
+      let vm = this;
+      Vue.nextTick(_ => {
+        let detailsBody = vm.$refs.detailDialogBody;
+        detailsBody.scrollTop = 0;
+      });
     },
 
     async onDelete(row) {
