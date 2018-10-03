@@ -117,6 +117,45 @@ export default (ctx, inject) => {
                 )
                 .value()
             : [];
+        },
+
+        /**
+         * Given an individual model property, return the user-friendly label string to use in a detail view, for example
+         * @param {object} prop Model property
+         */
+        propertyLabel(prop) {
+          if (prop) {
+            if (prop.description && prop.description.length <= 50) return prop.description;
+            else return ctx.app.$helpers.toTitleCase(prop.key);
+          }
+          return '<Property Not Found>';
+        },
+
+        /**
+         * Given an array of model properties, return an object containing property validators per the Vuetify validator spec. The returned object
+         * is of the form: { propertyKey: [array of validator functions], ... }
+         * See: https: //vuetifyjs.com/en/components/text-fields#example-validation
+         * @param {array} props Model properties array
+         */
+        propertyValidators(props) {
+          if (!props || props.length < 1) return {};
+
+          let validate = {};
+          _(props).forEach(val => {
+            let propLabel = this.propertyLabel(val);
+            let validators = [];
+
+            if (val.required) validators.push(v => !!v || `${propLabel} is required`);
+
+            if (val.type === 'string' && val.mssql && val.mssql.dataLength) {
+              let maxLength = val.mssql.dataLength;
+              validators.push(v => typeof v === 'undefined' || !v || v.length <= maxLength || `${propLabel} must be ${maxLength} characters or less`);
+            }
+
+            if (validators.length > 0) validate[val.key] = validators;
+          });
+
+          return validate;
         }
       }
     })
