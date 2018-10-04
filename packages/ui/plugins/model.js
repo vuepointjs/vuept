@@ -159,6 +159,24 @@ export default (ctx, inject) => {
           });
 
           return validate;
+        },
+
+        /**
+         * Given a model object and an individual model property, return true if the property is of type "categorical code", false otherwise
+         * @param {object} model Model object
+         * @param {object} prop Model property to be tested
+         */
+        propertyIsCategoricalCode(model, prop) {
+          if (!model || !prop) return false;
+          if (!prop.key) return false;
+          if (!prop.key.endsWith('Cd')) return false;
+          if (!prop.mssql) return false;
+          if (!prop.mssql.dataType === 'nchar') return false;
+
+          if (!(model._vp && model._vp.validations && model._vp.validations.oneOf)) return false;
+          if (!model._vp.validations.oneOf[prop.key]) return false;
+
+          return true;
         }
       }
     })

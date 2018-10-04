@@ -78,7 +78,8 @@ export default {
         .map(val => ({
           ...val,
           iconColor: val.iconColor || this.$helpers.colorFromIndex(val.ord - 1),
-          openItemCount: ['RF', 'LF', 'CT', 'BV', 'PA'].includes(val.key) ? val.ord : 0
+          // openItemCount: ['DI', 'RF', 'LF', 'CT', 'BV', 'PA'].includes(val.key) ? val.ord : 0
+          openItemCount: 0
         }))
         // Create a label that includes name and open item count (for tooltips)
         .map(val => ({
@@ -102,9 +103,8 @@ export default {
 </script>
 
 <style lang="stylus">
-.vp-layout-content > div
-  background-color: white
-
+// .vp-layout-content > div
+// background-color: white
 .vp-app-footer-text
   font-size: 12px
 </style>
