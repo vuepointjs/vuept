@@ -120,6 +120,30 @@ export default (ctx, inject) => {
         },
 
         /**
+         * Given a model object return an instance object with all of the properties set to null or their default, or an empty object on failure
+         * @param {object} model Model object
+         * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result
+         */
+        newInstance(model, exclude = []) {
+          let props = model.properties; // Raw properties object... not "normalized" yet w/ "key" as its own key
+          if (!props || props.length < 1) return {};
+
+          let instance = {};
+          let propVal = null;
+          _(props).forEach((val, key) => {
+            if (exclude.includes(key)) propVal = undefined;
+            else {
+              if (typeof val.default != 'undefined') propVal = val.default;
+              else propVal = null;
+            }
+
+            instance[key] = propVal;
+          });
+
+          return instance;
+        },
+
+        /**
          * Given an individual model property, return the user-friendly label string to use in a detail view, for example
          * @param {object} prop Model property
          */

@@ -15,7 +15,11 @@
             hide-details clearable v-model="search" label="Search" ref="searchInput"></v-text-field>
 
           <template v-if="appletView.key != recycleBinViewKey">
-            <v-btn icon @click="onNew">
+            <!--
+              Use this version once we have a working "pinning" implementation with foreign keys, etc.
+              <v-btn icon @click="onNew" :disabled="!applet.hasPinnableModel && !pinnedItem.key">
+            -->
+            <v-btn icon @click="onNew" :disabled="!applet.hasPinnableModel">
               <v-tooltip bottom>
                 <v-icon color="primary" slot="activator">add</v-icon>
                 <span>New</span>
@@ -92,7 +96,7 @@
         <v-card class="vp-items-detail-dialog-wrapper" :width="$vuetify.breakpoint.xs ? $vuetify.breakpoint.width : maxDetailDialogWidth"
           :height="$vuetify.breakpoint.height - (itemsToolbarHeight + 5)">
           <v-card-title>
-            <v-btn small flat round color="primary" @click.native="flashSnackbar({ msg: 'Save feature coming soon!' })">
+            <v-btn small flat round color="primary" @click.native="onSave">
               <v-icon left color="primary">save</v-icon>
               <span class="text-capitalize subheading">Save</span>
             </v-btn>
@@ -104,15 +108,17 @@
           <v-divider></v-divider>
 
           <v-card-text class="vp-items-detail-dialog-body pb-3" ref="detailDialogBody">
-            <template v-for="prop in editableModelProps">
-              <template v-if="prop.type === 'boolean'">
-                <v-switch color="primary" :label="$model.propertyLabel(prop)" v-model="detail.values[prop.key]"></v-switch>
+            <v-form v-model="detail.isValid" ref="detailDialogForm" lazy-validation>
+              <template v-for="prop in editableModelProps">
+                <template v-if="prop.type === 'boolean'">
+                  <v-switch color="primary" :label="$model.propertyLabel(prop)" v-model="detail.values[prop.key]"></v-switch>
+                </template>
+                <template v-else>
+                  <v-text-field :label="$model.propertyLabel(prop)" v-model="detail.values[prop.key]" :type="textInputType(prop)"
+                    :mask="textInputMask(prop)" :rules="detail.validate[prop.key] || []"></v-text-field>
+                </template>
               </template>
-              <template v-else>
-                <v-text-field :label="$model.propertyLabel(prop)" v-model="detail.values[prop.key]" :type="textInputType(prop)"
-                  :mask="textInputMask(prop)" :rules="detail.validate[prop.key] || []"></v-text-field>
-              </template>
-            </template>
+            </v-form>
           </v-card-text>
         </v-card>
       </v-dialog>
@@ -153,8 +159,10 @@ export default {
 
     detail: {
       dialog: false,
+      mode: 'Add', // one of 'Add', 'Edit'
       values: {},
-      validate: {}
+      validate: {},
+      isValid: false
     }
   }),
 
@@ -198,6 +206,19 @@ export default {
       async handler() {
         this.clearAllSelections();
         await this.getRows();
+      }
+    },
+
+    'detail.dialog': function(val) {
+      if (val) {
+        // this.$nextTick(() => {
+        //   this.$refs.FirstInput.focus();
+        // });
+      } else {
+        this.$nextTick(() => {
+          this.$refs.detailDialogForm.reset();
+          _.assign(this.detail.values, this.$model.newInstance(this.model, [this.rowKey]));
+        });
       }
     }
   },
@@ -498,11 +519,8 @@ export default {
     },
 
     onNew() {
-      this.flashSnackbar({ msg: 'New item feature coming soon!' });
-    },
-
-    onEdit(row) {
-      _.assign(this.detail.values, row);
+      _.assign(this.detail.values, this.$model.newInstance(this.model, [this.rowKey]));
+      this.detail.mode = 'Add';
       this.detail.dialog = true;
 
       // Force details view to scroll back to the top... in case it was scrolled-down last time it was visible
@@ -511,6 +529,54 @@ export default {
         let detailsBody = vm.$refs.detailDialogBody;
         detailsBody.scrollTop = 0;
       });
+    },
+
+    onEdit(row) {
+      _.assign(this.detail.values, row);
+      this.detail.mode = 'Edit';
+      this.detail.dialog = true;
+
+      // Force details view to scroll back to the top... in case it was scrolled-down last time it was visible
+      let vm = this;
+      Vue.nextTick(_ => {
+        let detailsBody = vm.$refs.detailDialogBody;
+        detailsBody.scrollTop = 0;
+      });
+    },
+
+    async onSave() {
+      if (!this.$refs.detailDialogForm.validate()) return;
+
+      let response = null;
+      const url = this.$applet.baseDataUrl(this.applet);
+
+      try {
+        if (this.detail.mode === 'Add') {
+          console.log('AXIOS: Adding item...');
+
+          let postObj = { ...this.detail.values, User: this.$auth.userName };
+          response = await this.$axios.post(url, postObj);
+
+          console.log(`AXIOS: ${this.modelPluralName} post successful`);
+          this.flashSnackbar({ msg: 'New Item Saved!', mode: 'success' });
+        } else if (this.detail.mode === 'Edit') {
+          console.log('AXIOS: Editing item...');
+
+          let patchObj = { ...this.detail.values, User: this.$auth.userName };
+          response = await this.$axios.patch(url, patchObj);
+
+          console.log(`AXIOS: ${this.modelPluralName} patch successful`);
+          this.flashSnackbar({ msg: 'Item Changes Saved!', mode: 'success' });
+        }
+
+        // Housekeeping: refresh grid data
+        await this.getRows();
+      } catch (e) {
+        console.log(`AXIOS: ${this.detail.mode} ${this.modelPluralName} error`, e);
+        this.flashSnackbar({ msg: `Failed to ${this.detail.mode} Item!`, mode: 'error' });
+      }
+
+      this.detail.dialog = false;
     },
 
     async onDelete(row) {
@@ -529,7 +595,6 @@ export default {
         await this.getRows();
       } catch (e) {
         console.log(`AXIOS: ${this.modelPluralName} patch error`, e);
-
         this.flashSnackbar({ msg: `Error deleting item from ${this.modelPluralName}`, mode: 'error' });
       }
     },
