@@ -569,7 +569,8 @@ export default {
           this.flashSnackbar({ msg: 'Item Changes Saved!', mode: 'success' });
         }
 
-        // Housekeeping: refresh grid data
+        // Housekeeping: Make sure selected item data is cleared and refresh grid data
+        this.clearAllSelections();
         await this.getRows();
       } catch (e) {
         console.log(`AXIOS: ${this.detail.mode} ${this.modelPluralName} error`, e);
