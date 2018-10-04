@@ -1,14 +1,5 @@
 <template>
-
-  <!--
-  <h1>Main Page for Applet:&nbsp;
-    <i>{{ applet.name }} ({{ applet.key }})</i>
-  </h1>
-  <br>
-  -->
-
   <component :is="appletListViewComponent" />
-
 </template>
 
 <script>

@@ -125,8 +125,11 @@ export default (ctx, inject) => {
          */
         propertyLabel(prop) {
           if (prop) {
-            if (prop.description && prop.description.length <= 50) return prop.description;
-            else return ctx.app.$helpers.toTitleCase(prop.key);
+            if (prop.description && prop.description.length <= 50) {
+              let desc = prop.description;
+              desc = desc.replace('True if ', '');
+              return desc;
+            } else return ctx.app.$helpers.toTitleCase(prop.key);
           }
           return '<Property Not Found>';
         },

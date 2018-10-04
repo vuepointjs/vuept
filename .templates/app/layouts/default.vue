@@ -14,12 +14,8 @@
       <applets-nav-panel v-if="drawer" :applets="applets" @active-applet-click="drawer = false" />
     </v-navigation-drawer>
 
-    <v-content>
-      <!-- <v-container fluid>
-        <v-layout align-start row> -->
+    <v-content class="vp-layout-content">
       <nuxt />
-      <!-- </v-layout>
-      </v-container> -->
     </v-content>
 
     <!--
@@ -106,6 +102,9 @@ export default {
 </script>
 
 <style lang="stylus">
+.vp-layout-content > div
+  background-color: white
+
 .vp-app-footer-text
   font-size: 12px
 </style>

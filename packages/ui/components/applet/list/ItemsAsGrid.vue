@@ -3,7 +3,7 @@
     <v-layout class="vp-items-as-grid">
       <v-flex>
         <v-toolbar dense class="pr-2 elevation-0 vp-items-toolbar" :class="{'vp-items-toolbar-extra-dense': $vuetify.breakpoint.xs }"
-          height="46" color="grey lighten-3">
+          :height="itemsToolbarHeight" color="grey lighten-3">
           <v-btn icon class="vp-items-search-btn" @click="toggleSearchInput">
             <v-tooltip bottom>
               <v-icon color="primary" slot="activator">search</v-icon>
@@ -89,7 +89,8 @@
 
     <v-layout row justify-center class="vp-items-as-grid-detail">
       <v-dialog persistent no-click-animation scrollable v-model="detail.dialog" class="vp-items-detail-dialog">
-        <v-card class="vp-items-detail-dialog-wrapper" :width="$vuetify.breakpoint.xs ? $vuetify.breakpoint.width : '500px'">
+        <v-card class="vp-items-detail-dialog-wrapper" :width="$vuetify.breakpoint.xs ? $vuetify.breakpoint.width : maxDetailDialogWidth"
+          :height="$vuetify.breakpoint.height - (itemsToolbarHeight + 5)">
           <v-card-title>
             <v-btn small flat round color="primary" @click.native="flashSnackbar({ msg: 'Save feature coming soon!' })">
               <v-icon left color="primary">save</v-icon>
@@ -102,7 +103,7 @@
           </v-card-title>
           <v-divider></v-divider>
 
-          <v-card-text class="vp-items-detail-dialog-body" ref="detailDialogBody">
+          <v-card-text class="vp-items-detail-dialog-body pb-3" ref="detailDialogBody">
             <template v-for="prop in editableModelProps">
               <template v-if="prop.type === 'boolean'">
                 <v-switch color="primary" :label="$model.propertyLabel(prop)" v-model="detail.values[prop.key]"></v-switch>
@@ -112,7 +113,6 @@
                   :mask="textInputMask(prop)" :rules="detail.validate[prop.key] || []"></v-text-field>
               </template>
             </template>
-            <div style="height: 60px"></div>
           </v-card-text>
         </v-card>
       </v-dialog>
@@ -129,6 +129,8 @@ export default {
   props: {},
 
   data: () => ({
+    itemsToolbarHeight: 46,
+    maxDetailDialogWidth: 500,
     loading: true,
     rows: [],
     rowKey: 'ID',
@@ -163,6 +165,7 @@ export default {
 
   mounted() {
     this.mountKeybindings();
+    this.pagination.rowsPerPage = this.$vuetify.breakpoint.height < 800 ? 5 : 10; // Default rows-per-page decreases with shorter screen height
     console.log('COMP: Mounted /applet/list <items-as-grid>');
   },
 
