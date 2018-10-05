@@ -19,16 +19,16 @@
   },
   "homepage": "https://github.com/vuepointjs/vuept#readme",
   "dependencies": {
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "lodash-id": "^0.14.0",
     "lowdb": "^1.0.0",
     "@vuept_solution/admin": ">=1.0.0-alpha.1"
   },
   "devDependencies": {
-    "babel-eslint": "^9.0.0",
-    "eslint": "^5.5.0",
-    "eslint-plugin-prettier": "^2.6.2",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.6.1",
+    "eslint-plugin-prettier": "^3.0.0",
     "eslint-plugin-vue": "^4.7.1",
-    "prettier": "^1.14.2"
+    "prettier": "^1.14.3"
   }
 }

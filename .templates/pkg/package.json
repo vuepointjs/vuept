@@ -25,10 +25,10 @@
   },
   "homepage": "https://github.com/vuepointjs/vuept#readme",
   "devDependencies": {
-    "babel-eslint": "^9.0.0",
-    "eslint": "^5.5.0",
-    "eslint-plugin-prettier": "^2.6.2",
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.6.1",
+    "eslint-plugin-prettier": "^3.0.0",
     "eslint-plugin-vue": "^4.7.1",
-    "prettier": "^1.14.2"
+    "prettier": "^1.14.3"
   }
 }
