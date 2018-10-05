@@ -186,11 +186,6 @@ export default {
   },
 
   watch: {
-    model() {
-      // When we get the model, use it to formulate and cache the property validators for the details view
-      this.detail.validate = this.$model.propertyValidators(this.editableModelProps);
-    },
-
     pagination: {
       handler() {
         this.debouncePagination();
@@ -417,6 +412,9 @@ export default {
 
         // Fail without a model
         if (!this.model) return false;
+
+        // Now that we have the model, use it to formulate and cache the property validators for the details view
+        this.detail.validate = this.$model.propertyValidators(this.editableModelProps);
 
         // console.log(`COMP: model properties: ${this.$helpers.stringifyObj(this.modelProperties)}`);
         this.columns = [];
