@@ -6,7 +6,7 @@ import AuthenticationContext from 'adal-angular/lib/adal.js';
 import jwt from 'jsonwebtoken';
 
 const vpCtx = process.env.vpCtx;
-const useFakeAuth = vpCtx.isTemplateDev && !vpCtx.isForceRBAC;
+const useFakeAuth = !vpCtx.isForceRBAC && (vpCtx.isTemplateDev || (vpCtx.isNodeDev && vpCtx.apiPort === '80'));
 
 // Nuxt plugin bootup - main entry point
 export default (ctx, inject) => {

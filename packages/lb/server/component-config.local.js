@@ -14,7 +14,7 @@ const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRo
 const azureProfileKey = vpCtx.isNodeDev ? 'DEV' : 'PROD';
 const azureProfile = require('@vuept_solution/data').getters.azureProfileByKey(vpCtx.suiteData, azureProfileKey);
 
-const explorerSecret = vpCtx.isNodeDev ? 'explorer' : azureProfile.apiId;
+const explorerSecret = vpCtx.isNodeDev || vpCtx.apiPort === '80' ? 'explorer' : azureProfile.apiId;
 const mountPath = `/${explorerSecret}`;
 const configErrMsg = 'ERROR: Missing Suite Configuration Data';
 
