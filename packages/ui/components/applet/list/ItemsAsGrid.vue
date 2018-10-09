@@ -16,10 +16,10 @@
 
           <template v-if="appletView.key != recycleBinViewKey">
             <!--
-              Use this version once we have a working "pinning" implementation with foreign keys, etc.
+              Consider using this version once we have a working "pinning" implementation with foreign keys, etc.
               <v-btn icon @click="onNew" :disabled="!applet.hasPinnableModel && !pinnedItem.key">
             -->
-            <v-btn icon @click="onNew" :disabled="!applet.hasPinnableModel">
+            <v-btn icon @click="onNew">
               <v-tooltip bottom>
                 <v-icon color="primary" slot="activator">add</v-icon>
                 <span>New</span>
@@ -517,6 +517,16 @@ export default {
     },
 
     onNew() {
+      // Can't create a new item when it requires a foreign key (i.e., it's not "pinnable") and the FK hasn't been set
+      if (!this.applet.hasPinnableModel) {
+        console.log(`COMP: New item for non-pinnable model related to "${this.$model.firstRelationName(this.model)}" by FK "${this.$model.firstRelationFK(this.model)}"`);
+        if (!this.pinnedItem.key) {
+          this.flashSnackbar({ msg: `Please pin a ${this.$model.firstRelationName(this.model)} first!` });
+          return;
+        }
+        // TODO: Check if related model itself is actually pinnable!!!???
+      }
+
       _.assign(this.detail.values, this.$model.newInstance(this.model, [this.rowKey]));
       this.detail.mode = 'Add';
       this.detail.dialog = true;
@@ -549,15 +559,18 @@ export default {
       const url = this.$applet.baseDataUrl(this.applet);
 
       try {
+        // ADD case
         if (this.detail.mode === 'Add') {
           console.log('AXIOS: Adding item...');
 
           let postObj = { ...this.detail.values, User: this.$auth.userName };
+          if (!this.applet.hasPinnableModel) postObj[this.$model.firstRelationFK(this.model)] = this.pinnedItem.key;
           response = await this.$axios.post(url, postObj);
 
           console.log(`AXIOS: ${this.modelPluralName} post successful`);
           this.flashSnackbar({ msg: 'New Item Saved!', mode: 'success' });
         } else if (this.detail.mode === 'Edit') {
+          // EDIT case
           console.log('AXIOS: Editing item...');
 
           let patchObj = { ...this.detail.values, User: this.$auth.userName };
@@ -601,10 +614,11 @@ export default {
     onTogglePin(row) {
       // TODO: Hide details of pinnedItem object structure inside mutation and add "clearPinnedItem" mutation
       let newPinnedItem = { key: '', model: { key: '' } };
-      if (!this.pinnedItem.key) newPinnedItem = { key: row[this.rowKey], model: { key: this.modelKey } };
+      if (!this.pinnedItem.key) {
+        newPinnedItem = { key: row[this.rowKey], model: { key: this.modelKey } };
+        this.flashSnackbar({ msg: 'Item pinned!', mode: 'success' });
+      }
       this.setPinnedItem(newPinnedItem);
-
-      this.flashSnackbar({ msg: 'Item pinning feature under development!' });
     },
 
     ...mapMutations(['setPinnedItem']),

@@ -201,6 +201,22 @@ export default (ctx, inject) => {
           if (!model._vp.validations.oneOf[prop.key]) return false;
 
           return true;
+        },
+
+        /**
+         * Given a model object return the name of the first related model for which a foreign key is defined, or an empty string on error
+         * @param {*} model Model object
+         */
+        firstRelationName(model) {
+          return (model && model._vp && model._vp.foreignKeys && model._vp.foreignKeys[Object.keys(model._vp.foreignKeys)[0]].referencesTable) || '';
+        },
+
+        /**
+         * Given a model object return the foreign key property key of the first related model, or an empty string on error
+         * @param {*} model Model object
+         */
+        firstRelationFK(model) {
+          return (model && model._vp && model._vp.foreignKeys && Object.keys(model._vp.foreignKeys)[0]) || '';
         }
       }
     })
