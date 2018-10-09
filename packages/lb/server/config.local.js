@@ -15,6 +15,14 @@ const suiteKey = process.env.npm_package_config_vp_suite_key;
 const appKey = process.env.npm_package_config_vp_app_key || null;
 const vpCtx = require('@vuept_solution/data').context.fromRoleAndKeys(solutionRole, suiteKey, appKey);
 
+// Determine the port on which to expose the LoopBack server
+let port = '443';
+if (process.env.PORT) {
+  port = process.env.PORT;
+} else if (vpCtx.isNodeDev || httpOnly) {
+  port = vpCtx.apiPort;
+}
+
 if (vpCtx.isDevOpsCommand) {
   // e.g., > lb export-api-def --output test.json
   console.log('\x1b[33m%s\x1b[0m', 'Started by a LoopBack CLI command');
@@ -23,8 +31,11 @@ if (vpCtx.isDevOpsCommand) {
 const config = {
   restApiRoot: '/api/v1',
   host: process.env.API_HOST,
-  port: vpCtx.isNodeDev || httpOnly ? vpCtx.apiPort : '443',
+  port,
   isNodeDev: vpCtx.isNodeDev
 };
+
+// console.log('\x1b[33m%s\x1b[0m', `vpCtx.isNodeDev: ${vpCtx.isNodeDev}`);
+// console.log('\x1b[33m%s\x1b[0m', `Configured port: ${config.port}`);
 
 module.exports = config;

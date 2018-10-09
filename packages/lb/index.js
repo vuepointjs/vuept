@@ -27,16 +27,13 @@ const server = {
               DB_PWD`;
     }
 
-    app.start = function(httpOnly) {
+    app.start = function() {
       // console.log('\x1b[33m%s\x1b[0m', '>>> In LoopBack app.start callback');
 
-      if (httpOnly === undefined) {
-        httpOnly = process.env.HTTP_ONLY;
-      }
-
       // Init server
+      const lbPort = app.get('port');
       let lbServer = null;
-      if (!httpOnly) {
+      if (lbPort === '443') {
         let options = {
           key: tlsConfig.key,
           cert: tlsConfig.cert
@@ -47,14 +44,14 @@ const server = {
       }
 
       // Start the LoopBack web server
-      const lbPort = app.get('port');
       lbServer.listen(lbPort, function() {
         let host = app.get('host');
         if (host === '0.0.0.0') host = 'localhost';
         let urlPort = ':' + lbPort;
         if (lbPort === '80' || lbPort === '443') urlPort = '';
-        let baseUrl = (httpOnly ? 'http://' : 'https://') + host + urlPort;
+        let baseUrl = (lbPort === '443' ? 'https://' : 'http://') + host + urlPort;
         app.emit('started', baseUrl);
+        // console.log('Web server port:', lbPort);
         console.log('Web server listening at: %s%s', baseUrl, '/');
 
         if (app.get('loopback-component-explorer')) {
