@@ -64,6 +64,14 @@ export default (ctx, inject) => {
         },
 
         /**
+         * Given a model singular name return the corresponding model key, or undefined if not found or error
+         * @param {string} key Model key
+         */
+        keyFromSingularName(singularName) {
+          return singularName ? _(ctx.store.state.models).findKey(val => val.name === singularName) : undefined;
+        },
+
+        /**
          * Given a model object return an array of the model's properties which are marked as required, or an empty array on failure
          * @param {object} model Model object
          * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result
@@ -204,7 +212,7 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given a model object return the name of the first related model for which a foreign key is defined, or an empty string on error
+         * Given a model object return the name of the first related model for which a foreign key is defined, or an empty string if N/A or error
          * @param {*} model Model object
          */
         firstRelationName(model) {
@@ -212,7 +220,7 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given a model object return the foreign key property key of the first related model, or an empty string on error
+         * Given a model object return the foreign key property key of the first related model, or an empty string if N/A or error
          * @param {*} model Model object
          */
         firstRelationFK(model) {

@@ -84,10 +84,50 @@
               ]
             },
             {
+              "name": "Labels",
+              "key": "LA",
+              "iconLabel": "La",
+              "ord": 2,
+              "longName": "Contact Labels",
+              "primaryModel": "party-label",
+              "hasPinnableModel": false,
+              "views": [
+                {
+                  "name": "All Items",
+                  "key": "ALL",
+                  "ord": 1,
+                  "type": "List",
+                  "subType": "Grid",
+                  "filterExpression": "[Archived]=0",
+                  "includeExpression": null,
+                  "properties": [
+                    {
+                      "key": "Name",
+                      "sort": "ASC",
+                      "search": true
+                    },
+                    {
+                      "key": "Description"
+                    },
+                    {
+                      "key": "Color"
+                    }
+                  ]
+                },
+                {
+                  "name": "Recycle Bin",
+                  "key": "RB",
+                  "ord": 2,
+                  "inheritsFrom": "ALL",
+                  "filterExpression": "[Archived]=1"
+                }
+              ]
+            },
+            {
               "name": "Discuss",
               "key": "DI",
               "iconLabel": "Di",
-              "ord": 2,
+              "ord": 3,
               "longName": "Contact Discussions",
               "primaryModel": "note",
               "views": [
