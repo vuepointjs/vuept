@@ -381,17 +381,18 @@ export default {
         const dataUrl = `${baseDataUrl}?${dataSearchQryStr}${dataSortLimitQryStr}${includeQryStr}`;
         const countUrl = `${baseCountUrl}${countSearchQryStr}`;
 
-        console.log(`AXIOS: Getting ${this.modelPluralName}...`);
+        console.time(`AXIOS: Getting ${this.modelPluralName}...`);
         let dataResponse = await this.$axios.get(dataUrl);
 
-        console.log(`AXIOS: Got ${this.modelPluralName}`);
+        console.timeEnd(`AXIOS: Getting ${this.modelPluralName}...`);
         this.rows = dataResponse.data;
 
-        console.log(`AXIOS: Getting ${this.modelPluralName} count...`);
+        console.time(`AXIOS: Getting ${this.modelPluralName} count...`);
         let countResponse = await this.$axios.get(countUrl);
 
         this.totalItems = countResponse.data.count;
-        console.log(`AXIOS: Got ${this.modelPluralName} count`, this.totalItems);
+        console.timeEnd(`AXIOS: Getting ${this.modelPluralName} count...`);
+        console.log(`AXIOS: ${this.modelPluralName} count`, this.totalItems);
         this.loading = false;
       } catch (e) {
         console.log('COMP: Error getting data:', e);
@@ -517,10 +518,17 @@ export default {
     },
 
     onNew() {
-      // Can't create a new item when it requires a foreign key (i.e., it's not "pinnable") and the FK hasn't been set
-      if (!this.applet.hasPinnableModel) {
-        console.log(`COMP: New item for non-pinnable model related to "${this.$model.firstRelationName(this.model)}" by FK "${this.$model.firstRelationFK(this.model)}"`);
-        if (!this.pinnedItem.key) {
+      // Get some info needed below
+      let fkModelName = this.$model.firstRelationName(this.model);
+      let fkModelKey = this.$model.keyFromSingularName(fkModelName);
+      let fkPropKey = this.$model.firstRelationFK(this.model);
+
+      // Can't create a new item when it requires a foreign key and the FK hasn't been set (by "pinning" the primary item)
+      if (fkPropKey) {
+        console.log(`COMP: New item for model related to "${fkModelName}" (${fkModelKey}) by FK "${fkPropKey}"`);
+        // TODO: refactor check below in $model fxn
+        if (!this.pinnedItem.key || typeof fkModelKey === 'undefined' || this.pinnedItem.model.key != fkModelKey) {
+          // TODO: Change msg to indicate that a Quick Action could be used instead of pinning first
           this.flashSnackbar({ msg: `Please pin a ${this.$model.firstRelationName(this.model)} first!` });
           return;
         }
