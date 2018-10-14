@@ -223,7 +223,7 @@ export default {
       return this.$applet.fromRoute(this.$route);
     },
 
-    // All available applet views
+    // All available views for this applet
     appletViews() {
       let views = this.$applet.views(this.applet);
       return views.length > 0 ? views : [this.defaultAppletView];
@@ -526,8 +526,7 @@ export default {
       // Can't create a new item when it requires a foreign key and the FK hasn't been set (by "pinning" the primary item)
       if (fkPropKey) {
         console.log(`COMP: New item for model related to "${fkModelName}" (${fkModelKey}) by FK "${fkPropKey}"`);
-        // TODO: refactor check below in $model fxn
-        if (!this.pinnedItem.key || typeof fkModelKey === 'undefined' || this.pinnedItem.model.key != fkModelKey) {
+        if (!this.$model.itemIsPinned(fkModelKey)) {
           // TODO: Change msg to indicate that a Quick Action could be used instead of pinning first
           this.flashSnackbar({ msg: `Please pin a ${this.$model.firstRelationName(this.model)} first!` });
           return;

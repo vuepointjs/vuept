@@ -40,11 +40,42 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given a model key return the corresponding model (if any) from the store
+         * Given a model key return the corresponding model (if any) from the Vuex store
          * @param {string} key Model key
          */
         byKey(key) {
           return ctx.store.state.models[key];
+        },
+
+        /**
+         * Return an array of all distinct primary model keys across all applets in this app, or an empty array on error or if no model keys were found
+         */
+        allKeysForApp() {
+          let modelKeys = [];
+          let applets = ctx.store.state.app.applets;
+
+          _(applets).forEach(applet => {
+            let modelKey = applet.primaryModel;
+            if (modelKey) modelKeys.push(modelKey);
+          });
+
+          return _.uniq(modelKeys);
+        },
+
+        // /**
+        //  * Call a provided callback function for each distinct model key specified in an applet view
+        //  *
+        //  * @param {function} cb
+        //  */
+        // forEachWithAppletView(cb) {},
+
+        /**
+         * Given a model key return true if an instance of the model (an "item") is currently pinned in the Vuex store, false otherwise
+         * @param {string} key Model key
+         */
+        itemIsPinned(key) {
+          let pinnedItem = ctx.$store.state.ui.pinnedItem;
+          return pinnedItem.key && typeof key != 'undefined' && key && pinnedItem.model.key === key;
         },
 
         /**
