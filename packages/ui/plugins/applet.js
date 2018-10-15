@@ -174,6 +174,16 @@ export default (ctx, inject) => {
           return applet && applet.primaryModel;
         },
 
+        /**
+         * Given a model key return the corresponding applet object for which the model is configured as the primary model, if any
+         * @param {string} modelKey Model key
+         */
+        fromModelKey(modelKey) {
+          let applet = ctx.store.state.app.applets.find(item => item.primaryModel === modelKey);
+          return applet ? applet : {};
+        },
+
+        // TODO: consider if we need to keep this applet method
         // /**
         //  * Given an applet key (case-insensitive) return the corresponding API URL for getting the model, or an empty string on failure
         //  * @param {string} key Applet "key" (unique 2 character ID string)

@@ -531,16 +531,25 @@ export default {
       let fkModelName = this.$model.firstRelationName(this.model);
       let fkModelKey = this.$model.keyFromSingularName(fkModelName);
       let fkPropKey = this.$model.firstRelationFK(this.model);
+      let fkApplet = this.$applet.fromModelKey(fkModelKey);
+      let fkAppletName = (fkApplet && fkApplet.name) || fkModelName;
 
-      // Can't create a new item when it requires a foreign key and the FK hasn't been set (by "pinning" the primary item)
+      // Can't create a new item when it requires a foreign key (we have a fkPropKey) and the FK hasn't been set (by "pinning" the primary item)
       if (fkPropKey) {
         console.log(`COMP: New item for model related to "${fkModelName}" (${fkModelKey}) by FK "${fkPropKey}"`);
-        if (!this.$model.itemIsPinned(fkModelKey)) {
-          // TODO: Change msg to indicate that a Quick Action could be used instead of pinning first
-          this.flashSnackbar({ msg: `Please pin a ${this.$model.firstRelationName(this.model)} first!` });
+
+        // Sanity check... make sure FK model is pinnable
+        if (!fkApplet || !fkApplet.hasPinnableModel) {
+          this.flashSnackbar({ msg: `Oops, parent applet/model "${fkAppletName}" isn't configured for new items!`, mode: 'error' });
           return;
         }
-        // TODO: Check if related model itself is actually pinnable!!!???
+
+        // Now check that an instance (item) of the FK model has indeed been pinned
+        if (!this.$model.itemIsPinned(fkModelKey)) {
+          // TODO: Change msg to indicate that a Quick Action could be used instead of pinning first
+          this.flashSnackbar({ msg: `Please pin an item in the "${fkAppletName}" applet first!` });
+          return;
+        }
       }
 
       _.assign(this.detail.values, this.$model.newInstance(this.model, [this.rowKey]));

@@ -24,7 +24,9 @@
     "url": "https://github.com/vuepointjs/vuept/issues"
   },
   "homepage": "https://github.com/vuepointjs/vuept#readme",
-  "dependencies": {},
+  "dependencies": {
+    "p-queue": "^3.0.0"
+  },
   "devDependencies": {
     "babel-eslint": "^10.0.1",
     "cross-env": "^5.2.0",

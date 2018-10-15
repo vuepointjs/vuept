@@ -6,6 +6,9 @@
  */
 import Vue from 'vue';
 import _ from 'lodash';
+import PQueue from 'p-queue';
+
+const REST_CALLS_CONCURRENCY = 7;
 
 // Nuxt plugin bootup - main entry point
 export default (ctx, inject) => {
@@ -66,12 +69,29 @@ export default (ctx, inject) => {
           return uniqModelKeys;
         },
 
+        // TODO: Consider if this method should be implemented or deleted
         // /**
         //  * Call a provided callback function for each distinct model key specified in an applet view
         //  *
         //  * @param {function} cb
         //  */
         // forEachWithAppletView(cb) {},
+
+        /** Load all models configured for this app */
+        loadAll() {
+          console.log('PI: $model "loadAll"');
+          console.time('AXIOS: Getting all app models...');
+          const queue = new PQueue({ concurrency: REST_CALLS_CONCURRENCY });
+
+          _(this.allKeysInApp()).forEach(key => {
+            queue.add(() => ctx.store.dispatch('loadModelByKey', { key }));
+          });
+
+          queue.onEmpty().then(() => {
+            console.timeEnd('AXIOS: Getting all app models...');
+            return;
+          });
+        },
 
         /**
          * Given a model key return true if an instance of the model (an "item") is currently pinned in the Vuex store, false otherwise
@@ -266,4 +286,7 @@ export default (ctx, inject) => {
   );
 
   console.log('PI: $model installed');
+
+  // Load all models (async)
+  ctx.app.$model.loadAll();
 };
