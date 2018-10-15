@@ -50,7 +50,9 @@ export default (ctx, inject) => {
         /**
          * Return an array of all distinct primary model keys across all applets in this app, or an empty array on error or if no model keys were found
          */
-        allKeysForApp() {
+        allKeysInApp() {
+          if (ctx.store.state.app.modelKeys.length > 0) return ctx.store.state.app.modelKeys;
+
           let modelKeys = [];
           let applets = ctx.store.state.app.applets;
 
@@ -58,8 +60,10 @@ export default (ctx, inject) => {
             let modelKey = applet.primaryModel;
             if (modelKey) modelKeys.push(modelKey);
           });
+          let uniqModelKeys = _.uniq(modelKeys);
 
-          return _.uniq(modelKeys);
+          ctx.store.commit('storeAllModelKeys', uniqModelKeys);
+          return uniqModelKeys;
         },
 
         // /**
@@ -74,7 +78,7 @@ export default (ctx, inject) => {
          * @param {string} key Model key
          */
         itemIsPinned(key) {
-          let pinnedItem = ctx.$store.state.ui.pinnedItem;
+          let pinnedItem = ctx.store.state.ui.pinnedItem;
           return pinnedItem.key && typeof key != 'undefined' && key && pinnedItem.model.key === key;
         },
 
