@@ -552,6 +552,7 @@ export default {
         }
       }
 
+      // Assign new (blank) model item to the detail dialog's value object and show dialog
       _.assign(this.detail.values, this.$model.newInstance(this.model, [this.rowKey]));
       this.detail.mode = 'Add';
       this.detail.dialog = true;
@@ -577,7 +578,10 @@ export default {
           console.log('AXIOS: Adding item...');
 
           let postObj = { ...this.detail.values, User: this.$auth.userName };
-          if (!this.applet.hasPinnableModel) postObj[this.$model.firstRelationFK(this.model)] = this.pinnedItem.key;
+
+          let fkPropKey = this.$model.firstRelationFK(this.model);
+          if (fkPropKey) postObj[fkPropKey] = this.pinnedItem.key;
+
           response = await this.$axios.post(url, postObj);
 
           console.log(`AXIOS: ${this.modelPluralName} post successful`);
