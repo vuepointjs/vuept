@@ -517,6 +517,15 @@ export default {
       else return undefined;
     },
 
+    scrollDetailsToTop() {
+      // Force details view to scroll back to the top... in case it was scrolled-down last time it was visible
+      let vm = this;
+      Vue.nextTick(_ => {
+        let detailsBody = vm.$refs.detailDialogBody;
+        detailsBody.scrollTop = 0;
+      });
+    },
+
     onNew() {
       // Get some info needed below
       let fkModelName = this.$model.firstRelationName(this.model);
@@ -537,26 +546,14 @@ export default {
       _.assign(this.detail.values, this.$model.newInstance(this.model, [this.rowKey]));
       this.detail.mode = 'Add';
       this.detail.dialog = true;
-
-      // Force details view to scroll back to the top... in case it was scrolled-down last time it was visible
-      let vm = this;
-      Vue.nextTick(_ => {
-        let detailsBody = vm.$refs.detailDialogBody;
-        detailsBody.scrollTop = 0;
-      });
+      this.scrollDetailsToTop();
     },
 
     onEdit(row) {
       _.assign(this.detail.values, row);
       this.detail.mode = 'Edit';
       this.detail.dialog = true;
-
-      // Force details view to scroll back to the top... in case it was scrolled-down last time it was visible
-      let vm = this;
-      Vue.nextTick(_ => {
-        let detailsBody = vm.$refs.detailDialogBody;
-        detailsBody.scrollTop = 0;
-      });
+      this.scrollDetailsToTop();
     },
 
     async onSave() {

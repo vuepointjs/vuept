@@ -24,7 +24,8 @@ const taxonomy = {
 export const state = () => ({
   app: {
     data: shallowAppData,
-    applets
+    applets,
+    modelKeys: []
   },
   ui: {
     taxonomy,
@@ -67,6 +68,12 @@ export const mutations = {
       msg: '',
       mode: 'success'
     };
+  },
+
+  storeAllModelKeys(state, payload) {
+    console.log('STORE: In Mutation "storeAllModelKeys"');
+
+    state.app.modelKeys = payload;
   },
 
   storeModel(state, payload) {
