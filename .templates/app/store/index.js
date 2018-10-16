@@ -115,7 +115,7 @@ export const actions = {
     console.log('STORE: In Action "flashSnackbar"');
 
     commit('showSnackbar', { msg, mode });
-    setTimeout(_ => commit('hideSnackbar'), state.ui.snackbarTimeout);
+    setTimeout(() => commit('hideSnackbar'), state.ui.snackbarTimeout);
   },
 
   async loadModelByKey({ getters, commit, state }, { key }) {

@@ -133,7 +133,16 @@ export default (ctx, inject) => {
           return view;
         },
 
-        // pinnedView() {},
+        pinnedView() {
+          let primaryKeyPropKey = ctx.app.$model.primaryKeyPropertyKey;
+          return {
+            name: 'Pinned',
+            key: 'PINNED',
+            ord: 1,
+            inheritsFrom: 'ALL',
+            filterExpression: `[${primaryKeyPropKey}]=${ctx.store.state.ui.pinnedItem.key}`
+          };
+        },
 
         /**
          * Given the array of view properties (if any) in an applet view, return the array of properties marked searchable, identified by property key
