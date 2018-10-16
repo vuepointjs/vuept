@@ -34,6 +34,13 @@ export default (ctx, inject) => {
         // console.log(`PI: $helpers baseApiModelPath = ${this.baseApiModelPath}`);
       },
 
+      computed: {
+        baseApiModelPath() {
+          let azureApiIdPiece = azureProfile.apiId.split('-', 1);
+          return `/api/static/${azureApiIdPiece ? azureApiIdPiece[0] : 'eeeeeeee'}/models`;
+        }
+      },
+
       methods: {
         stringifyObj(obj) {
           return JSON.stringify(obj, null, 2);
@@ -122,13 +129,6 @@ export default (ctx, inject) => {
           ];
 
           return colorTable[index % 2][index % colorTable[0].length];
-        }
-      },
-
-      computed: {
-        baseApiModelPath() {
-          let azureApiIdPiece = azureProfile.apiId.split('-', 1);
-          return `/api/static/${azureApiIdPiece ? azureApiIdPiece[0] : 'eeeeeeee'}/models`;
         }
       }
     })
