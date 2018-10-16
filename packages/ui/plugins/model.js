@@ -8,8 +8,6 @@ import Vue from 'vue';
 import _ from 'lodash';
 import PQueue from 'p-queue';
 
-const REST_CALLS_CONCURRENCY = 7;
-
 // Nuxt plugin bootup - main entry point
 export default (ctx, inject) => {
   // Install "$model" as a Vue + Nuxt plugin (e.g., ctx.app.$model, this.$model in components and store)
@@ -20,6 +18,16 @@ export default (ctx, inject) => {
 
       created() {
         console.log('PI: $model vue instance created');
+      },
+
+      computed: {
+        primaryKeyPropertyKey() {
+          return ctx.store.state.app.modelPropKeys.primaryKey;
+        },
+
+        recycledFlagPropertyKey() {
+          return ctx.store.state.app.modelPropKeys.recycledFlag;
+        }
       },
 
       methods: {
@@ -81,12 +89,13 @@ export default (ctx, inject) => {
         loadAll() {
           console.log('PI: $model "loadAll"');
           console.time('AXIOS: Getting all app models...');
-          const queue = new PQueue({ concurrency: REST_CALLS_CONCURRENCY });
+          const queue = new PQueue({ concurrency: ctx.store.state.api.maxConcurrency });
 
           _(this.allKeysInApp()).forEach(key => {
             queue.add(() => ctx.store.dispatch('loadModelByKey', { key }));
           });
 
+          // Once the queue is empty we end the timer, logging the overall duration
           queue.onEmpty().then(() => {
             console.timeEnd('AXIOS: Getting all app models...');
             return;
@@ -185,12 +194,13 @@ export default (ctx, inject) => {
         /**
          * Given a model object return an instance object with all of the properties set to null or their default, or an empty object on failure
          * @param {object} model Model object
-         * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result
+         * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result. Defaults to model primary key property key
          */
-        newInstance(model, exclude = []) {
+        newInstance(model, exclude = [this.primaryKeyPropertyKey]) {
           let props = model.properties; // Raw properties object... not "normalized" yet w/ "key" as its own key
           if (!props || props.length < 1) return {};
 
+          console.log(`PI: $model "newInstance" excluding ${JSON.stringify(exclude)}`);
           let instance = {};
           let propVal = null;
           _(props).forEach((val, key) => {

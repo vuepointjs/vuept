@@ -25,7 +25,14 @@ export const state = () => ({
   app: {
     data: shallowAppData,
     applets,
-    modelKeys: []
+    modelKeys: [],
+    modelPropKeys: {
+      // Certain model properties must be referenced generically across various features/functions in an app, so we configure
+      // them here to avoid hard-coding their keys
+      // TODO: These keys should be common to all DB tables in an app. Support configuration in vpCtx and merging here
+      primaryKey: 'ID',
+      recycledFlag: 'Archived'
+    }
   },
   ui: {
     taxonomy,
@@ -43,9 +50,17 @@ export const state = () => ({
     }
   },
   stats: {
-    needsAttnCount: {} // TODO: Add values here of the form: "applet-key": /* count of items needing attention */
+    needsAttnCount: {
+      // TODO: Add values here of the form: "applet-key": /* count of items needing attention */
+    }
   },
-  models: {} // Models are added here of the form: "model-key": {/* model object */}
+  models: {
+    // Models are added here of the form: "model-key": {/* model object */}
+  },
+  api: {
+    // REST API client config
+    maxConcurrency: 7
+  }
 });
 
 export const getters = {};

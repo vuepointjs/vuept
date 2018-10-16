@@ -71,7 +71,7 @@
         </v-toolbar>
 
         <v-data-table disable-initial-sort class="vp-items-table" v-model="selected" :loading="loading" :must-sort="mustSort"
-          :items="rows" :item-key="rowKey" :headers="columns" :pagination.sync="pagination" :total-items="totalItems"
+          :items="rows" :item-key="$model.primaryKeyPropertyKey" :headers="columns" :pagination.sync="pagination" :total-items="totalItems"
           rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">
 
           <template slot="items" slot-scope="row">
@@ -140,8 +140,6 @@ export default {
     maxDetailDialogWidth: 500,
     loading: true,
     rows: [],
-    rowKey: 'ID',
-    rowRecycledKey: 'Archived',
     columns: [],
     selected: [],
     search: '',
@@ -213,7 +211,7 @@ export default {
       } else {
         this.$nextTick(() => {
           this.$refs.detailDialogForm.reset();
-          _.assign(this.detail.values, this.$model.newInstance(this.model, [this.rowKey]));
+          _.assign(this.detail.values, this.$model.newInstance(this.model));
         });
       }
     }
@@ -240,7 +238,7 @@ export default {
     },
 
     appletViewSortSpec() {
-      return this.$applet.viewSortSpecFromProps(this.appletView.properties, this.rowKey);
+      return this.$applet.viewSortSpecFromProps(this.appletView.properties, this.$model.primaryKeyPropertyKey);
     },
 
     modelKey() {
@@ -257,13 +255,13 @@ export default {
 
     // The subset of model properties to display in the grid view
     modelProperties() {
-      let exclude = [this.rowRecycledKey];
+      let exclude = [this.$model.recycledFlagPropertyKey];
       return this.$model.requiredProperties(this.model, exclude);
     },
 
     // The model properties considered searchable in the grid view, identified by key
     searchableModelPropKeys() {
-      let exclude = [this.rowRecycledKey, 'FName'];
+      let exclude = [this.$model.recycledFlagPropertyKey, 'FName'];
       return this.$model.requiredStringPropertyKeys(this.model, exclude);
     },
 
@@ -277,7 +275,7 @@ export default {
       let view = {
         name: 'All Items',
         key: 'ALL',
-        filterExpression: `[${this.rowRecycledKey}]=0`,
+        filterExpression: `[${this.$model.recycledFlagPropertyKey}]=0`,
         includeExpression: null,
         properties: []
       };
@@ -456,7 +454,6 @@ export default {
             return;
           }
 
-          // let rowKey = row.item.key;
           if (!row.selected) vm.clearAllSelections(); // We only allow single selection (for now)
           row.selected = !row.selected;
         },
@@ -555,7 +552,7 @@ export default {
       }
 
       // Assign new (blank) model item to the detail dialog's value object and show dialog
-      _.assign(this.detail.values, this.$model.newInstance(this.model, [this.rowKey]));
+      _.assign(this.detail.values, this.$model.newInstance(this.model));
       this.detail.mode = 'Add';
       this.detail.dialog = true;
       this.scrollDetailsToTop();
@@ -613,7 +610,11 @@ export default {
     async onDelete(row) {
       try {
         const patchUrl = this.$applet.baseDataUrl(this.applet);
-        let patchObj = { [this.rowKey]: row[this.rowKey], User: this.$auth.userName, [this.rowRecycledKey]: 1 };
+        let patchObj = {
+          [this.$model.primaryKeyPropertyKey]: row[this.$model.primaryKeyPropertyKey],
+          User: this.$auth.userName,
+          [this.$model.recycledFlagPropertyKey]: 1
+        };
 
         console.log(`AXIOS: Patching ${this.modelPluralName}...`);
         let patchResponse = await this.$axios.patch(patchUrl, patchObj);
@@ -622,7 +623,7 @@ export default {
 
         // Housekeeping: Make sure recycled item isn't selected or pinned, and refresh grid data
         this.clearAllSelections();
-        if (row[this.rowKey] === this.pinnedItem.key) this.onTogglePin(row);
+        if (row[this.$model.primaryKeyPropertyKey] === this.pinnedItem.key) this.onTogglePin(row);
         await this.getRows();
       } catch (e) {
         console.log(`AXIOS: ${this.modelPluralName} patch error`, e);
@@ -634,7 +635,7 @@ export default {
       // TODO: Hide details of pinnedItem object structure inside mutation and add "clearPinnedItem" mutation
       let newPinnedItem = { key: '', model: { key: '' } };
       if (!this.pinnedItem.key) {
-        newPinnedItem = { key: row[this.rowKey], model: { key: this.modelKey } };
+        newPinnedItem = { key: row[this.$model.primaryKeyPropertyKey], model: { key: this.modelKey } };
         this.flashSnackbar({ msg: 'Item pinned!', mode: 'success' });
       }
       this.setPinnedItem(newPinnedItem);
