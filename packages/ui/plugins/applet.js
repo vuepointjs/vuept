@@ -90,38 +90,48 @@ export default (ctx, inject) => {
           return appletView ? appletView : {};
         },
 
-        // /**
-        //  * Given an applet object and the model property key for the "recycled" prop, compose and return a default applet view
-        //  * based on the model properties (as a fallback to the applet configuration). On error return an empty object
-        //  * @param {object} applet Applet object
-        //  */
-        // defaultView(applet, recycledPropKey) {
-        //   if (!applet || !recycledPropKey) return {};
+        /**
+         * Given an applet object, compose and return a default applet view based on the model properties (as a fallback to the applet configuration).
+         * On error return an empty object
+         * @param {object} applet Applet object
+         */
+        defaultView(applet) {
+          let recycledPropKey = ctx.app.$model.recycledFlagPropertyKey;
+          if (!applet || !recycledPropKey) return {};
 
-        //   let view = {
-        //     name: 'All Items',
-        //     key: 'ALL',
-        //     filterExpression: `[${recycledPropKey}]=0`,
-        //     includeExpression: null,
-        //     properties: []
-        //   };
+          let view = {
+            name: 'All Items',
+            key: 'ALL',
+            ord: 1,
+            type: 'List',
+            subType: 'Grid',
+            filterExpression: `[${recycledPropKey}]=0`,
+            includeExpression: null,
+            properties: []
+          };
 
-        //   let sortKey = '';
-        //   _(this.modelProperties).forEach((val, index) => {
-        //     let viewProp = {
-        //       key: val.key,
-        //       label: this.$helpers.toTitleCase(val.key)
-        //     };
-        //     if (!sortKey && val.required && val.type === 'string') {
-        //       sortKey = val.key;
-        //       viewProp.sort = 'ASC';
-        //     }
-        //     if (this.searchableModelPropKeys.includes(val.key)) viewProp.search = true;
-        //     view.properties.push(viewProp);
-        //   });
+          // Get some info needed below to build the array of properties
+          let sortKey = '';
+          const model = this.model(applet);
+          const modelProperties = ctx.app.$model.requiredProperties(model);
+          const excludedProps = [ctx.app.$model.recycledFlagPropertyKey, ...ctx.store.state.app.modelPropKeys.defaultNonSearchable];
+          const searchableModelPropKeys = ctx.app.$model.requiredStringPropertyKeys(model, excludedProps);
 
-        //   return view;
-        // },
+          _(modelProperties).forEach((val, index) => {
+            let viewProp = {
+              key: val.key,
+              label: ctx.app.$helpers.toTitleCase(val.key)
+            };
+            if (!sortKey && val.required && val.type === 'string') {
+              sortKey = val.key;
+              viewProp.sort = 'ASC';
+            }
+            if (searchableModelPropKeys.includes(val.key)) viewProp.search = true;
+            view.properties.push(viewProp);
+          });
+
+          return view;
+        },
 
         // pinnedView() {},
 
@@ -210,6 +220,14 @@ export default (ctx, inject) => {
         },
 
         /**
+         * Given an applet object return the corresponding model object, or an empty object on failure
+         * @param {object} applet Applet object
+         */
+        model(applet) {
+          return (applet && ctx.app.$model.byKey(this.modelKey(applet))) || {};
+        },
+
+        /**
          * Given a model key return the corresponding applet object for which the model is configured as the primary model, if any
          * @param {string} modelKey Model key
          */
@@ -245,7 +263,7 @@ export default (ctx, inject) => {
             apiPort = ''; // no need to specify port in final URL in this case
           }
 
-          let pluralModelName = ctx.app.$model.pluralName(ctx.app.$model.byKey(this.modelKey(applet)));
+          let pluralModelName = ctx.app.$model.pluralName(this.model(applet));
 
           return `${apiProtocol}${apiHost}${apiPort ? `:${apiPort}` : ''}${basePath}/${pluralModelName}`;
         }
