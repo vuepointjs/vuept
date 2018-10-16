@@ -117,6 +117,7 @@
                   <v-text-field :label="$model.propertyLabel(prop)" v-model="detail.values[prop.key]" :type="textInputType(prop)"
                     :mask="textInputMask(prop)" :rules="detail.validate[prop.key] || []"></v-text-field>
                 </template>
+                <div class="pb-1"></div>
               </template>
             </v-form>
           </v-card-text>
@@ -295,6 +296,8 @@ export default {
       return view;
     },
 
+    // pinnedAppletView() {},
+
     pinnedItem() {
       return this.$store.state.ui.pinnedItem;
     }
@@ -417,7 +420,6 @@ export default {
         // Now that we have the model, use it to formulate and cache the property validators for the details view
         this.detail.validate = this.$model.propertyValidators(this.editableModelProps);
 
-        // console.log(`COMP: model properties: ${this.$helpers.stringifyObj(this.modelProperties)}`);
         this.columns = [];
         this.columns.push({ text: '', value: 'rowSelectionIndicator', align: 'left', sortable: false });
 
