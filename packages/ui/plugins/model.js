@@ -138,9 +138,9 @@ export default (ctx, inject) => {
         /**
          * Given a model object return an array of the model's properties which are marked as required, or an empty array on failure
          * @param {object} model Model object
-         * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result
+         * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result. Defaults to model recycled flag property key
          */
-        requiredProperties(model, exclude = []) {
+        requiredProperties(model, exclude = [this.recycledFlagPropertyKey]) {
           return model
             ? _(model.properties)
                 .map((val, key) => ({ key, ...val }))
@@ -155,6 +155,7 @@ export default (ctx, inject) => {
          * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result
          */
         requiredStringPropertyKeys(model, exclude = []) {
+          console.log(`PI: $model "requiredStringPropertyKeys" excluding ${JSON.stringify(exclude)}`);
           const allRequiredProps = this.requiredProperties(model, exclude);
           return allRequiredProps
             ? _(allRequiredProps)

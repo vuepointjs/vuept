@@ -31,7 +31,8 @@ export const state = () => ({
       // them here to avoid hard-coding their keys
       // TODO: These keys should be common to all DB tables in an app. Support configuration in vpCtx and merging here
       primaryKey: 'ID',
-      recycledFlag: 'Archived'
+      recycledFlag: 'Archived',
+      defaultNonSearchable: ['FName']
     }
   },
   ui: {

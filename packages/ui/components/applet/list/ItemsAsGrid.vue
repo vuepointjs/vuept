@@ -221,22 +221,18 @@ export default {
     applet() {
       return this.$applet.fromRoute(this.$route);
     },
-
     // All available views for this applet
     appletViews() {
       let views = this.$applet.views(this.applet);
-      return views.length > 0 ? views : [this.defaultAppletView];
+      return views.length > 0 ? views : [this.$applet.defaultView(this.applet)];
     },
-
     // The selected applet view
     appletView() {
       return this.appletViews[this.selectedViewIndex] || {};
     },
-
     appletViewSearchKeys() {
       return this.$applet.searchableViewPropKeys(this.appletView.properties);
     },
-
     appletViewSortSpec() {
       return this.$applet.viewSortSpecFromProps(this.appletView.properties, this.$model.primaryKeyPropertyKey);
     },
@@ -244,57 +240,16 @@ export default {
     modelKey() {
       return this.$applet.modelKey(this.applet);
     },
-
     model() {
       return this.$store.state.models[this.modelKey];
     },
-
     modelPluralName() {
       return this.$model.pluralName(this.model);
     },
-
-    // The subset of model properties to display in the grid view
-    modelProperties() {
-      let exclude = [this.$model.recycledFlagPropertyKey];
-      return this.$model.requiredProperties(this.model, exclude);
-    },
-
-    // The model properties considered searchable in the grid view, identified by key
-    searchableModelPropKeys() {
-      let exclude = [this.$model.recycledFlagPropertyKey, 'FName'];
-      return this.$model.requiredStringPropertyKeys(this.model, exclude);
-    },
-
     // The subset of model properties considered editable in the details view
     editableModelProps() {
       return this.$model.editableProperties(this.model);
     },
-
-    // Compose a default applet view from model properties as a fallback
-    defaultAppletView() {
-      let view = {
-        name: 'All Items',
-        key: 'ALL',
-        filterExpression: `[${this.$model.recycledFlagPropertyKey}]=0`,
-        includeExpression: null,
-        properties: []
-      };
-
-      let sortKey = '';
-      _(this.modelProperties).forEach((val, index) => {
-        let viewProp = { key: val.key, label: this.$helpers.toTitleCase(val.key) };
-        if (!sortKey && val.required && val.type === 'string') {
-          sortKey = val.key;
-          viewProp.sort = 'ASC';
-        }
-        if (this.searchableModelPropKeys.includes(val.key)) viewProp.search = true;
-        view.properties.push(viewProp);
-      });
-
-      return view;
-    },
-
-    // pinnedAppletView() {},
 
     pinnedItem() {
       return this.$store.state.ui.pinnedItem;
@@ -634,11 +589,14 @@ export default {
     onTogglePin(row) {
       // TODO: Hide details of pinnedItem object structure inside mutation and add "clearPinnedItem" mutation
       let newPinnedItem = { key: '', model: { key: '' } };
-      if (!this.pinnedItem.key) {
+      let newState = this.pinnedItem.key ? 'unpin' : 'pin';
+
+      if (newState === 'pin') {
         newPinnedItem = { key: row[this.$model.primaryKeyPropertyKey], model: { key: this.modelKey } };
-        this.flashSnackbar({ msg: 'Item pinned!', mode: 'success' });
       }
+
       this.setPinnedItem(newPinnedItem);
+      this.flashSnackbar({ msg: `Item ${newState}ned!`, mode: 'success' });
     },
 
     ...mapMutations(['setPinnedItem']),
