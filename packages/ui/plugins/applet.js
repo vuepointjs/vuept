@@ -90,6 +90,41 @@ export default (ctx, inject) => {
           return appletView ? appletView : {};
         },
 
+        // /**
+        //  * Given an applet object and the model property key for the "recycled" prop, compose and return a default applet view
+        //  * based on the model properties (as a fallback to the applet configuration). On error return an empty object
+        //  * @param {object} applet Applet object
+        //  */
+        // defaultView(applet, recycledPropKey) {
+        //   if (!applet || !recycledPropKey) return {};
+
+        //   let view = {
+        //     name: 'All Items',
+        //     key: 'ALL',
+        //     filterExpression: `[${recycledPropKey}]=0`,
+        //     includeExpression: null,
+        //     properties: []
+        //   };
+
+        //   let sortKey = '';
+        //   _(this.modelProperties).forEach((val, index) => {
+        //     let viewProp = {
+        //       key: val.key,
+        //       label: this.$helpers.toTitleCase(val.key)
+        //     };
+        //     if (!sortKey && val.required && val.type === 'string') {
+        //       sortKey = val.key;
+        //       viewProp.sort = 'ASC';
+        //     }
+        //     if (this.searchableModelPropKeys.includes(val.key)) viewProp.search = true;
+        //     view.properties.push(viewProp);
+        //   });
+
+        //   return view;
+        // },
+
+        // pinnedView() {},
+
         /**
          * Given the array of view properties (if any) in an applet view, return the array of properties marked searchable, identified by property key
          * @param {array} props Applet view properties
