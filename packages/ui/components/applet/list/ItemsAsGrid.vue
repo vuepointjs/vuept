@@ -63,7 +63,8 @@
               </v-hover>
             </v-toolbar-title>
             <v-list>
-              <v-list-tile v-for="view, index in appletViews" :key="view.key" @click="selectedViewIndex = index" v-show="index != selectedViewIndex">
+              <v-list-tile v-for="view, index in appletViews" :key="view.key" @click="selectedView.index = index"
+                v-show="index != selectedView.index">
                 <v-list-tile-title v-text="view.name"></v-list-tile-title>
               </v-list-tile>
             </v-list>
@@ -71,8 +72,8 @@
         </v-toolbar>
 
         <v-data-table disable-initial-sort class="vp-items-table" v-model="selected" :loading="loading" :must-sort="mustSort"
-          :items="rows" :item-key="$model.primaryKeyPropertyKey" :headers="columns" :pagination.sync="pagination" :total-items="totalItems"
-          rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">
+          :items="rows" :item-key="$model.primaryKeyPropertyKey" :headers="columns" :pagination.sync="pagination"
+          :total-items="totalItems" rows-per-page-text="Rows:" :rows-per-page-items="rowsOptions">
 
           <template slot="items" slot-scope="row">
             <!-- Allow clicking anywhere on a row to select it for actions -->
@@ -152,7 +153,9 @@ export default {
     },
     mustSort: true,
     viewsMenu: false,
-    selectedViewIndex: 0,
+    selectedView: {
+      index: 0
+    },
     recycleBinViewKey: 'RB',
     inRowDblClick: false,
 
@@ -186,21 +189,29 @@ export default {
 
   watch: {
     pagination: {
-      handler() {
-        this.debouncePagination();
+      async handler() {
+        await this.debouncePagination();
       },
       deep: true
     },
 
-    search() {
-      this.debounceSearch();
+    async search() {
+      await this.debounceSearch();
     },
 
-    selectedViewIndex: {
+    selectedView: {
       async handler() {
-        this.clearAllSelections();
-        await this.getRows();
-      }
+        await this.debounceViewChange();
+      },
+      deep: true
+    },
+
+    pinnedItem: {
+      handler() {
+        console.log('COMP: Pinned item change handler... resetting selected view index');
+        this.selectedView = { index: 0 };
+      },
+      deep: true
     },
 
     'detail.dialog': function(val) {
@@ -221,14 +232,20 @@ export default {
     applet() {
       return this.$applet.fromRoute(this.$route);
     },
-    // All available views for this applet
+    // All available views for this applet, depending on pinned state
     appletViews() {
-      let views = this.$applet.views(this.applet);
-      return views.length > 0 ? views : [this.$applet.defaultView(this.applet)];
+      let views = [];
+      if (this.applet.hasPinnableModel && this.pinnedItem.key) {
+        views = [this.$applet.pinnedView()];
+      } else {
+        views = this.$applet.views(this.applet);
+        views = views.length > 0 ? views : [this.$applet.defaultView(this.applet)];
+      }
+      return views;
     },
     // The selected applet view
     appletView() {
-      return this.appletViews[this.selectedViewIndex] || {};
+      return this.appletViews[this.selectedView.index] || {};
     },
     appletViewSearchKeys() {
       return this.$applet.searchableViewPropKeys(this.appletView.properties);
@@ -371,7 +388,7 @@ export default {
         if (!this.model) return false;
 
         // Now that we have the model, use it to formulate and cache the property validators for the details view
-        this.detail.validate = this.$model.propertyValidators(this.editableModelProps);
+        if (!this.detail.validate) this.detail.validate = this.$model.propertyValidators(this.editableModelProps);
 
         this.columns = [];
         this.columns.push({ text: '', value: 'rowSelectionIndicator', align: 'left', sortable: false });
@@ -425,7 +442,7 @@ export default {
         console.log('COMP: Double-clicked on an item');
 
         // Ensure that "in-row-double-click" flag will soon be cleared
-        setTimeout(_ => {
+        setTimeout(() => {
           vm.inRowDblClick = false;
           console.log('COMP: >>> Cleared "in double-click" flag');
         }, 500);
@@ -435,7 +452,7 @@ export default {
         row.selected = true; // Select the row, or if the row was already selected don't allow any initial single-click to de-select it
 
         // Give Vue a chance to update the enabled state of the Edit button we're about to click on the toolbar...
-        Vue.nextTick(_ => {
+        Vue.nextTick(() => {
           let btn = vm.$refs.editItemBtn.$el;
           btn.focus();
           btn.click();
@@ -449,13 +466,20 @@ export default {
     debouncePagination: _.debounce(async function() {
       console.log('COMP: Pagination handler invoked');
       await this.getRows();
-    }, 100),
+    }, 200),
 
     debounceSearch: _.debounce(async function() {
       console.log('COMP: Search input changed >>>', this.search);
       await this.getRows();
       this.pagination.page = 1;
     }, 500),
+
+    debounceViewChange: _.debounce(async function() {
+      console.log('COMP: In "selectedView" change handler');
+      this.clearAllSelections();
+      // await this.getColumns();
+      await this.getRows();
+    }, 200),
 
     textInputType(prop) {
       let typeHints = `${prop.key} ${prop.type} ${prop.description}`.toLowerCase();
@@ -474,7 +498,7 @@ export default {
     scrollDetailsToTop() {
       // Force details view to scroll back to the top... in case it was scrolled-down last time it was visible
       let vm = this;
-      Vue.nextTick(_ => {
+      Vue.nextTick(() => {
         let detailsBody = vm.$refs.detailDialogBody;
         detailsBody.scrollTop = 0;
       });
@@ -595,8 +619,14 @@ export default {
         newPinnedItem = { key: row[this.$model.primaryKeyPropertyKey], model: { key: this.modelKey } };
       }
 
+      this.clearAllSelections();
       this.setPinnedItem(newPinnedItem);
       this.flashSnackbar({ msg: `Item ${newState}ned!`, mode: 'success' });
+
+      // Vue.nextTick(() => {
+      //   console.log(`COMP: Item ${newState}ned... resetting selected view index`);
+      //   this.selectedView = { index: 0 };
+      // });
     },
 
     ...mapMutations(['setPinnedItem']),
