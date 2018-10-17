@@ -103,15 +103,6 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given a model key return true if an instance of the model (an "item") is currently pinned in the Vuex store, false otherwise
-         * @param {string} key Model key
-         */
-        itemIsPinned(key) {
-          let pinnedItem = ctx.store.state.ui.pinnedItem;
-          return pinnedItem.key && typeof key != 'undefined' && key && pinnedItem.model.key === key;
-        },
-
-        /**
          * Given a model object return the singular form of the model name
          * @param {*} model Model object
          */
@@ -291,6 +282,39 @@ export default (ctx, inject) => {
          */
         firstRelationFK(model) {
           return (model && model._vp && model._vp.foreignKeys && Object.keys(model._vp.foreignKeys)[0]) || '';
+        },
+
+        /**
+         * Given a model key return true if an instance of the model (an "item") is currently pinned in the Vuex store, false otherwise
+         * @param {string} key Model key
+         */
+        itemIsPinned(key) {
+          let pinnedItem = ctx.store.state.ui.pinnedItem;
+          return !!(pinnedItem.key && typeof key != 'undefined' && key && pinnedItem.model.key === key);
+        },
+
+        /**
+         * Given a model key return true if the model is dependent on a parent model as indicated by a foreign key (FK), false otherwise or on error
+         * @param {string} key Model key
+         */
+        hasParent(key) {
+          let model = key && this.byKey(key);
+          if (!model) return false;
+
+          return !!this.firstRelationFK(model);
+        },
+
+        /**
+         * Given a model key return true if an instance of the model's parent model (an "item") is currently pinned in the Vuex store, false otherwise
+         * @param {string} key Model key
+         */
+        parentItemIsPinned(key) {
+          let model = key && this.byKey(key);
+          if (!model) return false;
+
+          let fkModelName = this.firstRelationName(model);
+          let fkModelKey = this.keyFromSingularName(fkModelName);
+          return this.itemIsPinned(fkModelKey);
         }
       }
     })
