@@ -136,17 +136,19 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given an applet object, compose and return a pinned applet view (for the primary model's applet) based on the All Items ('ALL') view
+         * Given an applet object and parent/child flag, compose and return a pinned applet view (for the parent or the child) based on the All Items ('ALL') view
          * @param {object} applet Applet object
+         * @param {boolean} forParent True if the pinned view is for a parent (primary model), false for a child that is dependent on (has FK ref to) a parent
          */
-        pinnedView(applet) {
-          let primaryKeyPropKey = ctx.app.$model.primaryKeyPropertyKey;
+        pinnedView(applet, forParent) {
+          const primaryOrFkPropKey = forParent ? ctx.app.$model.primaryKeyPropertyKey : ctx.app.$model.firstRelationFK(this.model(applet));
           let rawPinnedViewDefinition = {
             name: 'Pinned',
             key: 'PINNED',
             ord: 1,
             inheritsFrom: 'ALL',
-            filterExpression: `[${primaryKeyPropKey}]=${ctx.store.state.ui.pinnedItem.key}`
+            // TODO: Filter expression must include [Archived]=0 in addition to PK/FK
+            filterExpression: `[${primaryOrFkPropKey}]=${ctx.store.state.ui.pinnedItem.key}`
           };
 
           return _.merge({}, this.rawViewFromKey(applet, 'ALL'), rawPinnedViewDefinition);
