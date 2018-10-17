@@ -9,7 +9,9 @@ export default (ctx, inject) => {
   inject(
     'applet',
     new Vue({
-      data: () => ({}),
+      data: () => ({
+        recycleBinViewKey: 'RB'
+      }),
 
       created() {
         console.log('PI: $applet vue instance created');
@@ -133,15 +135,21 @@ export default (ctx, inject) => {
           return view;
         },
 
-        pinnedView() {
+        /**
+         * Given an applet object, compose and return a pinned applet view (for the primary model's applet) based on the All Items ('ALL') view
+         * @param {object} applet Applet object
+         */
+        pinnedView(applet) {
           let primaryKeyPropKey = ctx.app.$model.primaryKeyPropertyKey;
-          return {
+          let rawPinnedViewDefinition = {
             name: 'Pinned',
             key: 'PINNED',
             ord: 1,
             inheritsFrom: 'ALL',
             filterExpression: `[${primaryKeyPropKey}]=${ctx.store.state.ui.pinnedItem.key}`
           };
+
+          return _.merge({}, this.rawViewFromKey(applet, 'ALL'), rawPinnedViewDefinition);
         },
 
         /**

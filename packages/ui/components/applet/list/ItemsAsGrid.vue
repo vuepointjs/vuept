@@ -14,7 +14,7 @@
           <v-text-field :class="['vp-items-search-input', {'vp-items-search-input-open': searchInputOpen}]" single-line
             hide-details clearable v-model="search" label="Search" ref="searchInput"></v-text-field>
 
-          <template v-if="appletView.key != recycleBinViewKey">
+          <template v-if="appletView.key != $applet.recycleBinViewKey">
             <!--
               Consider using this version once we have a working "pinning" implementation with foreign keys, etc.
               <v-btn icon @click="onNew" :disabled="!applet.hasPinnableModel && !pinnedItem.key">
@@ -52,13 +52,15 @@
           <v-spacer></v-spacer>
 
           <v-menu left offset-y class="vp-items-views-menu" :nudge-width="100" :nudge-bottom="5" transition="slide-y-transition"
-            v-model="viewsMenu">
+            v-model="viewsMenu" :disabled="!!pinnedItem.key">
             <v-toolbar-title slot="activator">
               <v-hover close-delay="0">
                 <div slot-scope="{ hover }" class="vp-items-views-menu-hover" :class="hover ? 'grey lighten-2': ''">
-                  <v-icon color="primary">notes</v-icon>
-                  <span class="subheading font-weight-light pl-2 pr-1">{{ appletView.name }}</span>
-                  <v-icon color="primary">keyboard_arrow_down</v-icon>
+                  <v-icon color="primary" :disabled="!!pinnedItem.key">notes</v-icon>
+                  <span class="subheading font-weight-light pl-2 pr-1" :class="{'text--disabled': !!pinnedItem.key}">
+                    {{ appletView.name }}
+                  </span>
+                  <v-icon color="primary" :disabled="!!pinnedItem.key">keyboard_arrow_down</v-icon>
                 </div>
               </v-hover>
             </v-toolbar-title>
@@ -148,7 +150,7 @@ export default {
     totalItems: 0,
     rowsOptions: [5, 10, 25, 100, 500],
     pagination: {
-      sortBy: 'ID',
+      sortBy: '',
       rowsPerPage: 10
     },
     mustSort: true,
@@ -156,7 +158,7 @@ export default {
     selectedView: {
       index: 0
     },
-    recycleBinViewKey: 'RB',
+
     inRowDblClick: false,
 
     detail: {
@@ -175,7 +177,6 @@ export default {
 
   mounted() {
     this.mountKeybindings();
-    this.pagination.rowsPerPage = this.$vuetify.breakpoint.height < 800 ? 5 : 10; // Default rows-per-page decreases with shorter screen height
     console.log('COMP: Mounted /applet/list <items-as-grid>');
   },
 
@@ -229,6 +230,11 @@ export default {
   },
 
   computed: {
+    // Default rows-per-page decreases with shorter screen height
+    defaultRowsPerPage() {
+      return this.$vuetify.breakpoint.height < 800 ? 5 : 10;
+    },
+
     applet() {
       return this.$applet.fromRoute(this.$route);
     },
@@ -236,7 +242,7 @@ export default {
     appletViews() {
       let views = [];
       if (this.applet.hasPinnableModel && this.pinnedItem.key) {
-        views = [this.$applet.pinnedView()];
+        views = [this.$applet.pinnedView(this.applet)];
       } else {
         views = this.$applet.views(this.applet);
         views = views.length > 0 ? views : [this.$applet.defaultView(this.applet)];
@@ -397,8 +403,8 @@ export default {
           this.columns.push({ text: val.label || this.$helpers.toTitleCase(val.key), value: val.key, align: 'left', sortable: this.$applet.viewPropIsSortable(val) });
         });
 
-        // Must set default sort column and order
-        _.assign(this.pagination, this.appletViewSortSpec);
+        // Must set default page, sortBy column, and sort order. Also set default rowsPerPage based on screen size
+        this.pagination = _.merge({ page: 1 }, this.appletViewSortSpec, { rowsPerPage: this.defaultRowsPerPage });
       } catch (e) {
         this.columns = [];
         console.log('COMP: Error getting metadata:', e);
@@ -475,10 +481,9 @@ export default {
     }, 500),
 
     debounceViewChange: _.debounce(async function() {
-      console.log('COMP: In "selectedView" change handler');
+      console.log('COMP: View Selection changed');
       this.clearAllSelections();
-      // await this.getColumns();
-      await this.getRows();
+      await this.getColumns(); // getColumns has the side-effect of setting pagination and therefore getting rows
     }, 200),
 
     textInputType(prop) {
