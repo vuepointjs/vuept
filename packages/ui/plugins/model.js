@@ -37,10 +37,10 @@ export default (ctx, inject) => {
          */
         urlFromKey(key) {
           // e.g., https://zz.domain.com/api/static/dddddddd/models/customer.json
-          let apiHost = ctx.app.$helpers.apiHost;
-          let apiPort = ctx.app.$helpers.apiPort;
+          let apiHost = ctx.app.$api.host;
+          let apiPort = ctx.app.$api.port;
           let apiProtocol = 'http://';
-          let basePath = ctx.app.$helpers.baseApiModelPath;
+          let basePath = ctx.app.$api.baseModelPath;
 
           if (['443', '80'].includes(apiPort)) {
             apiProtocol = apiPort === '443' ? 'https://' : 'http://';
@@ -89,7 +89,7 @@ export default (ctx, inject) => {
         loadAll() {
           console.log('PI: $model "loadAll"');
           console.time('AXIOS: Getting all app models...');
-          const queue = new PQueue({ concurrency: ctx.store.state.api.maxConcurrency });
+          const queue = new PQueue({ concurrency: ctx.app.$api.maxConcurrency });
 
           _(this.allKeysInApp()).forEach(key => {
             queue.add(() => ctx.store.dispatch('loadModelByKey', { key }));

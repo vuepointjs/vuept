@@ -22,23 +22,11 @@ export default (ctx, inject) => {
         regex: {
           htmlTagsAndSpaces: /&nbsp;|<\/?[\w\s="/.':;#-\/\?]+>/gi
         },
-        azureProfile,
-        apiHost: ctx.env.vpCtx.apiHost,
-        apiPort: ctx.env.vpCtx.apiPort,
-        baseApiDataPath: '/api/v1'
+        azureProfile
       }),
 
       created() {
         console.log('PI: $helpers vue instance created');
-        // console.log(`PI: $helpers apiHost = ${this.apiHost}, apiPort = ${this.apiPort}`);
-        // console.log(`PI: $helpers baseApiModelPath = ${this.baseApiModelPath}`);
-      },
-
-      computed: {
-        baseApiModelPath() {
-          let azureApiIdPiece = azureProfile.apiId.split('-', 1);
-          return `/api/static/${azureApiIdPiece ? azureApiIdPiece[0] : 'eeeeeeee'}/models`;
-        }
       },
 
       methods: {
