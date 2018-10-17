@@ -40,11 +40,11 @@
               </v-tooltip>
             </v-btn>
 
-            <v-btn v-show="applet.hasPinnableModel" icon :disabled="selected.length < 1 && !pinnedItem.key" @click="onTogglePin(selected[0])"
-              :class="{'grey lighten-2': pinnedItem.key }">
+            <v-btn v-show="hasPinnableModel" icon :disabled="selected.length < 1 && !hasPinnedItem" @click="onTogglePin(selected[0])"
+              :class="{'grey lighten-2': hasPinnedItem }">
               <v-tooltip bottom>
                 <v-icon color="secondary" slot="activator">person_pin_circle</v-icon>
-                <span>{{ pinnedItem.key ? 'Unpin' : 'Pin' }}</span>
+                <span>{{ hasPinnedItem ? 'Unpin' : 'Pin' }}</span>
               </v-tooltip>
             </v-btn>
           </template>
@@ -52,15 +52,15 @@
           <v-spacer></v-spacer>
 
           <v-menu left offset-y class="vp-items-views-menu" :nudge-width="100" :nudge-bottom="5" transition="slide-y-transition"
-            v-model="viewsMenu" :disabled="!!pinnedItem.key">
+            v-model="viewsMenu" :disabled="hasPinnedItem || hasParentWithPinnedItem">
             <v-toolbar-title slot="activator">
               <v-hover close-delay="0">
                 <div slot-scope="{ hover }" class="vp-items-views-menu-hover" :class="hover ? 'grey lighten-2': ''">
-                  <v-icon color="primary" :disabled="!!pinnedItem.key">notes</v-icon>
-                  <span class="subheading font-weight-light pl-2 pr-1" :class="{'text--disabled': !!pinnedItem.key}">
+                  <v-icon color="primary" :disabled="hasPinnedItem || hasParentWithPinnedItem">notes</v-icon>
+                  <span class="subheading font-weight-light pl-2 pr-1" :class="{'text--disabled': hasPinnedItem || hasParentWithPinnedItem}">
                     {{ appletView.name }}
                   </span>
-                  <v-icon color="primary" :disabled="!!pinnedItem.key">keyboard_arrow_down</v-icon>
+                  <v-icon color="primary" :disabled="hasPinnedItem || hasParentWithPinnedItem">keyboard_arrow_down</v-icon>
                 </div>
               </v-hover>
             </v-toolbar-title>
@@ -241,7 +241,7 @@ export default {
     // All available views for this applet, depending on pinned state
     appletViews() {
       let views = [];
-      if (this.applet.hasPinnableModel && this.pinnedItem.key) {
+      if (this.hasPinnedItem) {
         views = [this.$applet.pinnedView(this.applet)];
       } else {
         views = this.$applet.views(this.applet);
@@ -272,6 +272,19 @@ export default {
     // The subset of model properties considered editable in the details view
     editableModelProps() {
       return this.$model.editableProperties(this.model);
+    },
+
+    hasPinnableModel() {
+      return !!this.applet.hasPinnableModel;
+    },
+    hasPinnedItem() {
+      return this.$model.itemIsPinned(this.modelKey);
+    },
+    hasParent() {
+      return this.$model.hasParent(this.modelKey);
+    },
+    hasParentWithPinnedItem() {
+      return this.$model.parentItemIsPinned(this.modelKey);
     },
 
     pinnedItem() {
@@ -402,6 +415,10 @@ export default {
         _(this.appletView.properties).forEach(val => {
           this.columns.push({ text: val.label || this.$helpers.toTitleCase(val.key), value: val.key, align: 'left', sortable: this.$applet.viewPropIsSortable(val) });
         });
+
+        // Reset search?
+        // this.searchInputOpen = false;
+        // this.search = '';
 
         // Must set default page, sortBy column, and sort order. Also set default rowsPerPage based on screen size
         this.pagination = _.merge({ page: 1 }, this.appletViewSortSpec, { rowsPerPage: this.defaultRowsPerPage });
@@ -618,7 +635,7 @@ export default {
     onTogglePin(row) {
       // TODO: Hide details of pinnedItem object structure inside mutation and add "clearPinnedItem" mutation
       let newPinnedItem = { key: '', model: { key: '' } };
-      let newState = this.pinnedItem.key ? 'unpin' : 'pin';
+      let newState = this.hasPinnedItem ? 'unpin' : 'pin';
 
       if (newState === 'pin') {
         newPinnedItem = { key: row[this.$model.primaryKeyPropertyKey], model: { key: this.modelKey } };
