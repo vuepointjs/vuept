@@ -160,6 +160,7 @@ export default {
     },
 
     inRowDblClick: false,
+    inViewChange: false,
 
     detail: {
       dialog: false,
@@ -191,13 +192,13 @@ export default {
   watch: {
     pagination: {
       async handler() {
-        await this.debouncePagination();
+        if (!this.inViewChange) await this.debouncePagination();
       },
       deep: true
     },
 
     async search() {
-      await this.debounceSearch();
+      if (!this.inViewChange) await this.debounceSearch();
     },
 
     selectedView: {
@@ -213,6 +214,13 @@ export default {
         this.selectedView = { index: 0 };
       },
       deep: true
+    },
+
+    inRowDblClick(newVal) {
+      console.log(`COMP: >>> *${newVal ? 'Set' : 'Cleared'}* "in double-click" flag`);
+    },
+    inViewChange(newVal) {
+      console.log(`COMP: >>> *${newVal ? 'Set' : 'Cleared'}* "in view change" flag`);
     },
 
     'detail.dialog': function(val) {
@@ -407,7 +415,7 @@ export default {
         if (!this.model) return false;
 
         // Now that we have the model, use it to formulate and cache the property validators for the details view
-        if (!this.detail.validate) this.detail.validate = this.$model.propertyValidators(this.editableModelProps);
+        this.detail.validate = this.$model.propertyValidators(this.editableModelProps);
 
         this.columns = [];
         this.columns.push({ text: '', value: 'rowSelectionIndicator', align: 'left', sortable: false });
@@ -415,10 +423,6 @@ export default {
         _(this.appletView.properties).forEach(val => {
           this.columns.push({ text: val.label || this.$helpers.toTitleCase(val.key), value: val.key, align: 'left', sortable: this.$applet.viewPropIsSortable(val) });
         });
-
-        // Reset search?
-        // this.searchInputOpen = false;
-        // this.search = '';
 
         // Must set default page, sortBy column, and sort order. Also set default rowsPerPage based on screen size
         this.pagination = _.merge({ page: 1 }, this.appletViewSortSpec, { rowsPerPage: this.defaultRowsPerPage });
@@ -438,6 +442,11 @@ export default {
 
     clearAllSelections() {
       this.selected.splice(0);
+    },
+
+    clearSearch() {
+      this.searchInputOpen = false;
+      this.search = '';
     },
 
     rowClick(row) {
@@ -462,13 +471,9 @@ export default {
       let vm = this;
       try {
         this.inRowDblClick = true;
-        console.log('COMP: Double-clicked on an item');
 
         // Ensure that "in-row-double-click" flag will soon be cleared
-        setTimeout(() => {
-          vm.inRowDblClick = false;
-          console.log('COMP: >>> Cleared "in double-click" flag');
-        }, 500);
+        setTimeout(() => (vm.inRowDblClick = false), 500);
 
         // Handle various conditions, such as dbl-click on an item when another item is already selected
         if (!row.selected) this.selected.splice(0); // Remove all elements... we only allow single selection (for now)
@@ -499,8 +504,14 @@ export default {
 
     debounceViewChange: _.debounce(async function() {
       console.log('COMP: View Selection changed');
-      this.clearAllSelections();
-      await this.getColumns(); // getColumns has the side-effect of setting pagination and therefore getting rows
+      try {
+        this.inViewChange = true;
+        this.clearAllSelections();
+        this.clearSearch();
+        await this.getColumns();
+        await this.getRows();
+      } catch (e) {}
+      this.inViewChange = false;
     }, 200),
 
     textInputType(prop) {
@@ -641,14 +652,10 @@ export default {
         newPinnedItem = { key: row[this.$model.primaryKeyPropertyKey], model: { key: this.modelKey } };
       }
 
-      this.clearAllSelections();
+      // Changes to the pinned item have the side-effect of changing the selected view, which in turn
+      // resets selection and search and reloads columns and rows
       this.setPinnedItem(newPinnedItem);
       this.flashSnackbar({ msg: `Item ${newState}ned!`, mode: 'success' });
-
-      // Vue.nextTick(() => {
-      //   console.log(`COMP: Item ${newState}ned... resetting selected view index`);
-      //   this.selectedView = { index: 0 };
-      // });
     },
 
     ...mapMutations(['setPinnedItem']),
