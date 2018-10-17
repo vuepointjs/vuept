@@ -217,7 +217,7 @@ export default {
     },
 
     inRowDblClick(newVal) {
-      console.log(`COMP: >>> *${newVal ? 'Set' : 'Cleared'}* "in double-click" flag`);
+      console.log(`COMP: >>> *${newVal ? 'Set' : 'Cleared'}* "in row double-click" flag`);
     },
     inViewChange(newVal) {
       console.log(`COMP: >>> *${newVal ? 'Set' : 'Cleared'}* "in view change" flag`);
@@ -249,8 +249,8 @@ export default {
     // All available views for this applet, depending on pinned state
     appletViews() {
       let views = [];
-      if (this.hasPinnedItem) {
-        views = [this.$applet.pinnedView(this.applet)];
+      if (this.hasPinnedItem || this.hasParentWithPinnedItem) {
+        views = [this.$applet.pinnedView(this.applet, this.hasPinnedItem)];
       } else {
         views = this.$applet.views(this.applet);
         views = views.length > 0 ? views : [this.$applet.defaultView(this.applet)];
@@ -364,11 +364,13 @@ export default {
         const dataLimitQryStr = `filter[limit]=${rowsPerPage}&filter[skip]=${(page - 1) * rowsPerPage}`;
         const dataSortLimitQryStr = `${dataSortQryStr}&${dataLimitQryStr}`;
 
+        // TODO: If typeof filterExpression === 'array' then map to multiple 'filter[where]...' clauses
         let filterExpression = this.appletView.filterExpression;
         let dataSearchQryStr = `filter[where]${filterExpression}&`;
         let countSearchQryStr = `?[where]${filterExpression}`;
         let searchColKey = this.appletViewSearchKeys[0];
 
+        // TODO: Strip unsafe characters from search before constructing qry str
         if (this.search) {
           console.log(`COMP: Searching in column "${searchColKey}"`);
           dataSearchQryStr = `filter[where]${filterExpression}&filter[where][${searchColKey}][like]=%25${this.search}%25&`;
