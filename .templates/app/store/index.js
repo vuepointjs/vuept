@@ -57,10 +57,6 @@ export const state = () => ({
   },
   models: {
     // Models are added here of the form: "model-key": {/* model object */}
-  },
-  api: {
-    // REST API client config
-    maxConcurrency: 7
   }
 });
 

@@ -272,10 +272,10 @@ export default (ctx, inject) => {
          */
         baseDataUrl(applet) {
           // e.g., https://zz.domain.com/api/v1/Customers
-          let apiHost = ctx.app.$helpers.apiHost;
-          let apiPort = ctx.app.$helpers.apiPort;
+          let apiHost = ctx.app.$api.host;
+          let apiPort = ctx.app.$api.port;
           let apiProtocol = 'http://';
-          let basePath = ctx.app.$helpers.baseApiDataPath;
+          let basePath = ctx.app.$api.baseDataPath;
 
           if (['443', '80'].includes(apiPort)) {
             apiProtocol = apiPort === '443' ? 'https://' : 'http://';
