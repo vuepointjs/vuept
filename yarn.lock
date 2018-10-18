@@ -2299,14 +2299,14 @@ caniuse-api@^2.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-db@^1.0.30000529, caniuse-db@^1.0.30000634, caniuse-db@^1.0.30000639:
-  version "1.0.30000892"
-  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000892.tgz#3a03ecec4283caa5dac49facf024d13113c4499f"
-  integrity sha512-as/DXjiFJg051+GSJLmkY0hckkVsmTB4nuDUPLwK1sMHk94XsYuocNJuU0wdOpobwI/3sqNeW5ETebvdPGvwBQ==
+  version "1.0.30000893"
+  resolved "https://registry.yarnpkg.com/caniuse-db/-/caniuse-db-1.0.30000893.tgz#2781b8d2ce50d8dd9d091425461b528ca4556c07"
+  integrity sha512-JfGWsX2JtyXnjGAAjXMHiv4OEGFZvArB5pxdd5oa5xCuEYYN1rhBMwogMIKnKoUBi6lKRyO4JQAPJwqchv20Yg==
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000792, caniuse-lite@^1.0.30000805, caniuse-lite@^1.0.30000808, caniuse-lite@^1.0.30000844:
-  version "1.0.30000892"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000892.tgz#344d2b51ee3ff5977537da4aa449c90eec40b759"
-  integrity sha512-X9rxMaWZNbJB5qjkDqPtNv/yfViTeUL6ILk0QJNxLV3OhKC5Acn5vxsuUvllR6B48mog8lmS+whwHq/QIYSL9w==
+  version "1.0.30000893"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30000893.tgz#284b20932bd41b93e21626975f2050cb01561986"
+  integrity sha512-kOddHcTEef+NgN/fs0zmX2brHTNATVOWMEIhlZHCuwQRtXobjSw9pAECc44Op4bTBcavRjkLaPrGomknH7+Jvg==
 
 canonical-json@0.0.4:
   version "0.0.4"
@@ -3281,7 +3281,7 @@ debug@3.1.0, debug@=3.1.0:
   dependencies:
     ms "2.0.0"
 
-debug@^3.1.0:
+debug@^3.1.0, debug@^3.2.6:
   version "3.2.6"
   resolved "https://registry.yarnpkg.com/debug/-/debug-3.2.6.tgz#e83d17de16d8a7efb7717edbe5fb10135eee629b"
   integrity sha512-mel+jf7nrtEl5Pn1Qx46zARXKDpBbvzezse7p7LqINmdoIk8PYP5SySaxEmYv6TZ0JyEKA1hsCId6DIhgITtWQ==
@@ -5742,9 +5742,9 @@ js-base64@^2.1.9:
   integrity sha512-xcinL3AuDJk7VSzsHgb9DvvIXayBbadtMZ4HFPx8rUszbW1MuNMlwYVC4zzCZ6e1sqZpnNS5ZFYOhXqA39T7LQ==
 
 js-beautify@^1.8.4:
-  version "1.8.7"
-  resolved "https://registry.yarnpkg.com/js-beautify/-/js-beautify-1.8.7.tgz#d87100f714aeb3c388bce9ef011442fc07bda93a"
-  integrity sha512-yhAMCTv0L9GNg6Gql7i+g4C1z9rQhfHXy4J0TGYFoBzzHR4reWYS573gkRrPuE58dYOH451LmBeAb8L1pLEfdA==
+  version "1.8.8"
+  resolved "https://registry.yarnpkg.com/js-beautify/-/js-beautify-1.8.8.tgz#1eb175b73a3571a5f1ed8d98e7cf2b05bfa98471"
+  integrity sha512-qVNq7ZZ7ZbLdzorvSlRDadS0Rh5oyItaE95v6I4wbbuSiijxn7SnnsV6dvKlcXuO2jX7lK8tn9fBulx34K/Ejg==
   dependencies:
     config-chain "~1.1.5"
     editorconfig "^0.15.0"
@@ -6228,9 +6228,9 @@ longest@^1.0.1:
   integrity sha1-MKCy2jj3N3DoKUoNIuZiXtd9AJc=
 
 loopback-boot@^3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/loopback-boot/-/loopback-boot-3.1.1.tgz#cc4da47aebddaca1f52b401b70e6f04605624194"
-  integrity sha1-zE2keuvdrKH1K0AbcObwRgViQZQ=
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/loopback-boot/-/loopback-boot-3.2.0.tgz#d1a0c92ceb45ba18f93dcde1427c795b48452508"
+  integrity sha512-lNVWW6GINHx6O/kzmOY+LP99JItzyBZIQWiH5tPSnCfrzYZ4LMXzou3//5v+eWi32rEZsaQZym8Y/g4JB+w9uw==
   dependencies:
     async "^2.4.0"
     bluebird "^3.4.0"
@@ -6242,9 +6242,9 @@ loopback-boot@^3.1.1:
     toposort "^2.0.2"
 
 loopback-component-explorer@^6.2.0:
-  version "6.3.0"
-  resolved "https://registry.yarnpkg.com/loopback-component-explorer/-/loopback-component-explorer-6.3.0.tgz#3e6e5fa4a9e95ed6557bbbc840a768263ef315a6"
-  integrity sha512-9UXnlJKbQpPotBeVV01v5W/3E0ZCavag7/tmJKGjzXgROnKgN9TG0T430mh40A4mM1b5dtIjywzpZAkDc/DL0w==
+  version "6.3.1"
+  resolved "https://registry.yarnpkg.com/loopback-component-explorer/-/loopback-component-explorer-6.3.1.tgz#66ac422b9d17d3c8cc0262c1c5c818a46ce0a03a"
+  integrity sha512-BQRbZaHPJmflq67VjAavfM/NpRI1p8B4NJtTwf+olwjq51dnPuTAhOOF5kgy6LTo+2PFCi/mK5dIoApHHMXRRw==
   dependencies:
     debug "^3.1.0"
     lodash "^4.17.5"
@@ -6328,9 +6328,9 @@ loopback-phase@^3.0.0, loopback-phase@^3.1.0:
     strong-globalize "^4.1.1"
 
 loopback-swagger@^5.0.0:
-  version "5.7.0"
-  resolved "https://registry.yarnpkg.com/loopback-swagger/-/loopback-swagger-5.7.0.tgz#c0406f1b657842206b44b35e7e5c62c5bb45af67"
-  integrity sha512-f28J95Emd0DH9fsPFxZapnNIFRAbUSnIk6wzZjWnXOn/TKay2Rx2/KiRgFUbvZghoTeuoNBQjgglOIK8u/RmSw==
+  version "5.7.1"
+  resolved "https://registry.yarnpkg.com/loopback-swagger/-/loopback-swagger-5.7.1.tgz#98e9f737c37fcb2e269a85e4418b2d58931ef1ed"
+  integrity sha512-jjGFP/dI/VVkuhRJjbysnmos1Jd1ILRY+PvbyfcKapCuZNt1rrPjlX1htP4sTsuGK/SUZuH6fsZiBG7Ppyi2FQ==
   dependencies:
     async "^2.1.4"
     debug "^3.1.0"
@@ -6339,9 +6339,9 @@ loopback-swagger@^5.0.0:
     strong-globalize "^4.1.1"
 
 loopback@^3.22.2:
-  version "3.23.0"
-  resolved "https://registry.yarnpkg.com/loopback/-/loopback-3.23.0.tgz#0906bba925778622f9ea9b3e353c0401ed1f3792"
-  integrity sha512-8rdLnNqbLeoUVJPekCEj7v8cLzudrVEj1RYfests4XtYr58dl7L1FA6LkDSA9ls32HxL4DQuDSQ1yhfViYeX7g==
+  version "3.23.1"
+  resolved "https://registry.yarnpkg.com/loopback/-/loopback-3.23.1.tgz#c1d7ba8eab1a6e7a567b9ca6ddc73fc36111f6a9"
+  integrity sha512-IH0JX14nrN5FN6SNiogb8Q9NTvnSo8Fo9jw365ntA0ElD/WOaaBY4rm1vgKB0YU8f7jvW3d7ze52+XW1BCyO/w==
   dependencies:
     async "^2.0.1"
     bcryptjs "^2.1.0"
@@ -6900,13 +6900,13 @@ mssql@^2.1.6:
     tedious "~1.13.1"
 
 mssql@^4.1.0:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/mssql/-/mssql-4.2.1.tgz#c7133247e912d71185b09d3c2bae0f19345fcde6"
-  integrity sha512-89mJcK/xgcsRdlCfEZxRsE93NKZnZJFSASy7Eiw4Bx6exvkGb9Kd1ey9d9/jODTFssoZ3U0OOFK3wabYMpJypQ==
+  version "4.2.2"
+  resolved "https://registry.yarnpkg.com/mssql/-/mssql-4.2.2.tgz#98378427de9faf422430bad03c7919fb894ec490"
+  integrity sha512-LmClNZAD8k/BmXnu0twrWSW0sQXkrOx8WssSB2wtgsdpFeQmBNfUQ+sr5rT037F388KLoN3lZX7nFARgWTSYHw==
   dependencies:
-    debug "^3.1.0"
+    debug "^3.2.6"
     generic-pool "^3.4.2"
-    tedious "^2.6.4"
+    tedious "^2.7.1"
 
 multimatch@^2.1.0:
   version "2.1.0"
@@ -10224,10 +10224,10 @@ tar@^4, tar@^4.4.3:
     safe-buffer "^5.1.2"
     yallist "^3.0.2"
 
-tedious@^2.6.4:
-  version "2.6.4"
-  resolved "https://registry.yarnpkg.com/tedious/-/tedious-2.6.4.tgz#b3dee882458fbed8e7c8778156344f049dda3f38"
-  integrity sha512-upFZB4QahZydPIV2VK3H/bz8Fsq5FSjqbxDbhhp1c/66ZJB1qCk5p1cXi2p/VUOgAYbmAzVObTg5kaVvmeyN+Q==
+tedious@^2.7.1:
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/tedious/-/tedious-2.7.1.tgz#5308edebdd33767ca67b36fc71b2ab9c54675278"
+  integrity sha512-u3ciATGm5byim91b3+c3MVTvY1zKjDmhUhnBQZXKymT2Vb9w322dziPQY6MhBNyBEcNONPsAMR+7/Uub7NYABQ==
   dependencies:
     babel-runtime "^6.26.0"
     big-number "0.3.1"
@@ -10962,9 +10962,9 @@ vue@^2.5.17:
   integrity sha512-mFbcWoDIJi0w0Za4emyLiW72Jae0yjANHbCVquMKijcavBGypqlF7zHRgMa5k4sesdv7hv2rB4JPdZfR+TPfhQ==
 
 vuetify@^1.2.5:
-  version "1.2.10"
-  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.2.10.tgz#e44c5bc167bd68fb12cf15c3434473313aa183b0"
-  integrity sha512-AUSWn7Qzx7gkxK76ohSt4RMF5sdMMjUOH1bER3dG/WPE9VpU/XmEkutMnWn12IgmR6VL5ymhlxGcZVwGqSUWAw==
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.3.0.tgz#7f30641ae906f88728dea21da689d02b0a297f41"
+  integrity sha512-DVdvjk/0zzldW4EXtccFLYZiJU56fiZLjF5hkiQNk8e/620IBmaNi7xrkpeVM++5n1uwy84bgZCy5wNSeT3aSQ==
 
 vuex@^3.0.1:
   version "3.0.1"
