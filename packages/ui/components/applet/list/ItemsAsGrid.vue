@@ -356,13 +356,11 @@ export default {
 
         const { sortBy, descending, page, rowsPerPage } = this.pagination;
         console.log(`COMP: Pagination params >>> sortBy: ${sortBy}, descending: ${descending}, page: ${page}, rowsPerPage: ${rowsPerPage}`);
-
         console.log(`COMP: ...Base Data URL: ${this.$applet.baseDataUrl(this.applet)}`);
-        // http://localhost/api/Customers?filter[where][LName][like]=%25Ab%25&filter[order]=LName&filter[order]=ID&filter[limit]=5&filter[skip]=0
-        // NOTE: It's actually a good idea to include ID as last sort order column to make the ordering predictable when, for example, customers have the same last name
-        const dataSortQryStr = `filter[order]=${sortBy}${descending ? '%20DESC' : '%20ASC'}&filter[order]=ID`;
-        const dataLimitQryStr = `filter[limit]=${rowsPerPage}&filter[skip]=${(page - 1) * rowsPerPage}`;
-        const dataSortLimitQryStr = `${dataSortQryStr}&${dataLimitQryStr}`;
+
+        const dataSortingQryStr = this.$api.dataSortingQryStr(sortBy, descending);
+        const dataPagingQryStr = this.$api.dataPagingQryStr(page, rowsPerPage);
+        const dataSortingAndPagingQryStr = `${dataSortingQryStr}&${dataPagingQryStr}`;
 
         // TODO: If typeof filterExpression === 'array' then map to multiple 'filter[where]...' clauses
         let filterExpression = this.appletView.filterExpression;
@@ -380,7 +378,7 @@ export default {
         const baseDataUrl = this.$applet.baseDataUrl(this.applet);
         const baseCountUrl = `${baseDataUrl}/count`;
         const includeQryStr = (this.appletView.includeExpression && `&${this.appletView.includeExpression}`) || '';
-        const dataUrl = `${baseDataUrl}?${dataSearchQryStr}${dataSortLimitQryStr}${includeQryStr}`;
+        const dataUrl = `${baseDataUrl}?${dataSearchQryStr}${dataSortingAndPagingQryStr}${includeQryStr}`;
         const countUrl = `${baseCountUrl}${countSearchQryStr}`;
 
         console.time(`AXIOS: Getting ${this.modelPluralName}...`);
