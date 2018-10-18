@@ -364,21 +364,21 @@ export default {
 
         // TODO: If typeof filterExpression === 'array' then map to multiple 'filter[where]...' clauses
         let filterExpression = this.appletView.filterExpression;
-        let dataSearchQryStr = `filter[where]${filterExpression}&`;
+        let dataSearchQryStr = `filter[where]${filterExpression}`;
         let countSearchQryStr = `?[where]${filterExpression}`;
         let searchColKey = this.appletViewSearchKeys[0];
 
         // TODO: Strip unsafe characters from search before constructing qry str
         if (this.search) {
           console.log(`COMP: Searching in column "${searchColKey}"`);
-          dataSearchQryStr = `filter[where]${filterExpression}&filter[where][${searchColKey}][like]=%25${this.search}%25&`;
+          dataSearchQryStr = `filter[where]${filterExpression}&filter[where][${searchColKey}][like]=%25${this.search}%25`;
           countSearchQryStr = `?[where][and][0]${filterExpression}&[where][and][1][${searchColKey}][like]=%25${this.search}%25`;
         }
 
         const baseDataUrl = this.$applet.baseDataUrl(this.applet);
         const baseCountUrl = `${baseDataUrl}/count`;
-        const includeQryStr = (this.appletView.includeExpression && `&${this.appletView.includeExpression}`) || '';
-        const dataUrl = `${baseDataUrl}?${dataSearchQryStr}${dataSortingAndPagingQryStr}${includeQryStr}`;
+        const includeQryStr = (this.appletView.includeExpression && `${this.appletView.includeExpression}`) || '';
+        const dataUrl = `${baseDataUrl}?${_.filter([dataSearchQryStr, dataSortingAndPagingQryStr, includeQryStr]).join('&')}`;
         const countUrl = `${baseCountUrl}${countSearchQryStr}`;
 
         console.time(`AXIOS: Getting ${this.modelPluralName}...`);
