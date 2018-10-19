@@ -47,6 +47,15 @@ export default (ctx, inject) => {
           return _.startCase(_.replace(str, '.', ''));
         },
 
+        /**
+         * Given an array of strings, some of which may be null or empty, return an ampersand-delimited URL query string from the "truthy" strings
+         * @param {array} args Array of strings. Null and empty elements are skipped
+         * @returns String of concatenated args, separated by ampersand (&)
+         */
+        joinQryStrArgs(args) {
+          return _.filter(args).join('&');
+        },
+
         snackbarColorFromMode(mode) {
           switch (mode) {
             case 'success':

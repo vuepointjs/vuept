@@ -294,6 +294,28 @@ export default (ctx, inject) => {
         },
 
         /**
+         * Given a model key return the property key for the "title" to use for a pinned instance of the model (an "item"), or the
+         * primary key property key on error
+         * @param {string} key Model key
+         */
+        pinnedItemTitleKey(key) {
+          let model = key && this.byKey(key);
+          if (!model) return this.primaryKeyPropertyKey;
+
+          // Key was explicitly defined in config data? Use it
+          if (model.pinnedItemTitleKey) return model.pinnedItemTitleKey;
+
+          // Otherwise, try getting the first searchable string property key
+          const excludedProps = [this.recycledFlagPropertyKey, ...ctx.store.state.app.modelPropKeys.defaultNonSearchable];
+          const searchableModelPropKeys = this.requiredStringPropertyKeys(model, excludedProps);
+
+          if (searchableModelPropKeys && searchableModelPropKeys[0]) return searchableModelPropKeys[0];
+
+          // If all else fails we need to provide a valid property key, so use PK
+          return this.primaryKeyPropertyKey;
+        },
+
+        /**
          * Given a model key return true if the model is dependent on a parent model as indicated by a foreign key (FK), false otherwise or on error
          * @param {string} key Model key
          */

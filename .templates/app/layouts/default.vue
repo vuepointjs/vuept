@@ -14,6 +14,8 @@
       <applets-nav-panel v-if="drawer" :applets="applets" @active-applet-click="drawer = false" />
     </v-navigation-drawer>
 
+    <applets-nav-panel :applets="applets" dense horizontal />
+
     <v-content class="vp-layout-content">
       <nuxt />
     </v-content>
@@ -105,6 +107,13 @@ export default {
 <style lang="stylus">
 // .vp-layout-content > div
 // background-color: white
+
+// When main content has the optional applets nav panel ("tabs" look) rendered above it, we need
+// to adjust the padding of the main content accordingly
+.vp-applets-nav-panel-horizontal + .vp-layout-content,
+div.application--wrap > .vp-applets-nav-panel-horizontal + main.v-content
+  padding: 0 !important
+
 .vp-app-footer-text
   font-size: 12px
 </style>
