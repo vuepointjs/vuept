@@ -46,6 +46,7 @@
               "longName": "Shared Contacts",
               "primaryModel": "party",
               "hasPinnableModel": true,
+              "pinnedItemTitleKey": "LName",
               "views": [
                 {
                   "name": "All Items",

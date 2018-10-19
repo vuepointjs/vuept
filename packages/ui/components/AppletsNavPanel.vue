@@ -1,13 +1,19 @@
 <template>
-  <div class="vp-applets-nav-panel">
+  <div class="vp-applets-nav-panel" :class="{ 'vp-applets-nav-panel-horizontal': horizontal }">
     <v-card flat>
-      <v-card-title primary-title class="pt-0 pb-1 grey--text vp-applets-nav-heading">
+      <v-card-title v-if="!horizontal" primary-title class="pt-0 pb-1 grey--text vp-applets-nav-heading">
         <div>
           <h3 v-if="!dense" class="headline">Applets</h3>
         </div>
       </v-card-title>
       <v-container fluid class="vp-applet-nav-items-container">
         <v-layout row wrap justify-start>
+          <template v-if="horizontal && !!pinnedItemTitle">
+            <div class="vp-applets-nav-pinned-title subheading text-truncate">
+              {{ pinnedItemTitle }}
+            </div>
+            <v-divider vertical></v-divider>
+          </template>
 
           <div v-for="applet in applets" class="vp-applet-nav-item" :class="{'vp-applet-nav-item-dense': dense}" :key="applet.key">
             <v-tooltip max-width="80" open-delay="50" close-delay="50" v-bind="tooltipAttrsFromIndex(applet.ord)"
@@ -47,6 +53,11 @@ export default {
       type: Boolean,
       required: false,
       default: false
+    },
+    horizontal: {
+      type: Boolean,
+      required: false,
+      default: false
     }
   },
 
@@ -83,6 +94,16 @@ export default {
         .value();
 
       return items;
+    },
+
+    pinnedItemTitle() {
+      return this.$store.state.ui.pinnedItem.title;
+    },
+
+    shouldMountKeybindings() {
+      // In horizontal ("tabs") arrangement we assume we aren't in a menu and therefore should *not* mount keybindings
+      // because they are (for now) only intended for use within the "mode" of an open menu
+      return !this.horizontal;
     }
   },
 
@@ -93,6 +114,8 @@ export default {
 
     mountKeybindings() {
       let vm = this;
+
+      if (!this.shouldMountKeybindings) return;
 
       // Briefly show applet label when a help key is pressed
       this.$mousetrap.bind(['f1', '?'], (evt, combo) => {
@@ -118,6 +141,8 @@ export default {
     },
 
     unmountKeybindings() {
+      if (!this.shouldMountKeybindings) return;
+
       this.$mousetrap.unbind(['f1', '?']);
       this.$mousetrap.unbind(this.appletKeybindings);
     },
@@ -180,4 +205,23 @@ export default {
 
 .vp-applet-tooltip-nudge-up
   margin-top: -12px
+
+.vp-applets-nav-panel-horizontal
+  margin-bottom: -17px
+  margin-left: -12px
+  padding-top: 38px
+
+  & .v-card
+    background-color: aliceblue !important
+
+  & .vp-applet-nav-item
+    margin-bottom: 12px
+
+  & .vp-applet-icon-container
+    width: 34px
+    height: 48px
+
+.vp-applets-nav-pinned-title
+  margin-top: 14px
+  width: 100px
 </style>

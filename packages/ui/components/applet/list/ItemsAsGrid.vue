@@ -12,7 +12,7 @@
           </v-btn>
 
           <v-text-field :class="['vp-items-search-input', {'vp-items-search-input-open': searchInputOpen}]" single-line
-            hide-details clearable v-model="search" label="Search" ref="searchInput"></v-text-field>
+            hide-details clearable v-model="searchText" label="Search" ref="searchInput"></v-text-field>
 
           <template v-if="appletView.key != $applet.recycleBinViewKey">
             <!--
@@ -145,7 +145,7 @@ export default {
     rows: [],
     columns: [],
     selected: [],
-    search: '',
+    searchText: '',
     searchInputOpen: false,
     totalItems: 0,
     rowsOptions: [5, 10, 25, 100, 500],
@@ -197,7 +197,7 @@ export default {
       deep: true
     },
 
-    async search() {
+    async searchText() {
       if (!this.inViewChange) await this.debounceSearch();
     },
 
@@ -325,7 +325,7 @@ export default {
       this.searchInputOpen = !this.searchInputOpen;
 
       if (!this.searchInputOpen) {
-        this.search = '';
+        this.searchText = '';
       } else {
         this.focusRef('searchInput');
       }
@@ -362,23 +362,19 @@ export default {
         const dataPagingQryStr = this.$api.dataPagingQryStr(page, rowsPerPage);
         const dataSortingAndPagingQryStr = `${dataSortingQryStr}&${dataPagingQryStr}`;
 
-        // TODO: If typeof filterExpression === 'array' then map to multiple 'filter[where]...' clauses
         let filterExpression = this.appletView.filterExpression;
-        let dataSearchQryStr = `filter[where]${filterExpression}`;
-        let countSearchQryStr = `?[where]${filterExpression}`;
         let searchColKey = this.appletViewSearchKeys[0];
+        let dataSearchQryStr = this.$api.dataFilteringQryStr([filterExpression], { keys: [searchColKey], text: this.searchText });
 
-        // TODO: Strip unsafe characters from search before constructing qry str
-        if (this.search) {
-          console.log(`COMP: Searching in column "${searchColKey}"`);
-          dataSearchQryStr = `filter[where]${filterExpression}&filter[where][${searchColKey}][like]=%25${this.search}%25`;
-          countSearchQryStr = `?[where][and][0]${filterExpression}&[where][and][1][${searchColKey}][like]=%25${this.search}%25`;
+        let countSearchQryStr = `?[where]${filterExpression}`;
+        if (this.searchText) {
+          countSearchQryStr = `?[where][and][0]${filterExpression}&[where][and][1][${searchColKey}][like]=%25${this.searchText}%25`;
         }
 
         const baseDataUrl = this.$applet.baseDataUrl(this.applet);
         const baseCountUrl = `${baseDataUrl}/count`;
         const includeQryStr = (this.appletView.includeExpression && `${this.appletView.includeExpression}`) || '';
-        const dataUrl = `${baseDataUrl}?${_.filter([dataSearchQryStr, dataSortingAndPagingQryStr, includeQryStr]).join('&')}`;
+        const dataUrl = `${baseDataUrl}?${this.$helpers.joinQryStrArgs([dataSearchQryStr, dataSortingAndPagingQryStr, includeQryStr])}`;
         const countUrl = `${baseCountUrl}${countSearchQryStr}`;
 
         console.time(`AXIOS: Getting ${this.modelPluralName}...`);
@@ -446,7 +442,7 @@ export default {
 
     clearSearch() {
       this.searchInputOpen = false;
-      this.search = '';
+      this.searchText = '';
     },
 
     rowClick(row) {
@@ -497,7 +493,7 @@ export default {
     }, 200),
 
     debounceSearch: _.debounce(async function() {
-      console.log('COMP: Search input changed >>>', this.search);
+      console.log('COMP: Search input changed >>>', this.searchText);
       await this.getRows();
       this.pagination.page = 1;
     }, 500),
@@ -645,11 +641,15 @@ export default {
 
     onTogglePin(row) {
       // TODO: Hide details of pinnedItem object structure inside mutation and add "clearPinnedItem" mutation
-      let newPinnedItem = { key: '', model: { key: '' } };
+      let newPinnedItem = { key: '', title: '', model: { key: '' } };
       let newState = this.hasPinnedItem ? 'unpin' : 'pin';
 
       if (newState === 'pin') {
-        newPinnedItem = { key: row[this.$model.primaryKeyPropertyKey], model: { key: this.modelKey } };
+        newPinnedItem = {
+          key: row[this.$model.primaryKeyPropertyKey],
+          title: row[this.$model.pinnedItemTitleKey(this.modelKey)],
+          model: { key: this.modelKey }
+        };
       }
 
       // Changes to the pinned item have the side-effect of changing the selected view, which in turn
