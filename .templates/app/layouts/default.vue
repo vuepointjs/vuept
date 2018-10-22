@@ -14,7 +14,9 @@
       <applets-nav-panel v-if="drawer" :applets="applets" @active-applet-click="drawer = false" />
     </v-navigation-drawer>
 
+    <!--
     <applets-nav-panel :applets="applets" dense horizontal />
+    -->
 
     <v-content class="vp-layout-content">
       <nuxt />
