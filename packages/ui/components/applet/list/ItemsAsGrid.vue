@@ -15,10 +15,6 @@
             hide-details clearable v-model="searchText" label="Search" ref="searchInput"></v-text-field>
 
           <template v-if="appletView.key != $applet.recycleBinViewKey">
-            <!--
-              Consider using this version once we have a working "pinning" implementation with foreign keys, etc.
-              <v-btn icon @click="onNew" :disabled="!applet.hasPinnableModel && !pinnedItem.key">
-            -->
             <v-btn icon @click="onNew">
               <v-tooltip bottom>
                 <v-icon color="primary" slot="activator">add</v-icon>
@@ -587,7 +583,7 @@ export default {
           let postObj = { ...this.detail.values, User: this.$auth.userName };
 
           let fkPropKey = this.$model.firstRelationFK(this.model);
-          if (fkPropKey) postObj[fkPropKey] = this.pinnedItem.key;
+          if (fkPropKey) postObj[fkPropKey] = this.pinnedItem.keyValue;
 
           response = await this.$axios.post(url, postObj);
 
@@ -631,7 +627,7 @@ export default {
 
         // Housekeeping: Make sure recycled item isn't selected or pinned, and refresh grid data
         this.clearAllSelections();
-        if (row[this.$model.primaryKeyPropertyKey] === this.pinnedItem.key) this.onTogglePin(row);
+        if (row[this.$model.primaryKeyPropertyKey] === this.pinnedItem.keyValue) this.onTogglePin(row);
         await this.getRows();
       } catch (e) {
         console.log(`AXIOS: ${this.modelPluralName} patch error`, e);
@@ -641,12 +637,12 @@ export default {
 
     onTogglePin(row) {
       // TODO: Hide details of pinnedItem object structure inside mutation and add "clearPinnedItem" mutation
-      let newPinnedItem = { key: '', title: '', model: { key: '' } };
+      let newPinnedItem = { keyValue: '', title: '', model: { key: '' } };
       let newState = this.hasPinnedItem ? 'unpin' : 'pin';
 
       if (newState === 'pin') {
         newPinnedItem = {
-          key: row[this.$model.primaryKeyPropertyKey],
+          keyValue: row[this.$model.primaryKeyPropertyKey],
           title: row[this.$model.pinnedItemTitleKey(this.modelKey)],
           model: { key: this.modelKey }
         };
