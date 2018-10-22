@@ -44,7 +44,7 @@ export const state = () => ({
     },
     snackbarTimeout: 3000,
     pinnedItem: {
-      key: '', // *Not* the property key (aka column name) but the actual key value, typically a GUID or int surrogate key value
+      keyValue: '', // *Not* the property key (aka column name) but the actual key *value*, typically a GUID or int surrogate key value
       title: '',
       model: {
         key: ''

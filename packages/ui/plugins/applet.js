@@ -148,7 +148,7 @@ export default (ctx, inject) => {
             ord: 1,
             inheritsFrom: 'ALL',
             // TODO: Filter expression must include [Archived]=0 in addition to PK/FK
-            filterExpression: `[${primaryOrFkPropKey}]=${ctx.store.state.ui.pinnedItem.key}`
+            filterExpression: `[${primaryOrFkPropKey}]=${ctx.store.state.ui.pinnedItem.keyValue}`
           };
 
           return _.merge({}, this.rawViewFromKey(applet, 'ALL'), rawPinnedViewDefinition);

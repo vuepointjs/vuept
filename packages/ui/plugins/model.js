@@ -104,7 +104,7 @@ export default (ctx, inject) => {
 
         /**
          * Given a model object return the singular form of the model name
-         * @param {*} model Model object
+         * @param {object} model Model object
          */
         singularName(model) {
           return model ? model.name : '';
@@ -112,7 +112,7 @@ export default (ctx, inject) => {
 
         /**
          * Given a model object return the plural form of the model name
-         * @param {*} model Model object
+         * @param {object} model Model object
          */
         pluralName(model) {
           return model ? model.plural || `${model.name}s` : '';
@@ -270,7 +270,7 @@ export default (ctx, inject) => {
 
         /**
          * Given a model object return the name of the first related model for which a foreign key is defined, or an empty string if N/A or error
-         * @param {*} model Model object
+         * @param {object} model Model object
          */
         firstRelationName(model) {
           return (model && model._vp && model._vp.foreignKeys && model._vp.foreignKeys[Object.keys(model._vp.foreignKeys)[0]].referencesTable) || '';
@@ -278,7 +278,7 @@ export default (ctx, inject) => {
 
         /**
          * Given a model object return the foreign key property key of the first related model, or an empty string if N/A or error
-         * @param {*} model Model object
+         * @param {object} model Model object
          */
         firstRelationFK(model) {
           return (model && model._vp && model._vp.foreignKeys && Object.keys(model._vp.foreignKeys)[0]) || '';
@@ -290,7 +290,7 @@ export default (ctx, inject) => {
          */
         itemIsPinned(key) {
           let pinnedItem = ctx.store.state.ui.pinnedItem;
-          return !!(pinnedItem.key && typeof key != 'undefined' && key && pinnedItem.model.key === key);
+          return !!(pinnedItem.keyValue && typeof key != 'undefined' && key && pinnedItem.model.key === key);
         },
 
         /**
