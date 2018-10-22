@@ -11,8 +11,8 @@
             </v-tooltip>
           </v-btn>
 
-          <v-text-field :class="['vp-items-search-input', {'vp-items-search-input-open': searchInputOpen}]" single-line
-            hide-details clearable v-model="searchText" label="Search" ref="searchInput"></v-text-field>
+          <v-text-field :class="['vp-items-search-input', {'vp-items-search-input-open': searchInputOpen}]" @focusin="searchInputOpen = true"
+            single-line hide-details clearable v-model="searchText" label="Search" ref="searchInput"></v-text-field>
 
           <template v-if="appletView.key != $applet.recycleBinViewKey">
             <v-btn icon @click="onNew">
@@ -360,18 +360,15 @@ export default {
 
         let filterExpression = this.appletView.filterExpression;
         let searchColKey = this.appletViewSearchKeys[0];
-        let dataSearchQryStr = this.$api.dataFilteringQryStr([filterExpression], { keys: [searchColKey], text: this.searchText });
-
-        let countSearchQryStr = `?[where]${filterExpression}`;
-        if (this.searchText) {
-          countSearchQryStr = `?[where][and][0]${filterExpression}&[where][and][1][${searchColKey}][like]=%25${this.searchText}%25`;
-        }
+        let dataFilteringQryStr = this.$api.dataFilteringQryStr([filterExpression], { keys: [searchColKey], text: this.searchText });
+        let countFilteringQryStr = this.$api.countFilteringQryStr([filterExpression], { keys: [searchColKey], text: this.searchText });
 
         const baseDataUrl = this.$applet.baseDataUrl(this.applet);
-        const baseCountUrl = `${baseDataUrl}/count`;
         const includeQryStr = (this.appletView.includeExpression && `${this.appletView.includeExpression}`) || '';
-        const dataUrl = `${baseDataUrl}?${this.$helpers.joinQryStrArgs([dataSearchQryStr, dataSortingAndPagingQryStr, includeQryStr])}`;
-        const countUrl = `${baseCountUrl}${countSearchQryStr}`;
+        const dataUrl = `${baseDataUrl}?${this.$helpers.joinQryStrArgs([dataFilteringQryStr, dataSortingAndPagingQryStr, includeQryStr])}`;
+
+        const baseCountUrl = `${baseDataUrl}/count`;
+        const countUrl = `${baseCountUrl}${countFilteringQryStr}`;
 
         console.time(`AXIOS: Getting ${this.modelPluralName}...`);
         let dataResponse = await this.$axios.get(dataUrl);

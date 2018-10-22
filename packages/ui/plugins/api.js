@@ -84,7 +84,7 @@ export default (ctx, inject) => {
          * Given an array of filterExpressions and a search spec object, return the LoopBack query string fragment for filtering/searching data during retrieval
          * @param {array} filterExpressions Array of LoopBack [where] clause expressions to include in resulting query string
          * @param {object} [search={}] Optional object with search spec of the form: { keys: [], text: "" }, where keys are the property keys to search for the given text
-         * @returns LoopBack query string fragment for filtering/searching
+         * @returns LoopBack query string fragment for filtering/searching a data endpoint
          */
         dataFilteringQryStr(filterExpressions, search) {
           if (!filterExpressions || !Array.isArray(filterExpressions) || filterExpressions.length < 1 || !filterExpressions[0]) return '';
@@ -96,7 +96,28 @@ export default (ctx, inject) => {
           if (search && search.keys && search.keys.length > 0 && search.text) {
             let searchColKey = search.keys[0];
             res = `filter[where]${filterExpressions[0]}&filter[where][${searchColKey}][like]=%25${search.text}%25`;
-            console.log(`PI: $api built qry str to search in column "${searchColKey}"`);
+            console.log(`PI: $api built qry str to search data in column "${searchColKey}"`);
+          }
+
+          return res;
+        },
+
+        /**
+         * Given an array of filterExpressions and a search spec object, return the LoopBack query string fragment for filtering against a count endpoint
+         * @param {array} filterExpressions Array of LoopBack [where] clause expressions to include in resulting query string
+         * @param {object} [search={}] Optional object with search spec of the form: { keys: [], text: "" }, where keys are the property keys to search for the given text
+         * @returns LoopBack query string fragment for filtering a count endpoint
+         */
+        countFilteringQryStr(filterExpressions, search) {
+          if (!filterExpressions || !Array.isArray(filterExpressions) || filterExpressions.length < 1 || !filterExpressions[0]) return '';
+
+          // TODO: map/reduce array of filterExpressions to multiple '[where]...' clauses
+          let res = `?[where]${filterExpressions[0]}`;
+
+          // TODO: Strip unsafe characters from search before constructing qry str
+          if (search && search.keys && search.keys.length > 0 && search.text) {
+            let searchColKey = search.keys[0];
+            res = `?[where][and][0]${filterExpressions[0]}&[where][and][1][${searchColKey}][like]=%25${search.text}%25`;
           }
 
           return res;
