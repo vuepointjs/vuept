@@ -54,7 +54,9 @@
                   "ord": 1,
                   "type": "List",
                   "subType": "Grid",
-                  "filterExpression": "[Archived]=0",
+                  "filterExpressions": [
+                    "[Archived]=0"
+                  ],
                   "includeExpression": null,
                   "properties": [
                     {
@@ -80,7 +82,9 @@
                   "key": "RB",
                   "ord": 2,
                   "inheritsFrom": "ALL",
-                  "filterExpression": "[Archived]=1"
+                  "filterExpressions": [
+                    "[Archived]=1"
+                  ]
                 }
               ]
             },
@@ -99,7 +103,9 @@
                   "ord": 1,
                   "type": "List",
                   "subType": "Grid",
-                  "filterExpression": "[Archived]=0",
+                  "filterExpressions": [
+                    "[Archived]=0"
+                  ],
                   "includeExpression": null,
                   "properties": [
                     {
@@ -120,7 +126,9 @@
                   "key": "RB",
                   "ord": 2,
                   "inheritsFrom": "ALL",
-                  "filterExpression": "[Archived]=1"
+                  "filterExpressions": [
+                    "[Archived]=1"
+                  ]
                 }
               ]
             },
@@ -138,7 +146,9 @@
                   "ord": 1,
                   "type": "List",
                   "subType": "Grid",
-                  "filterExpression": "[Archived]=0",
+                  "filterExpressions": [
+                    "[Archived]=0"
+                  ],
                   "includeExpression": "filter[include]=Party",
                   "properties": [
                     {
@@ -163,14 +173,18 @@
                   "key": "INA",
                   "ord": 2,
                   "inheritsFrom": "ALL",
-                  "filterExpression": null
+                  "filterExpressions": [
+                    "[Archived]=0"
+                  ]
                 },
                 {
                   "name": "Recycle Bin",
                   "key": "RB",
                   "ord": 3,
                   "inheritsFrom": "ALL",
-                  "filterExpression": "[Archived]=1"
+                  "filterExpressions": [
+                    "[Archived]=1"
+                  ]
                 }
               ]
             }

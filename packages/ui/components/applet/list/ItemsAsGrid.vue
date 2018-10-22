@@ -358,10 +358,10 @@ export default {
         const dataPagingQryStr = this.$api.dataPagingQryStr(page, rowsPerPage);
         const dataSortingAndPagingQryStr = `${dataSortingQryStr}&${dataPagingQryStr}`;
 
-        let filterExpression = this.appletView.filterExpression;
+        let filterExpressions = this.appletView.filterExpressions;
         let searchColKey = this.appletViewSearchKeys[0];
-        let dataFilteringQryStr = this.$api.dataFilteringQryStr([filterExpression], { keys: [searchColKey], text: this.searchText });
-        let countFilteringQryStr = this.$api.countFilteringQryStr([filterExpression], { keys: [searchColKey], text: this.searchText });
+        let dataFilteringQryStr = this.$api.dataFilteringQryStr(filterExpressions, { keys: [searchColKey], text: this.searchText });
+        let countFilteringQryStr = this.$api.countFilteringQryStr(filterExpressions, { keys: [searchColKey], text: this.searchText });
 
         const baseDataUrl = this.$applet.baseDataUrl(this.applet);
         const includeQryStr = (this.appletView.includeExpression && `${this.appletView.includeExpression}`) || '';

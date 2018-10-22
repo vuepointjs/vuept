@@ -52,9 +52,9 @@ export default (ctx, inject) => {
         dataSortingQryStr(sortBy, descending) {
           // It's actually a good idea to include ID (primary key) as the last sort order column to make the ordering predictable when, for example,
           // customers have the same last name
-          let primaryKeyFilterExpression = `filter[order]=${ctx.app.$model.primaryKeyPropertyKey}`;
-          if (!sortBy) return primaryKeyFilterExpression; // Defensively respond to any problem with sortBy
-          return `filter[order]=${sortBy}${descending ? '%20DESC' : '%20ASC'}&${primaryKeyFilterExpression}`;
+          let primaryKeyOrderExpression = `filter[order]=${ctx.app.$model.primaryKeyPropertyKey}`;
+          if (!sortBy) return primaryKeyOrderExpression; // Defensively respond to any problem with sortBy
+          return `filter[order]=${sortBy}${descending ? '%20DESC' : '%20ASC'}&${primaryKeyOrderExpression}`;
         },
 
         /**

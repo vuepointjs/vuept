@@ -107,7 +107,7 @@ export default (ctx, inject) => {
             ord: 1,
             type: 'List',
             subType: 'Grid',
-            filterExpression: `[${recycledPropKey}]=0`,
+            filterExpressions: [`[${recycledPropKey}]=0`],
             includeExpression: null,
             properties: []
           };
@@ -141,14 +141,16 @@ export default (ctx, inject) => {
          * @param {boolean} forParent True if the pinned view is for a parent (primary model), false for a child that is dependent on (has FK ref to) a parent
          */
         pinnedView(applet, forParent) {
+          let recycledPropKey = ctx.app.$model.recycledFlagPropertyKey;
+          if (!applet || !recycledPropKey) return {};
+
           const primaryOrFkPropKey = forParent ? ctx.app.$model.primaryKeyPropertyKey : ctx.app.$model.firstRelationFK(this.model(applet));
           let rawPinnedViewDefinition = {
             name: 'Pinned',
             key: 'PINNED',
             ord: 1,
             inheritsFrom: 'ALL',
-            // TODO: Filter expression must include [Archived]=0 in addition to PK/FK
-            filterExpression: `[${primaryOrFkPropKey}]=${ctx.store.state.ui.pinnedItem.keyValue}`
+            filterExpressions: [`[${primaryOrFkPropKey}]=${ctx.store.state.ui.pinnedItem.keyValue}`, `[${recycledPropKey}]=0`]
           };
 
           return _.merge({}, this.rawViewFromKey(applet, 'ALL'), rawPinnedViewDefinition);
