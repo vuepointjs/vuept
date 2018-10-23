@@ -38,10 +38,12 @@
     "luxon": "^1.4.2",
     "numeral": "^2.0.6",
     "nuxt": "^1.4.2",
+    "store": "^2.0.12",
     "vue-chartjs": "^3.4.0",
     "vue-clipboard2": "^0.2.1",
     "vue-markdown": "^2.2.4",
     "vue-mousetrap": "^1.0.1",
+    "vue-warehouse": "^1.0.1",
     "vuetify": "^1.2.5"
   },
   "devDependencies": {
