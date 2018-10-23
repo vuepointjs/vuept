@@ -14,9 +14,7 @@
       <applets-nav-panel v-if="drawer" :applets="applets" @active-applet-click="drawer = false" />
     </v-navigation-drawer>
 
-    <!--
-    <applets-nav-panel :applets="applets" dense horizontal />
-    -->
+    <applets-nav-panel v-if="globalNavStyle === 'dock-applets-always'" :applets="applets" dense horizontal />
 
     <v-content class="vp-layout-content">
       <nuxt />
@@ -55,6 +53,8 @@ export default {
 
   created() {
     console.log('LAYOUT: Created "default" layout');
+    this.$local.defaults({ globalNavStyle: 'launcher-only' });
+    // this.$local.set('globalNavStyle', 'dock-applets-always');
   },
 
   mounted() {
@@ -74,6 +74,10 @@ export default {
   },
 
   computed: {
+    globalNavStyle() {
+      return this.$local.get('globalNavStyle');
+    },
+
     applets() {
       let items = _(this.$store.state.app.applets)
         // Sort by ordinal (ord) ascending
