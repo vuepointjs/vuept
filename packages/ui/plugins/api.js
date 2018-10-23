@@ -87,16 +87,16 @@ export default (ctx, inject) => {
          * @returns LoopBack query string fragment for filtering/searching a data endpoint
          */
         dataFilteringQryStr(filterExpressions, search) {
-          if (!filterExpressions || !Array.isArray(filterExpressions) || filterExpressions.length < 1 || !filterExpressions[0]) return '';
+          let res = '';
 
-          // TODO: map/reduce array of filterExpressions to multiple 'filter[where]...' clauses
-          let res = `filter[where]${filterExpressions[0]}`;
+          if (filterExpressions && Array.isArray(filterExpressions) && filterExpressions.length > 0 && filterExpressions[0]) {
+            res = _.reduce(filterExpressions, (accum, val) => `${accum}${accum ? '&' : ''}filter[where]${val}`, '');
+          }
 
           // TODO: Strip unsafe characters from search before constructing qry str
           if (search && search.keys && search.keys.length > 0 && search.text) {
-            let searchColKey = search.keys[0];
-            res = `filter[where]${filterExpressions[0]}&filter[where][${searchColKey}][like]=%25${search.text}%25`;
-            console.log(`PI: $api built qry str to search data in column "${searchColKey}"`);
+            res += _.reduce(search.keys, (accum, val) => `${accum}${res || accum ? '&' : ''}filter[where][${val}][like]=%25${search.text}%25`, '');
+            // console.log(`PI: $api built qry str to search data in column(s) "${search.keys}"`);
           }
 
           return res;
@@ -109,16 +109,20 @@ export default (ctx, inject) => {
          * @returns LoopBack query string fragment for filtering a count endpoint
          */
         countFilteringQryStr(filterExpressions, search) {
-          if (!filterExpressions || !Array.isArray(filterExpressions) || filterExpressions.length < 1 || !filterExpressions[0]) return '';
+          let res = '';
+          let whereIndex = 0;
 
-          // TODO: map/reduce array of filterExpressions to multiple '[where]...' clauses
-          let res = `?[where]${filterExpressions[0]}`;
+          if (filterExpressions && Array.isArray(filterExpressions) && filterExpressions.length > 0 && filterExpressions[0]) {
+            res = _.reduce(filterExpressions, (accum, val) => `${accum}${accum ? '&' : ''}[where][and][${whereIndex++}]${val}`, '');
+          }
 
           // TODO: Strip unsafe characters from search before constructing qry str
           if (search && search.keys && search.keys.length > 0 && search.text) {
-            let searchColKey = search.keys[0];
-            res = `?[where][and][0]${filterExpressions[0]}&[where][and][1][${searchColKey}][like]=%25${search.text}%25`;
+            res += _.reduce(search.keys, (accum, val) => `${accum}${res || accum ? '&' : ''}[where][and][${whereIndex++}][${val}][like]=%25${search.text}%25`, '');
           }
+
+          // In case we ended up with a single "where" clause, remove the unnecessary "[and][0]"
+          if (whereIndex === 1) res = res.replace('[and][0]', '');
 
           return res;
         }

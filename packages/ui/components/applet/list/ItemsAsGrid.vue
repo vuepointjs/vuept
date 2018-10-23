@@ -368,7 +368,7 @@ export default {
         const dataUrl = `${baseDataUrl}?${this.$helpers.joinQryStrArgs([dataFilteringQryStr, dataSortingAndPagingQryStr, includeQryStr])}`;
 
         const baseCountUrl = `${baseDataUrl}/count`;
-        const countUrl = `${baseCountUrl}${countFilteringQryStr}`;
+        const countUrl = `${baseCountUrl}?${countFilteringQryStr}`;
 
         console.time(`AXIOS: Getting ${this.modelPluralName}...`);
         let dataResponse = await this.$axios.get(dataUrl);
