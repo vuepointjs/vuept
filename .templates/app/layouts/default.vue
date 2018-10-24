@@ -8,10 +8,16 @@
         <v-btn flat icon @click="drawer = !drawer">
           <v-icon>apps</v-icon>
         </v-btn>
+        <div class="vp-o365-link-container text-xs-right">
+          <span class="vp-o365-link subheading red--text text--darken-3" @click="onO365Click">
+            <span class="vp-o365-link-text">Office 365</span>
+            <v-icon size="20" color="red darken-3">arrow_right_alt</v-icon>
+          </span>
+        </div>
       </v-card>
 
       <!-- Panel must be destroyed (v-if) when drawer closed so that any tooltips are cleared too -->
-      <applets-nav-panel v-if="drawer" :applets="applets" @active-applet-click="drawer = false" />
+      <applets-nav-panel v-if="drawer" :applets="applets" @active-applet-click="drawer = false" @action-btn-click="drawer = false" />
     </v-navigation-drawer>
 
     <applets-nav-panel v-if="globalNavStyle === 'dock-applets-always'" :applets="applets" dense horizontal />
@@ -106,6 +112,12 @@ export default {
     snackbar() {
       return this.$store.state.ui.snackbar;
     }
+  },
+
+  methods: {
+    onO365Click() {
+      window.open('https://www.office.com/?auth=2&home=1&from=ShellLogo', '_blank');
+    }
   }
 };
 </script>
@@ -113,6 +125,17 @@ export default {
 <style lang="stylus">
 // .vp-layout-content > div
 // background-color: white
+.vp-o365-link-container
+  padding: 12px 22px 0 0
+
+.vp-o365-link
+  cursor: pointer
+
+.vp-o365-link-text
+  padding-right: 7px
+
+  &:hover
+    text-decoration: underline
 
 // When main content has the optional applets nav panel ("tabs" look) rendered above it, we need
 // to adjust the padding of the main content accordingly
