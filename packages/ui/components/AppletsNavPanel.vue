@@ -1,15 +1,42 @@
 <template>
   <div class="vp-applets-nav-panel" :class="{ 'vp-applets-nav-panel-horizontal': horizontal }">
     <v-card flat>
-      <v-card-title v-if="!horizontal" primary-title class="pt-0 pb-1 grey--text vp-applets-nav-heading">
-        <div>
-          <h3 v-if="!dense" class="headline">Applets</h3>
-        </div>
-      </v-card-title>
+      <template v-if="!horizontal">
+        <template v-if="pinnedItemTitle">
+          <v-card-title primary-title class="pt-0 pb-1 grey--text vp-applets-nav-heading">
+            <div>
+              <h3 v-if="!dense" class="headline">Pinned {{ pinnedItemAppletSingularName }}</h3>
+            </div>
+          </v-card-title>
+
+          <div class="vp-applets-nav-pinned-title title text-truncate">
+            <v-btn icon @click="onUnpin" class="grey lighten-2">
+              <v-tooltip bottom>
+                <v-icon color="secondary" slot="activator">person_pin_circle</v-icon>
+                <span>Unpin</span>
+              </v-tooltip>
+            </v-btn>
+            {{ pinnedItemTitle }}
+          </div>
+        </template>
+
+        <v-card-title primary-title class="pt-0 pb-1 grey--text vp-applets-nav-heading">
+          <div>
+            <h3 v-if="!dense" class="headline">Applets</h3>
+          </div>
+        </v-card-title>
+      </template>
+
       <v-container fluid class="vp-applet-nav-items-container">
         <v-layout row wrap justify-start>
-          <template v-if="horizontal && !!pinnedItemTitle">
+          <template v-if="horizontal && pinnedItemTitle">
             <div class="vp-applets-nav-pinned-title subheading text-truncate">
+              <v-btn icon @click="onUnpin" class="grey lighten-2">
+                <v-tooltip bottom>
+                  <v-icon color="secondary" slot="activator">person_pin_circle</v-icon>
+                  <span>Unpin</span>
+                </v-tooltip>
+              </v-btn>
               {{ pinnedItemTitle }}
             </div>
             <v-divider vertical></v-divider>
@@ -43,6 +70,8 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex';
+
 export default {
   props: {
     applets: {
@@ -87,7 +116,6 @@ export default {
     appletsCount() {
       return this.applets.length;
     },
-
     appletKeybindings() {
       let items = _(this.applets)
         .map(val => this.$applet.keybindingFromKey(val.key))
@@ -96,6 +124,9 @@ export default {
       return items;
     },
 
+    pinnedItemAppletSingularName() {
+      return this.$applet.singularName(this.$applet.fromPinnedItem());
+    },
     pinnedItemTitle() {
       return this.$store.state.ui.pinnedItem.title;
     },
@@ -151,7 +182,15 @@ export default {
       // We may wish to vary the attributes according to the applet index, but for now
       // all applets can use the same set of attributes
       return { bottom: true, 'content-class': 'vp-applet-tooltip vp-applet-tooltip-nudge-up' };
-    }
+    },
+
+    onUnpin() {
+      let newPinnedItem = { keyValue: '', title: '', model: { key: '' } };
+      this.setPinnedItem(newPinnedItem);
+      this.$emit('action-btn-click');
+    },
+
+    ...mapMutations(['setPinnedItem'])
   }
 };
 </script>
@@ -206,6 +245,10 @@ export default {
 .vp-applet-tooltip-nudge-up
   margin-top: -12px
 
+.vp-applets-nav-pinned-title
+  margin: 5px 5px 15px 30px
+  width: 280px
+
 .vp-applets-nav-panel-horizontal
   margin-bottom: -17px
   margin-left: -12px
@@ -221,7 +264,7 @@ export default {
     width: 34px
     height: 48px
 
-.vp-applets-nav-pinned-title
-  margin-top: 14px
-  width: 100px
+  & .vp-applets-nav-pinned-title
+    margin: 5px 0 0 -5px
+    width: 140px
 </style>

@@ -253,6 +253,8 @@ export default (ctx, inject) => {
          * @param {string} modelKey Model key
          */
         fromModelKey(modelKey) {
+          if (!modelKey) return {};
+
           let applet = ctx.store.state.app.applets.find(item => item.primaryModel === modelKey);
           return applet ? applet : {};
         },
@@ -287,6 +289,23 @@ export default (ctx, inject) => {
           let pluralModelName = ctx.app.$model.pluralName(this.model(applet));
 
           return `${apiProtocol}${apiHost}${apiPort ? `:${apiPort}` : ''}${basePath}/${pluralModelName}`;
+        },
+
+        /**
+         * Given an applet object return the configured applet singular name, if any, or as a fallback the model singular name.
+         * Return an empty string on failure
+         * @param {object} applet Applet object
+         */
+        singularName(applet) {
+          if (!applet) return '';
+          return applet.singularName || ctx.app.$model.singularName(this.model(applet));
+        },
+
+        /**
+         * Return the applet object for the currently pinned item, if any, or an empty object
+         */
+        fromPinnedItem() {
+          return this.fromModelKey(ctx.store.state.ui.pinnedItem.model.key);
         }
       }
     })

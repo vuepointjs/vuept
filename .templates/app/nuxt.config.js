@@ -120,7 +120,7 @@ module.exports = {
     [
       'vue-warehouse/nuxt',
       {
-        moduleName: 'local',
+        moduleName: 'local', // Reference warehouse wrapper for local storage as this.$local
         vuex: true,
         plugins: ['store/plugins/expire', 'store/plugins/defaults'],
         storages: ['store/storages/localStorage', 'store/storages/cookieStorage']

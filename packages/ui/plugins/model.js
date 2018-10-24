@@ -107,7 +107,7 @@ export default (ctx, inject) => {
          * @param {object} model Model object
          */
         singularName(model) {
-          return model ? model.name : '';
+          return model ? ctx.app.$helpers.toTitleCase(model.name) : '';
         },
 
         /**
@@ -302,8 +302,9 @@ export default (ctx, inject) => {
           let model = key && this.byKey(key);
           if (!model) return this.primaryKeyPropertyKey;
 
-          // Key was explicitly defined in config data? Use it
-          if (model.pinnedItemTitleKey) return model.pinnedItemTitleKey;
+          // Key was explicitly defined in applet config? Use it
+          let applet = ctx.app.$applet.fromModelKey(key);
+          if (applet.pinnedItemTitleKey) return applet.pinnedItemTitleKey;
 
           // Otherwise, try getting the first searchable string property key
           const excludedProps = [this.recycledFlagPropertyKey, ...ctx.store.state.app.modelPropKeys.defaultNonSearchable];

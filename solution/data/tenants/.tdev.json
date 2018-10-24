@@ -44,6 +44,7 @@
               "iconLabel": "Co",
               "ord": 1,
               "longName": "Shared Contacts",
+              "singularName": "Contact",
               "primaryModel": "party",
               "hasPinnableModel": true,
               "pinnedItemTitleKey": "LName",
