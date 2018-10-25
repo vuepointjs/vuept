@@ -1,7 +1,8 @@
 <template>
   <div class="vp-applets-nav-panel" :class="{ 'vp-applets-nav-panel-horizontal': horizontal }">
     <v-card flat>
-      <template v-if="!horizontal">
+      <!-- In vertical (launcher menu) orientation we group content under headings -->
+      <template v-if="vertical">
         <template v-if="pinnedItemTitle">
           <v-card-title primary-title class="pt-0 pb-1 grey--text vp-applets-nav-heading">
             <div>
@@ -9,6 +10,7 @@
             </div>
           </v-card-title>
 
+          <!-- Vertical rendering of pinned item info + unpin btn -->
           <div class="vp-applets-nav-pinned-title title text-truncate">
             <v-btn icon @click="onUnpin" class="grey lighten-2">
               <v-tooltip bottom>
@@ -29,6 +31,7 @@
 
       <v-container fluid class="vp-applet-nav-items-container">
         <v-layout row wrap justify-start>
+          <!-- Horizontal rendering of pinned item info + unpin btn -->
           <template v-if="horizontal && pinnedItemTitle">
             <div class="vp-applets-nav-pinned-title subheading text-truncate">
               <v-btn icon @click="onUnpin" class="grey lighten-2">
@@ -42,6 +45,7 @@
             <v-divider vertical></v-divider>
           </template>
 
+          <!-- Render the applet icons, badges, and tooltips -->
           <div v-for="applet in applets" class="vp-applet-nav-item" :class="{'vp-applet-nav-item-dense': dense}" :key="applet.key">
             <v-tooltip max-width="80" open-delay="50" close-delay="50" v-bind="tooltipAttrsFromIndex(applet.ord)"
               v-model="appletTooltipShow[applet.ord - 1]">
@@ -62,7 +66,6 @@
               <span>{{ applet.label }}</span>
             </v-tooltip>
           </div>
-
         </v-layout>
       </v-container>
     </v-card>
@@ -113,6 +116,10 @@ export default {
   },
 
   computed: {
+    vertical() {
+      return !this.horizontal;
+    },
+
     appletsCount() {
       return this.applets.length;
     },
