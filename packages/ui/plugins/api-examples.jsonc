@@ -1,0 +1,84 @@
+// localhost/api/Customers?filter=
+// [where][LName][like]=%25Ab%25&filter[order]=LName&filter[order]=ID&filter[limit]=5&filter[skip]=0
+
+// {
+//   "limit": 5,
+//   "skip": 0,
+//   "order": [
+//     "LName ASC",
+//     "ID ASC"
+//   ],
+//   "where": {
+//     "and": [{
+//         "Archived": 0
+//       },
+//       {
+//         "LName": {
+//           "like": "%Smith%"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+{
+  "limit": 5,
+  "skip": 0,
+  "order": [
+    "LName ASC",
+    "ID ASC"
+  ],
+  "include": [
+    "ConnectedCustomers"
+  ],
+  "where": {
+    "and": [{
+        "Archived": 0
+      },
+      {
+        "or": [{
+            "LName": {
+              "like": "%Smith%"
+            }
+          },
+          {
+            "Email": {
+              "like": "%Smith%"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
+
+// {"include":["Labels","ConnectedParties"]}
+
+// {"limit":5,"skip":0,"order":["LName ASC","ID ASC"],"where":{"and":[{"Archived": 0},{"or":[{"LName":{"like":"%Smith%"}},{"Email":{"like":"%Smith%"}}]}]}}
+// SELECT *
+// FROM (
+//       SELECT
+//         *,ROW_NUMBER() OVER (ORDER BY [LName] ASC,[ID] ASC) AS RowNum
+//       FROM
+//         [dbo].[Party]
+//       WHERE
+//         ([Archived]=@param1) AND (([LName] LIKE @param2 ESCAPE '\') OR ([Email] LIKE @param3 ESCAPE '\')) AS S
+// WHERE S.RowNum > 0 AND S.RowNum <= 5
+// Parameters: [false,"%Smith%","%Smith%"]
+
+
+// {"limit":5,"skip":0,"order":["LName ASC","ID ASC"],"where":{"and":[{"Archived": 0},{"or":[{"LName":{"like":"%Smith%"}}]}]}}
+// SELECT *
+// FROM (
+//       SELECT
+//         *,ROW_NUMBER() OVER (ORDER BY [LName] ASC,[ID] ASC) AS RowNum
+//       FROM
+//         [dbo].[Party]
+//       WHERE
+//         ([Archived]=@param1) AND (([LName] LIKE @param2 ESCAPE '\'))
+//      ) AS S
+// WHERE S.RowNum > 0 AND S.RowNum <= 5
+// Parameters: [false,"%Smith%"]
+
+
+// http://localhost:33880/api/v1/Parties?filter=%7B%22limit%22%3A5%2C%22skip%22%3A0%2C%22order%22%3A%5B%22LName%20ASC%22%2C%22ID%20ASC%22%5D%2C%22where%22%3A%7B%22and%22%3A%5B%7B%22Archived%22%3A%200%7D%2C%7B%22or%22%3A%5B%7B%22LName%22%3A%7B%22like%22%3A%22%25Smith%25%22%7D%7D%2C%7B%22Email%22%3A%7B%22like%22%3A%22%25Smith%25%22%7D%7D%5D%7D%5D%7D%7D

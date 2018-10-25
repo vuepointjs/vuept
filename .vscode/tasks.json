@@ -20,6 +20,23 @@
       }
     },
     {
+      "label": "tdev:verbose",
+      "type": "shell",
+      "command": "yarn tdev:verbose",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/K"]
+        }
+      },
+      "isBackground": true,
+      "problemMatcher": [],
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated"
+      }
+    },
+    {
       "label": "all:dev",
       "dependsOn": ["api:dev", "app:dev"],
       "problemMatcher": []
