@@ -7,16 +7,9 @@
         <!-- Drawer waffle menu -->
         <v-btn flat icon @click="drawer = !drawer">
           <v-icon>apps</v-icon>
-
-          <!-- Consider using the mdi account-settings icon when pinned -->
-          <!--
-          <template>
-            <svg style="width:24px;height:24px" viewBox="0 0 24 24">
-              <path fill="#000000" d="M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14M7,22H9V24H7V22M11,22H13V24H11V22M15,22H17V24H15V22Z" />
-            </svg>
-          </template>
-          -->
         </v-btn>
+
+        <!-- Mimic the "Office 365" link found on O365 "app launcher" (waffle) menu -->
         <div class="vp-o365-link-container text-xs-right">
           <span class="vp-o365-link subheading red--text text--darken-3" @click="onO365Click">
             <span class="vp-o365-link-text">Office 365</span>
@@ -29,22 +22,15 @@
       <applets-nav-panel v-if="drawer" :applets="applets" @active-applet-click="drawer = false" @action-btn-click="drawer = false" />
     </v-navigation-drawer>
 
+    <!-- Horizontal version of applets nav is experimental and shown only when explicitly configured -->
     <applets-nav-panel v-if="globalNavStyle === 'dock-applets-always'" :applets="applets" dense horizontal />
 
     <v-content class="vp-layout-content">
       <nuxt />
     </v-content>
 
-    <!--
-    <v-footer :fixed="fixedFooter" app class="pa-3 shaded">
-      <v-spacer></v-spacer>
-      <div class="vp-app-footer-text">{{ taxonomy.suiteName }} | {{ taxonomy.appName }}</div>
-    </v-footer>
-    -->
-
     <v-snackbar :timeout="0" :top="true" :right="true" v-model="snackbar.show" :color="$helpers.snackbarColorFromMode(snackbar.mode)">
       <v-icon dark>{{ $helpers.snackbarIconFromMode(snackbar.mode) }}</v-icon>&nbsp;{{ snackbar.msg }}
-      <!-- <v-btn flat color="pink" @click.native="snackbar.show = false">Close</v-btn> -->
     </v-snackbar>
   </v-app>
 </template>
@@ -69,6 +55,8 @@ export default {
   created() {
     console.log('LAYOUT: Created "default" layout');
     this.$local.defaults({ globalNavStyle: 'launcher-only' });
+
+    // TODO: consider how to expose user settings in UI and how to store them in local storage
     // this.$local.set('globalNavStyle', 'dock-applets-always');
   },
 
@@ -132,8 +120,6 @@ export default {
 </script>
 
 <style lang="stylus">
-// .vp-layout-content > div
-// background-color: white
 .vp-o365-link-container
   padding: 12px 22px 0 0
 
@@ -151,7 +137,4 @@ export default {
 .vp-applets-nav-panel-horizontal + .vp-layout-content,
 div.application--wrap > .vp-applets-nav-panel-horizontal + main.v-content
   padding: 0 !important
-
-.vp-app-footer-text
-  font-size: 12px
 </style>

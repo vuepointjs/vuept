@@ -4,18 +4,19 @@
       <v-flex>
         <v-toolbar dense class="pr-2 elevation-0 vp-items-toolbar" :class="{'vp-items-toolbar-extra-dense': $vuetify.breakpoint.xs }"
           :height="itemsToolbarHeight" color="grey lighten-3">
-          <v-btn icon class="vp-items-search-btn" @click="toggleSearchInput">
+          <v-btn icon :disabled="hasPinnedItem" class="vp-items-search-btn" @click="toggleSearchInput">
             <v-tooltip bottom>
               <v-icon color="primary" slot="activator">search</v-icon>
               <span>Search</span>
             </v-tooltip>
           </v-btn>
 
-          <v-text-field :class="['vp-items-search-input', {'vp-items-search-input-open': searchInputOpen}]" @focusin="searchInputOpen = true"
-            single-line hide-details clearable v-model="searchText" label="Search" ref="searchInput"></v-text-field>
+          <v-text-field :class="['vp-items-search-input', {'vp-items-search-input-open': searchInputOpen && !hasPinnedItem}]"
+            @focusin="searchInputOpen = true" single-line hide-details clearable v-model="searchText" label="Search"
+            ref="searchInput"></v-text-field>
 
           <template v-if="appletView.key != $applet.recycleBinViewKey">
-            <v-btn icon @click="onNew">
+            <v-btn icon :disabled="hasPinnedItem" @click="onNew">
               <v-tooltip bottom>
                 <v-icon color="primary" slot="activator">add</v-icon>
                 <span>New</span>
