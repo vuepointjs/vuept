@@ -1,197 +1,201 @@
 {
-  "suites": [
-    {
-      "name": "VuePoint.js",
-      "key": "__suite-key__",
-      "longName": "VuePoint.js Example Suite",
-      "tenantKey": "VP",
-      "tenantName": "VuePoint.js Example Tenant",
-      "tenantPrimaryDomain": "vuept.org",
-      "devPorts": {
-        "api": "33980",
-        "suite": "33990"
+  "suites": [{
+    "name": "VuePoint.js",
+    "key": "__suite-key__",
+    "longName": "VuePoint.js Example Suite",
+    "tenantKey": "VP",
+    "tenantName": "VuePoint.js Example Tenant",
+    "tenantPrimaryDomain": "vuept.org",
+    "devPorts": {
+      "api": "33980",
+      "suite": "33990"
+    },
+    "azure": [{
+        "key": "DEV",
+        "tenant": "example.onmicrosoft.com",
+        "clientId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+        "apiId": "dddddddd-cccc-bbbb-aaaa-00000000000",
+        "redirectUri": "http://localhost:33990/"
       },
-      "azure": [
-        {
-          "key": "DEV",
-          "tenant": "example.onmicrosoft.com",
-          "clientId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-          "apiId": "dddddddd-cccc-bbbb-aaaa-00000000000",
-          "redirectUri": "http://localhost:33990/"
+      {
+        "key": "PROD",
+        "tenant": "example.onmicrosoft.com",
+        "clientId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+        "apiId": "dddddddd-cccc-bbbb-aaaa-00000000000",
+        "redirectUri": "http://localhost:33990/"
+      }
+    ],
+    "apps": [{
+      "name": "Groupware",
+      "key": "__app-key__",
+      "longName": "Cloud Groupware",
+      "devPorts": {
+        "app": "33770",
+        "api": "33880"
+      },
+      "nonEditableModelProperties": ["User", "Archived"],
+      "applets": [{
+          "name": "Contacts",
+          "key": "CO",
+          "iconLabel": "Co",
+          "ord": 1,
+          "longName": "Shared Contacts",
+          "singularName": "Contact",
+          "primaryModel": "party",
+          "hasPinnableModel": true,
+          "pinnedItemTitleKey": "LName",
+          "views": [{
+              "name": "All Items",
+              "key": "ALL",
+              "ord": 1,
+              "type": "List",
+              "subType": "Grid",
+              "filter": [{
+                "propertyKey": "Archived",
+                "operator": "eq",
+                "value": 0
+              }],
+              "include": null,
+              "properties": [{
+                  "key": "FName",
+                  "label": "First Name"
+                },
+                {
+                  "key": "LName",
+                  "label": "Last Name",
+                  "sort": "ASC",
+                  "search": true
+                },
+                {
+                  "key": "Email"
+                },
+                {
+                  "key": "DayPhone"
+                }
+              ]
+            },
+            {
+              "name": "Recycle Bin",
+              "key": "RB",
+              "ord": 2,
+              "inheritsFrom": "ALL",
+              "filter": [{
+                "propertyKey": "Archived",
+                "operator": "eq",
+                "value": 1
+              }]
+            }
+          ]
         },
         {
-          "key": "PROD",
-          "tenant": "example.onmicrosoft.com",
-          "clientId": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
-          "apiId": "dddddddd-cccc-bbbb-aaaa-00000000000",
-          "redirectUri": "http://localhost:33990/"
-        }
-      ],
-      "apps": [
-        {
-          "name": "Groupware",
-          "key": "__app-key__",
-          "longName": "Cloud Groupware",
-          "devPorts": {
-            "app": "33770",
-            "api": "33880"
-          },
-          "nonEditableModelProperties": ["User", "Archived"],
-          "applets": [
-            {
-              "name": "Contacts",
-              "key": "CO",
-              "iconLabel": "Co",
+          "name": "Labels",
+          "key": "LA",
+          "iconLabel": "La",
+          "ord": 2,
+          "longName": "Contact Labels",
+          "primaryModel": "party-label",
+          "hasPinnableModel": false,
+          "views": [{
+              "name": "All Items",
+              "key": "ALL",
               "ord": 1,
-              "longName": "Shared Contacts",
-              "singularName": "Contact",
-              "primaryModel": "party",
-              "hasPinnableModel": true,
-              "pinnedItemTitleKey": "LName",
-              "views": [
-                {
-                  "name": "All Items",
-                  "key": "ALL",
-                  "ord": 1,
-                  "type": "List",
-                  "subType": "Grid",
-                  "filterExpressions": [
-                    "[Archived]=0"
-                  ],
-                  "includeExpression": null,
-                  "properties": [
-                    {
-                      "key": "FName",
-                      "label": "First Name"
-                    },
-                    {
-                      "key": "LName",
-                      "label": "Last Name",
-                      "sort": "ASC",
-                      "search": true
-                    },
-                    {
-                      "key": "Email"
-                    },
-                    {
-                      "key": "DayPhone"
-                    }
-                  ]
+              "type": "List",
+              "subType": "Grid",
+              "filter": [{
+                "propertyKey": "Archived",
+                "operator": "eq",
+                "value": 0
+              }],
+              "include": null,
+              "properties": [{
+                  "key": "Name",
+                  "sort": "ASC",
+                  "search": true
                 },
                 {
-                  "name": "Recycle Bin",
-                  "key": "RB",
-                  "ord": 2,
-                  "inheritsFrom": "ALL",
-                  "filterExpressions": [
-                    "[Archived]=1"
-                  ]
+                  "key": "Description"
+                },
+                {
+                  "key": "Color"
                 }
               ]
             },
             {
-              "name": "Labels",
-              "key": "LA",
-              "iconLabel": "La",
+              "name": "Recycle Bin",
+              "key": "RB",
               "ord": 2,
-              "longName": "Contact Labels",
-              "primaryModel": "party-label",
-              "hasPinnableModel": false,
-              "views": [
-                {
-                  "name": "All Items",
-                  "key": "ALL",
-                  "ord": 1,
-                  "type": "List",
-                  "subType": "Grid",
-                  "filterExpressions": [
-                    "[Archived]=0"
-                  ],
-                  "includeExpression": null,
-                  "properties": [
-                    {
-                      "key": "Name",
-                      "sort": "ASC",
-                      "search": true
-                    },
-                    {
-                      "key": "Description"
-                    },
-                    {
-                      "key": "Color"
-                    }
-                  ]
+              "inheritsFrom": "ALL",
+              "filter": [{
+                "propertyKey": "Archived",
+                "operator": "eq",
+                "value": 1
+              }]
+            }
+          ]
+        },
+        {
+          "name": "Discuss",
+          "key": "DI",
+          "iconLabel": "Di",
+          "ord": 3,
+          "longName": "Contact Discussions",
+          "primaryModel": "note",
+          "views": [{
+              "name": "All Items",
+              "key": "ALL",
+              "ord": 1,
+              "type": "List",
+              "subType": "Grid",
+              "filter": [{
+                "propertyKey": "Archived",
+                "operator": "eq",
+                "value": 0
+              }],
+              "include": [
+                "Party"
+              ],
+              "properties": [{
+                  "key": "Party.FName",
+                  "label": "First Name"
                 },
                 {
-                  "name": "Recycle Bin",
-                  "key": "RB",
-                  "ord": 2,
-                  "inheritsFrom": "ALL",
-                  "filterExpressions": [
-                    "[Archived]=1"
-                  ]
+                  "key": "Party.LName",
+                  "label": "Last Name"
+                },
+                {
+                  "key": "Text",
+                  "label": "Discussion Point",
+                  "type": "TruncatedString",
+                  "sort": "ASC",
+                  "search": true
                 }
               ]
             },
             {
-              "name": "Discuss",
-              "key": "DI",
-              "iconLabel": "Di",
+              "name": "Needs Attention",
+              "key": "INA",
+              "ord": 2,
+              "inheritsFrom": "ALL",
+              "filter": [{
+                "propertyKey": "Archived",
+                "operator": "eq",
+                "value": 0
+              }]
+            },
+            {
+              "name": "Recycle Bin",
+              "key": "RB",
               "ord": 3,
-              "longName": "Contact Discussions",
-              "primaryModel": "note",
-              "views": [
-                {
-                  "name": "All Items",
-                  "key": "ALL",
-                  "ord": 1,
-                  "type": "List",
-                  "subType": "Grid",
-                  "filterExpressions": [
-                    "[Archived]=0"
-                  ],
-                  "includeExpression": "filter[include]=Party",
-                  "properties": [
-                    {
-                      "key": "Party.FName",
-                      "label": "First Name"
-                    },
-                    {
-                      "key": "Party.LName",
-                      "label": "Last Name"
-                    },
-                    {
-                      "key": "Text",
-                      "label": "Discussion Point",
-                      "type": "TruncatedString",
-                      "sort": "ASC",
-                      "search": true
-                    }
-                  ]
-                },
-                {
-                  "name": "Needs Attention",
-                  "key": "INA",
-                  "ord": 2,
-                  "inheritsFrom": "ALL",
-                  "filterExpressions": [
-                    "[Archived]=0"
-                  ]
-                },
-                {
-                  "name": "Recycle Bin",
-                  "key": "RB",
-                  "ord": 3,
-                  "inheritsFrom": "ALL",
-                  "filterExpressions": [
-                    "[Archived]=1"
-                  ]
-                }
-              ]
+              "inheritsFrom": "ALL",
+              "filter": [{
+                "propertyKey": "Archived",
+                "operator": "eq",
+                "value": 1
+              }]
             }
           ]
         }
       ]
-    }
-  ]
+    }]
+  }]
 }

@@ -359,13 +359,13 @@ export default {
         const dataPagingQryStr = this.$api.dataPagingQryStr(page, rowsPerPage);
         const dataSortingAndPagingQryStr = `${dataSortingQryStr}&${dataPagingQryStr}`;
 
-        let filterExpressions = this.appletView.filterExpressions;
+        const includeQryStr = this.$api.dataIncludeQryStr(this.appletView.include);
+        let filterSpecs = this.appletView.filter;
         let searchColKey = this.appletViewSearchKeys[0];
-        let dataFilteringQryStr = this.$api.dataFilteringQryStr(filterExpressions, { keys: [searchColKey], text: this.searchText });
-        let countFilteringQryStr = this.$api.countFilteringQryStr(filterExpressions, { keys: [searchColKey], text: this.searchText });
+        let dataFilteringQryStr = this.$api.dataFilteringQryStr(filterSpecs, { keys: [searchColKey], text: this.searchText });
+        let countFilteringQryStr = this.$api.countFilteringQryStr(filterSpecs, { keys: [searchColKey], text: this.searchText });
 
         const baseDataUrl = this.$applet.baseDataUrl(this.applet);
-        const includeQryStr = (this.appletView.includeExpression && `${this.appletView.includeExpression}`) || '';
         const dataUrl = `${baseDataUrl}?${this.$helpers.joinQryStrArgs([dataFilteringQryStr, dataSortingAndPagingQryStr, includeQryStr])}`;
 
         const baseCountUrl = `${baseDataUrl}/count`;

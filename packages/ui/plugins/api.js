@@ -82,18 +82,44 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given an array of filterExpressions and a search spec object, return the LoopBack query string fragment for filtering/searching data during retrieval
-         * @param {array} filterExpressions Array of LoopBack [where] clause expressions to include in resulting query string
+         * Given an array of relation keys return the LoopBack query string fragment for including the related data during retrieval
+         * @param {array} include Array of strings specifying the relations to include. These strings are the keys in a model's "relations" sub-object
+         * @returns LoopBack query string fragment for including related data
+         */
+        dataIncludeQryStr(include) {
+          let res = '';
+
+          if (include && Array.isArray(include) && include.length > 0 && include[0]) {
+            res = _.reduce(include, (accum, val) => `${accum}${accum ? '&' : ''}filter[include]=${val}`, '');
+          }
+
+          return res;
+        },
+
+        /**
+         * Given an array of filter spec objects and a search spec object, return the LoopBack query string fragment for filtering/searching data during retrieval
+         * @param {array} filter Array of objects of the form: { propertyKey: "", operator: "", value: any } used to build LoopBack [where] clause expressions to
+         * include in resulting query string. Note that this routine only supports the equality operator ("eq") and ignores any object in the array having a different
+         * operator
          * @param {object} [search={}] Optional object with search spec of the form: { keys: [], text: "" }, where keys are the property keys to search
          * for the given text. Note that this routine does NOT actually support more than one search key in the keys array due to a limitation in the
          * LoopBack "REST syntax" for filtering
          * @returns LoopBack query string fragment for filtering/searching a data endpoint
          */
-        dataFilteringQryStr(filterExpressions, search) {
+        dataFilteringQryStr(filter, search) {
           let res = '';
 
-          if (filterExpressions && Array.isArray(filterExpressions) && filterExpressions.length > 0 && filterExpressions[0]) {
-            res = _.reduce(filterExpressions, (accum, val) => `${accum}${accum ? '&' : ''}filter[where]${val}`, '');
+          if (filter && Array.isArray(filter) && filter.length > 0 && filter[0]) {
+            res = _.reduce(
+              filter,
+              (accum, val) => {
+                if (val.operator && val.operator === 'eq') {
+                  return `${accum}${accum ? '&' : ''}filter[where][${val.propertyKey}]=${val.value}`;
+                }
+                return accum;
+              },
+              ''
+            );
           }
 
           // TODO: Strip unsafe characters from search before constructing qry str
@@ -106,19 +132,30 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given an array of filterExpressions and a search spec object, return the LoopBack query string fragment for filtering against a count endpoint
-         * @param {array} filterExpressions Array of LoopBack [where] clause expressions to include in resulting query string
+         * Given an array of filter spec objects and a search spec object, return the LoopBack query string fragment for filtering against a count endpoint
+         * @param {array} filter Array of objects of the form: { propertyKey: "", operator: "", value: any } used to build LoopBack [where] clause expressions to
+         * include in resulting query string. Note that this routine only supports the equality operator ("eq") and ignores any object in the array having a different
+         * operator
          * @param {object} [search={}] Optional object with search spec of the form: { keys: [], text: "" }, where keys are the property keys to search
          * for the given text. Note that this routine does NOT actually support more than one search key in the keys array due to a limitation in the
          * LoopBack "REST syntax" for filtering
          * @returns LoopBack query string fragment for filtering a count endpoint
          */
-        countFilteringQryStr(filterExpressions, search) {
+        countFilteringQryStr(filter, search) {
           let res = '';
           let whereIndex = 0;
 
-          if (filterExpressions && Array.isArray(filterExpressions) && filterExpressions.length > 0 && filterExpressions[0]) {
-            res = _.reduce(filterExpressions, (accum, val) => `${accum}${accum ? '&' : ''}[where][and][${whereIndex++}]${val}`, '');
+          if (filter && Array.isArray(filter) && filter.length > 0 && filter[0]) {
+            res = _.reduce(
+              filter,
+              (accum, val) => {
+                if (val.operator && val.operator === 'eq') {
+                  return `${accum}${accum ? '&' : ''}[where][and][${whereIndex++}][${val.propertyKey}]=${val.value}`;
+                }
+                return accum;
+              },
+              ''
+            );
           }
 
           // TODO: Strip unsafe characters from search before constructing qry str
@@ -182,18 +219,13 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given an array of relations return the LoopBack query spec object for including the related data during retrieval
-         * @param {array} relations Array of strings specifying the relations to include
+         * Given an array of relation keys return the LoopBack query spec object for including the related data during retrieval
+         * @param {array} include Array of strings specifying the relations to include. These strings are the keys in a model's "relations" sub-object
          * @returns LoopBack query spec for including related data
          */
-        dataIncludeQrySpec(relations) {
-          if (!relations || !Array.isArray(relations) || relations.length < 1 || !relations[0]) {
-            return {};
-          }
-
-          return {
-            include: [...relations]
-          };
+        dataIncludeQrySpec(include) {
+          if (include && Array.isArray(include) && include.length > 0 && include[0]) return { include };
+          return {};
         },
 
         /**
@@ -277,11 +309,3 @@ export default (ctx, inject) => {
 
   console.log('PI: $api installed');
 };
-
-/**
- * Given a filter expression of the form "[PropKey]=PropVal", return the PropKey
- * @param {*} filterExpression Filter expression string in LoopBack "REST syntax"
- */
-function propKeyFromFilterExpression(filterExpression) {
-  return filterExpression.match(/^\[([a-zA-Z]+)\]=.*/)[1];
-}
