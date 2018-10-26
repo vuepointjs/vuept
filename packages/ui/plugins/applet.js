@@ -107,8 +107,8 @@ export default (ctx, inject) => {
             ord: 1,
             type: 'List',
             subType: 'Grid',
-            filterExpressions: [`[${recycledPropKey}]=0`],
-            includeExpression: null,
+            filter: [{ propertyKey: recycledPropKey, operator: 'eq', value: 0 }],
+            include: null,
             properties: []
           };
 
@@ -150,7 +150,10 @@ export default (ctx, inject) => {
             key: 'PINNED',
             ord: 1,
             inheritsFrom: 'ALL',
-            filterExpressions: [`[${primaryOrFkPropKey}]=${ctx.store.state.ui.pinnedItem.keyValue}`, `[${recycledPropKey}]=0`]
+            filter: [
+              { propertyKey: recycledPropKey, operator: 'eq', value: 0 },
+              { propertyKey: primaryOrFkPropKey, operator: 'eq', value: ctx.store.state.ui.pinnedItem.keyValue }
+            ]
           };
 
           return _.merge({}, this.rawViewFromKey(applet, 'ALL'), rawPinnedViewDefinition);
