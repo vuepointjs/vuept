@@ -183,7 +183,7 @@ export default (ctx, inject) => {
          */
         dataSortingQrySpec(sortBy, descending) {
           let spec = { order: [] };
-          if (sortBy) spec.order.push(`${sortBy} ${descending ? ' DESC' : ' ASC'}`);
+          if (sortBy) spec.order.push(`${sortBy} ${descending ? 'DESC' : 'ASC'}`);
 
           // It's actually a good idea to include ID (primary key) as the last sort order column to make the ordering predictable when, for example,
           // customers have the same last name
@@ -229,79 +229,66 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given an array of filterExpressions and a search spec object, return the LoopBack query spec object for filtering/searching data during retrieval
-         * @param {array} filterExpressions Array of LoopBack [where] clause expressions to include in resulting query string
+         * Given an array of filter spec objects and a search spec object, return the LoopBack query spec object for filtering/searching data during retrieval
+         * @param {array} filter Array of objects of the form: { propertyKey: "", operator: "", value: any } used to build LoopBack "where" spec to include in
+         * resulting query string
          * @param {object} [search={}] Optional object with search spec of the form: { keys: [], text: "" }, where keys are the property keys to search
          * for the given text
          * @returns LoopBack query spec for filtering/searching a data endpoint
          */
-        dataFilteringQrySpec(filterExpressions, search) {
-          let spec = {
-            where: {
-              and: [
-                // {
-                //   Archived: 0
-                // },
-                // {
-                //   or: [
-                //     {
-                //       LName: {
-                //         like: '%Smith%'
-                //       }
-                //     },
-                //     {
-                //       Email: {
-                //         like: '%Smith%'
-                //       }
-                //     }
-                //   ]
-                // }
-              ]
-            }
-          };
+        dataFilteringQrySpec(filter, search) {
+          let spec = { where: { and: [] } };
 
-          if (filterExpressions && Array.isArray(filterExpressions) && filterExpressions.length > 0 && filterExpressions[0]) {
-            _.forEach(filterExpressions, val => {
-              let propKey = '';
-              let propVal = '';
-              spec.where.and.push({ [propKey]: propVal });
+          if (filter && Array.isArray(filter) && filter.length > 0 && filter[0]) {
+            _.forEach(filter, val => {
+              if (val.operator && val.operator === 'eq') spec.where.and.push({ [val.propertyKey]: val.value });
+              else spec.where.and.push({ [val.propertyKey]: { [val.operator]: val.value } });
             });
-            // res = _.reduce(filterExpressions, (accum, val) => `${accum}${accum ? '&' : ''}filter[where]${val}`, '');
           }
 
           // TODO: Strip unsafe characters from search before constructing qry str
-          if (search && search.keys && search.keys.length > 0 && search.text) {
-            res += _.reduce(search.keys, (accum, val) => `${accum}${res || accum ? '&' : ''}filter[where][${val}][like]=%25${search.text}%25`, '');
-            // console.log(`PI: $api built qry str to search data in column(s) "${search.keys}"`);
+          if (search && search.keys && Array.isArray(search.keys) && search.keys.length > 0 && search.text) {
+            let searchSpecs = [];
+            _.forEach(search.keys, val => {
+              if (val) searchSpecs.push({ [val]: { like: `\%25${search.text}\%25` } });
+            });
+
+            if (searchSpecs.length > 0) spec.where.and.push({ or: searchSpecs });
           }
 
-          return res;
+          return spec;
         },
 
         /**
-         * Given an array of filterExpressions and a search spec object, return the LoopBack query spec object for filtering against a count endpoint
-         * @param {array} filterExpressions Array of LoopBack [where] clause expressions to include in resulting query string
+         * Given an array of filter spec objects and a search spec object, return the LoopBack query spec object for filtering against a count endpoint
+         * @param {array} filter Array of objects of the form: { propertyKey: "", operator: "", value: any } used to build LoopBack "where" spec to include in
+         * resulting query string
          * @param {object} [search={}] Optional object with search spec of the form: { keys: [], text: "" }, where keys are the property keys to search
          * for the given text
          * @returns LoopBack query spec for filtering a count endpoint
          */
-        countFilteringQrySpec(filterExpressions, search) {
-          let res = '';
-          let whereIndex = 0;
+        countFilteringQrySpec(filter, search) {
+          // For /count endpoint we must not supply the "{where: ...}" wrapper object
+          let spec = { and: [] };
 
-          if (filterExpressions && Array.isArray(filterExpressions) && filterExpressions.length > 0 && filterExpressions[0]) {
-            res = _.reduce(filterExpressions, (accum, val) => `${accum}${accum ? '&' : ''}[where][and][${whereIndex++}]${val}`, '');
+          if (filter && Array.isArray(filter) && filter.length > 0 && filter[0]) {
+            _.forEach(filter, val => {
+              if (val.operator && val.operator === 'eq') spec.and.push({ [val.propertyKey]: val.value });
+              else spec.and.push({ [val.propertyKey]: { [val.operator]: val.value } });
+            });
           }
 
           // TODO: Strip unsafe characters from search before constructing qry str
-          if (search && search.keys && search.keys.length > 0 && search.text) {
-            res += _.reduce(search.keys, (accum, val) => `${accum}${res || accum ? '&' : ''}[where][and][${whereIndex++}][${val}][like]=%25${search.text}%25`, '');
+          if (search && search.keys && Array.isArray(search.keys) && search.keys.length > 0 && search.text) {
+            let searchSpecs = [];
+            _.forEach(search.keys, val => {
+              if (val) searchSpecs.push({ [val]: { like: `\%25${search.text}\%25` } });
+            });
+
+            if (searchSpecs.length > 0) spec.and.push({ or: searchSpecs });
           }
 
-          // In case we ended up with a single "where" clause, remove the unnecessary "[and][0]"
-          if (whereIndex === 1) res = res.replace('[and][0]', '');
-
-          return res;
+          return spec;
         }
       }
     })
