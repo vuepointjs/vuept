@@ -141,6 +141,21 @@ export default (ctx, inject) => {
         },
 
         /**
+         * Given a model object return an array of the model's property keys for properties of type "string", or an empty array on failure
+         * @param {object} model Model object
+         * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result
+         */
+        stringPropertyKeys(model, exclude = []) {
+          console.log(`PI: $model "stringPropertyKeys" excluding ${JSON.stringify(exclude)}`);
+          return model
+            ? _(model.properties)
+                .filter(val => val.type && val.type === 'string')
+                .map((val, key) => key)
+                .value()
+            : [];
+        },
+
+        /**
          * Given a model object return an array of the model's property keys for properties of type "string" which are marked as required, or an empty array on failure
          * @param {object} model Model object
          * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result

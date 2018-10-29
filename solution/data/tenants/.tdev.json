@@ -58,7 +58,8 @@
               "include": null,
               "properties": [{
                   "key": "FName",
-                  "label": "First Name"
+                  "label": "First Name",
+                  "search": true
                 },
                 {
                   "key": "LName",
@@ -67,7 +68,8 @@
                   "search": true
                 },
                 {
-                  "key": "Email"
+                  "key": "Email",
+                  "search": true
                 },
                 {
                   "key": "DayPhone"
