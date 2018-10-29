@@ -355,38 +355,16 @@ export default {
         console.log(`COMP: Pagination params >>> sortBy: ${sortBy}, descending: ${descending}, page: ${page}, rowsPerPage: ${rowsPerPage}`);
         console.log(`COMP: ...Base Data URL: ${this.$applet.baseDataUrl(this.applet)}`);
 
-        // const dataSortingQryStr = this.$api.dataSortingQryStr(sortBy, descending);
-        // const dataPagingQryStr = this.$api.dataPagingQryStr(page, rowsPerPage);
-        // const dataSortingAndPagingQryStr = `${dataSortingQryStr}&${dataPagingQryStr}`;
-
-        // const includeQryStr = this.$api.dataIncludeQryStr(this.appletView.include);
-        // let filterSpecs = this.appletView.filter;
-        // let searchColKey = this.appletViewSearchKeys[0];
-        // let dataFilteringQryStr = this.$api.dataFilteringQryStr(filterSpecs, { keys: [searchColKey], text: this.searchText });
-        // let countFilteringQryStr = this.$api.countFilteringQryStr(filterSpecs, { keys: [searchColKey], text: this.searchText });
-
-        // const baseDataUrl = this.$applet.baseDataUrl(this.applet);
-        // const dataUrl = `${baseDataUrl}?${this.$helpers.joinQryStrArgs([dataFilteringQryStr, dataSortingAndPagingQryStr, includeQryStr])}`;
-
-        // const baseCountUrl = `${baseDataUrl}/count`;
-        // const countUrl = `${baseCountUrl}?${countFilteringQryStr}`;
-
         const dataSortingQrySpec = this.$api.dataSortingQrySpec(sortBy, descending);
         const dataPagingQrySpec = this.$api.dataPagingQrySpec(page, rowsPerPage);
         const includeQrySpec = this.$api.dataIncludeQrySpec(this.appletView.include);
-
-        let filterSpecs = this.appletView.filter;
-        let searchKeys = this.appletViewSearchKeys;
-        let dataFilteringQrySpec = this.$api.dataFilteringQrySpec(filterSpecs, { keys: searchKeys, text: this.searchText });
-        let countFilteringQrySpec = this.$api.countFilteringQrySpec(filterSpecs, { keys: searchKeys, text: this.searchText });
-
+        const filterSpecs = this.appletView.filter;
+        const searchKeys = this.appletViewSearchKeys;
+        const dataFilteringQrySpec = this.$api.dataFilteringQrySpec(filterSpecs, { keys: searchKeys, text: this.searchText });
         const compositeDataQrySpec = _.merge({}, dataSortingQrySpec, dataPagingQrySpec, includeQrySpec, dataFilteringQrySpec);
 
         const baseDataUrl = this.$applet.baseDataUrl(this.applet);
         const dataUrl = `${baseDataUrl}?filter=${JSON.stringify(compositeDataQrySpec)}`;
-
-        const baseCountUrl = `${baseDataUrl}/count`;
-        const countUrl = `${baseCountUrl}?where=${JSON.stringify(countFilteringQrySpec)}`;
 
         console.time(`AXIOS: Getting ${this.modelPluralName}...`);
         let dataResponse = await this.$axios.get(dataUrl);
@@ -394,12 +372,10 @@ export default {
         console.timeEnd(`AXIOS: Getting ${this.modelPluralName}...`);
         this.rows = dataResponse.data;
 
-        console.time(`AXIOS: Getting ${this.modelPluralName} count...`);
-        let countResponse = await this.$axios.get(countUrl);
-
-        this.totalItems = countResponse.data.count;
-        console.timeEnd(`AXIOS: Getting ${this.modelPluralName} count...`);
+        const totalCountStr = dataResponse.headers['x-total-count'];
+        this.totalItems = (totalCountStr && Number.parseInt(totalCountStr)) || 500;
         console.log(`AXIOS: ${this.modelPluralName} count`, this.totalItems);
+
         this.loading = false;
       } catch (e) {
         console.log('COMP: Error getting data:', e);
