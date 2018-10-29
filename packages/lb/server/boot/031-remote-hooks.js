@@ -6,7 +6,8 @@ module.exports = function(app) {
   try {
     var remotes = app.remotes();
 
-    // Set X-Total-Count for all search requests
+    // Optimization: set "X-Total-Count" header for all search requests for all models. This allows apps
+    // to avoid a second API call (and associated network latency, etc.) simply to get the count
     remotes.after('*.find', function(ctx, next) {
       var filter;
       if (ctx.args && ctx.args.filter) {
