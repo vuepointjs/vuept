@@ -160,14 +160,19 @@ export default (ctx, inject) => {
         },
 
         /**
-         * Given the array of view properties (if any) in an applet view, return the array of properties marked searchable, identified by property key
+         * Given an applet object and the array of view properties in one of the applet's views, return the array of properties marked searchable,
+         * identified by property key. Note that we omit/ignore any properties marked searchable that are: (1) From relations included in the view, or (2) That are
+         * not of type string
+         * @param {object} applet Applet object
          * @param {array} props Applet view properties
          */
-        searchableViewPropKeys(props) {
-          return props && props.length > 0
+        searchableViewPropKeys(applet, props) {
+          const model = this.model(applet);
+          return model && props && props.length > 0
             ? _(props)
                 .filter({ search: true })
                 .map(val => val.key)
+                .intersection(ctx.app.$model.stringPropertyKeys(model))
                 .value()
             : [];
         },

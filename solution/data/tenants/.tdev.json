@@ -115,7 +115,8 @@
                   "search": true
                 },
                 {
-                  "key": "Description"
+                  "key": "Description",
+                  "search": true
                 },
                 {
                   "key": "Color"
