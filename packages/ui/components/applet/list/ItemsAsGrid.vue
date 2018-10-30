@@ -340,15 +340,15 @@ export default {
     },
 
     async getRows() {
+      let res = false;
       try {
         console.log('COMP: Getting data rows...');
-
         this.loading = true;
 
         // Nothing to do without a model
         if (!this.model) {
           console.log('COMP: Failed getting data. No model');
-          return false;
+          return res;
         }
 
         const { sortBy, descending, page, rowsPerPage } = this.pagination;
@@ -367,23 +367,25 @@ export default {
         const dataUrl = `${baseDataUrl}?filter=${JSON.stringify(compositeDataQrySpec)}`;
 
         console.time(`AXIOS: Getting ${this.modelPluralName}...`);
-        let dataResponse = await this.$axios.get(dataUrl);
-
+        let dataResponse = null;
+        try {
+          dataResponse = await this.$axios.get(dataUrl);
+        } catch (e1) {}
         console.timeEnd(`AXIOS: Getting ${this.modelPluralName}...`);
         this.rows = dataResponse.data;
 
         const totalCountStr = dataResponse.headers['x-total-count'];
         const totalCountInt = Number.parseInt(totalCountStr);
-        this.totalItems = Number.isInteger(totalCountInt) ? totalCountInt : 500;
+        this.totalItems = Number.isInteger(totalCountInt) ? totalCountInt : 0;
         console.log(`AXIOS: ${this.modelPluralName} count`, this.totalItems);
 
-        this.loading = false;
-      } catch (e) {
-        console.log('COMP: Error getting data:', e);
-        return false;
+        res = true;
+      } catch (e2) {
+        console.log('COMP: Error getting data:', e2);
       }
 
-      return true;
+      this.loading = false;
+      return res;
     },
 
     async getColumns() {
