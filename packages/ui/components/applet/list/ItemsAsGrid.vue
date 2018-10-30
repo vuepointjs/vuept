@@ -259,7 +259,7 @@ export default {
       return this.appletViews[this.selectedView.index] || {};
     },
     appletViewSearchKeys() {
-      return this.$applet.searchableViewPropKeys(this.appletView.properties);
+      return this.$applet.searchableViewPropKeys(this.applet, this.appletView.properties);
     },
     appletViewSortSpec() {
       return this.$applet.viewSortSpecFromProps(this.appletView.properties, this.$model.primaryKeyPropertyKey);
@@ -373,7 +373,8 @@ export default {
         this.rows = dataResponse.data;
 
         const totalCountStr = dataResponse.headers['x-total-count'];
-        this.totalItems = (totalCountStr && Number.parseInt(totalCountStr)) || 500;
+        const totalCountInt = Number.parseInt(totalCountStr);
+        this.totalItems = Number.isInteger(totalCountInt) ? totalCountInt : 500;
         console.log(`AXIOS: ${this.modelPluralName} count`, this.totalItems);
 
         this.loading = false;

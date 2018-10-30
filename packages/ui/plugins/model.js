@@ -146,11 +146,11 @@ export default (ctx, inject) => {
          * @param {array} [exclude=[]] Optional array of keys to explicitly exclude from the result
          */
         stringPropertyKeys(model, exclude = []) {
-          console.log(`PI: $model "stringPropertyKeys" excluding ${JSON.stringify(exclude)}`);
           return model
             ? _(model.properties)
-                .filter(val => val.type && val.type === 'string')
-                .map((val, key) => key)
+                .map((val, key) => ({ key, ...val }))
+                .filter(val => val.type && val.type === 'string' && !exclude.includes(val.key))
+                .map(val => val.key)
                 .value()
             : [];
         },
