@@ -140,8 +140,8 @@ export default {
 
     shouldMountKeybindings() {
       // In horizontal ("tabs") arrangement we assume we aren't in a menu and therefore should *not* mount keybindings
-      // because they are (for now) only intended for use within the "mode" of an open menu
-      return !this.horizontal;
+      // because the keybindings are (for now) only intended for use within the "mode" of an open menu... thus only mounted in vertical arrangement
+      return this.vertical;
     }
   },
 
